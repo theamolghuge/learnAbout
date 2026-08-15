@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Node.js Notes — Basic to Advanced</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Node.js Notes</h1>
+<p class="subtitle">Senior Node.js reference — event loop, streams, Express, databases, Redis, distributed systems. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#architecture">1. Architecture</a> · <a href="#modules">2. Modules</a> ·
+  <a href="#async">3. Async &amp; Promises</a> · <a href="#eventloop">4. Event Loop ⭐</a> ·
+  <a href="#eventemitter">5. EventEmitter</a> · <a href="#buffers">6. Buffers</a> ·
+  <a href="#streams">7. Streams ⭐</a> · <a href="#http">8. HTTP</a> ·
+  <a href="#express">9. Express &amp; Middleware</a> · <a href="#rest">10. REST API</a> ·
+  <a href="#validation">11. Validation</a> · <a href="#errors">12. Error Handling</a> ·
+  <a href="#auth">13. Auth</a> · <a href="#database">14. SQL &amp; ORM</a> ·
+  <a href="#redis">15. Redis &amp; Caching</a> · <a href="#security">16. Security</a> ·
+  <a href="#testing">17. Testing &amp; Logging</a> · <a href="#workers">18. Workers &amp; Cluster</a> ·
+  <a href="#messaging">19. Queues &amp; Realtime</a> · <a href="#performance">20. Performance</a> ·
+  <a href="#ops">21. Docker, CI/CD, AWS</a> · <a href="#distributed">22. Distributed Systems</a>
+</nav>
+
+<!-- ==================== STUDY GUIDE ==================== -->
+<h2 id="study-guide">Study Guide — Priority for Senior Node.js</h2>
+
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>#</th><th>Topic</th><th>Section</th></tr>
+  <tr><td>1–3</td><td>Architecture, V8, libuv</td><td><a href="#architecture">§1</a></td></tr>
+  <tr><td>4–8</td><td>Event Loop ⭐, Call Stack, Micro/macrotasks, Promises, Async/Await</td><td><a href="#eventloop">§4</a>, <a href="#async">§3</a></td></tr>
+  <tr><td>9–11</td><td>EventEmitter, Streams ⭐, Buffers</td><td><a href="#eventemitter">§5–7</a></td></tr>
+  <tr><td>12–15</td><td>Express, Middleware, REST, Error handling</td><td><a href="#express">§9–12</a></td></tr>
+  <tr><td>16–17</td><td>Authentication, Authorization</td><td><a href="#auth">§13</a></td></tr>
+  <tr><td>18–20</td><td>SQL, Transactions, Redis</td><td><a href="#database">§14–15</a></td></tr>
+  <tr><td>21–25</td><td>Caching, Validation, Security, Testing, Logging</td><td><a href="#redis">§15–17</a></td></tr>
+</table>
+
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Worker Threads, Child Processes, Cluster</td><td><a href="#workers">§18</a></td></tr>
+  <tr><td>Performance, Memory, Queues, Kafka, WebSockets, GraphQL</td><td><a href="#messaging">§19–20</a></td></tr>
+  <tr><td>Rate limiting, API Gateway, Observability, Graceful shutdown</td><td><a href="#performance">§20</a>, <a href="#ops">§21</a></td></tr>
+  <tr><td>Docker, CI/CD, AWS</td><td><a href="#ops">§21</a></td></tr>
+</table>
+
+<h3>Tier 3 — Architect / Staff</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Microservices, Event-driven architecture, CAP, Eventual consistency</td><td><a href="#distributed">§22</a></td></tr>
+  <tr><td>Saga, CQRS, Event sourcing, Outbox, Distributed locks, Idempotency</td><td><a href="#distributed">§22</a></td></tr>
+  <tr><td>Circuit breakers, Service discovery, Distributed tracing</td><td><a href="#distributed">§22</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>V8 + libuv → Modules → Core APIs → Async → Event Loop ⭐⭐⭐
+  → EventEmitter → Buffers → Streams ⭐⭐⭐ → HTTP → Express → Middleware
+  → REST → Validation → Error Handling → Auth → Security
+  → PostgreSQL/MySQL → Prisma → Redis → Caching
+  → Queues/Workers → WebSockets → Testing → Logging/Observability
+  → Performance → Worker Threads → Microservices → Kafka
+  → Distributed Systems → AWS → Docker/CI/CD → System Design</code></pre>
+
+<h3>Senior Developer Core (narrow focus)</h3>
+<p>libuv → Event Loop → Call Stack → Microtasks → Promises → Async/Await → EventEmitter → Streams → Express Middleware → REST → Authentication → Authorization → PostgreSQL → Transactions → Redis → Caching → Queues → Workers → Error Handling → Security → Performance → Docker → Microservices → Kafka → Distributed Systems → System Design</p>
+
+<!-- ==================== 1. ARCHITECTURE ==================== -->
+<h2 id="architecture">1. Node.js Architecture — V8 &amp; libuv</h2>
+
+<pre class="code"><code>┌─────────────────────────────────────┐
+│  Your JavaScript (single thread)    │
+│  Call Stack · V8 Engine             │
+├─────────────────────────────────────┤
+│  Node.js Bindings (C++)             │
+│  fs · http · crypto · events        │
+├─────────────────────────────────────┤
+│  libuv — Event Loop + Thread Pool   │
+│  epoll/kqueue/IOCP · 4 worker threads│
+└─────────────────────────────────────┘</code></pre>
+
+<table class="ref">
+  <tr><th>Component</th><th>Role</th></tr>
+  <tr><td><strong>V8</strong></td><td>Google's JS engine — parses, compiles (JIT), executes JS, manages heap/GC</td></tr>
+  <tr><td><strong>libuv</strong></td><td>Event loop, async I/O, thread pool (default 4 threads for fs/crypto/DNS)</td></tr>
+  <tr><td><strong>Call stack</strong></td><td>Sync JS execution — one frame per function call</td></tr>
+  <tr><td><strong>Thread pool</strong></td><td>Offloads blocking work so main thread stays free</td></tr>
+</table>
+
+<p><strong>Best for:</strong> I/O-heavy — APIs, realtime, streaming. <strong>Not for:</strong> CPU-bound on main thread — use Worker Threads or separate service.</p>
+
+<!-- ==================== 2. MODULES ==================== -->
+<h2 id="modules">2. Modules — CommonJS &amp; ESM</h2>
+
+<table class="ref">
+  <tr><th></th><th>CommonJS</th><th>ES Modules</th></tr>
+  <tr><td>Syntax</td><td><code>require</code> / <code>module.exports</code></td><td><code>import</code> / <code>export</code></td></tr>
+  <tr><td>Loading</td><td>Synchronous, runtime</td><td>Static analysis, top-level await</td></tr>
+  <tr><td>Enable</td><td>Default (legacy)</td><td><code>"type":"module"</code> or <code>.mjs</code></td></tr>
+</table>
+
+<pre class="code"><code>// package.json scripts
+{ "scripts": { "start": "node index.js", "dev": "node --watch index.js" } }</code></pre>
+
+<!-- ==================== 3. ASYNC ==================== -->
+<h2 id="async">3. Async JavaScript — Promises &amp; Async/Await</h2>
+
+<pre class="code"><code>// Promises
+const p = new Promise((resolve, reject) => {
+  asyncWork((err, result) => err ? reject(err) : resolve(result));
+});
+await p;
+
+// Parallel
+const [users, orders] = await Promise.all([fetchUsers(), fetchOrders()]);
+
+// Error-first callbacks (legacy)
+fs.readFile("f.txt", (err, data) => {
+  if (err) return handle(err);
+  use(data);
+});</code></pre>
+
+<table class="ref">
+  <tr><th>Queue</th><th>Examples</th></tr>
+  <tr><td>Microtasks</td><td><code>Promise.then</code>, <code>queueMicrotask</code>, <code>await</code> continuation</td></tr>
+  <tr><td>Macrotasks</td><td><code>setTimeout</code>, <code>setImmediate</code>, I/O callbacks</td></tr>
+</table>
+
+<!-- ==================== 4. EVENT LOOP ==================== -->
+<h2 id="eventloop">4. Node.js Event Loop ⭐</h2>
+
+<ol>
+  <li><strong>Timers</strong> — <code>setTimeout</code>, <code>setInterval</code></li>
+  <li><strong>Pending callbacks</strong> — deferred I/O</li>
+  <li><strong>Idle, prepare</strong> — internal</li>
+  <li><strong>Poll</strong> — retrieve new I/O events; execute I/O callbacks</li>
+  <li><strong>Check</strong> — <code>setImmediate</code></li>
+  <li><strong>Close</strong> — <code>socket.on('close')</code></li>
+</ol>
+
+<pre class="code"><code>console.log("start");
+setTimeout(() => console.log("timeout"), 0);
+setImmediate(() => console.log("immediate"));
+process.nextTick(() => console.log("nextTick"));
+Promise.resolve().then(() => console.log("promise"));
+console.log("end");
+// start, end, nextTick, promise, then timeout OR immediate</code></pre>
+
+<table class="ref">
+  <tr><th>API</th><th>Priority</th></tr>
+  <tr><td><code>process.nextTick</code></td><td>Highest — before event loop continues (can starve I/O)</td></tr>
+  <tr><td>Microtasks (Promises)</td><td>After nextTick, before next phase</td></tr>
+  <tr><td><code>setImmediate</code></td><td>Check phase — after poll</td></tr>
+  <tr><td><code>setTimeout</code></td><td>Timers phase</td></tr>
+</table>
+
+<p><strong>Blocking the loop:</strong> sync fs, tight loops, huge JSON.parse — all requests wait. Fix: async APIs, Workers, chunk work.</p>
+
+<!-- ==================== 5. EVENTEMITTER ==================== -->
+<h2 id="eventemitter">5. EventEmitter</h2>
+
+<pre class="code"><code>const EventEmitter = require("events");
+
+class OrderService extends EventEmitter {
+  placeOrder(order) {
+    this.emit("order:placed", order);
+  }
+}
+
+const svc = new OrderService();
+svc.on("order:placed", (o) => sendEmail(o));
+svc.once("ready", init);           // one-time
+svc.removeListener("ready", init); // cleanup — prevent leaks</code></pre>
+<p>Streams, HTTP servers, and many Node APIs extend EventEmitter — pub/sub at the core of Node's design.</p>
+
+<!-- ==================== 6. BUFFERS ==================== -->
+<h2 id="buffers">6. Buffers</h2>
+
+<pre class="code"><code>const buf = Buffer.from("Hello", "utf-8");
+buf.toString("base64");
+Buffer.alloc(10);           // zero-filled
+Buffer.concat([buf1, buf2]);</code></pre>
+<p>Fixed-size raw binary — file I/O, network protocols, crypto. Not for general data storage — use TypedArrays or strings for most cases.</p>
+
+<!-- ==================== 7. STREAMS ==================== -->
+<h2 id="streams">7. Streams ⭐</h2>
+
+<table class="ref">
+  <tr><th>Type</th><th>Example</th></tr>
+  <tr><td>Readable</td><td><code>fs.createReadStream</code>, HTTP req body</td></tr>
+  <tr><td>Writable</td><td><code>fs.createWriteStream</code>, HTTP res</td></tr>
+  <tr><td>Duplex</td><td>TCP socket</td></tr>
+  <tr><td>Transform</td><td><code>zlib.createGzip()</code>, csv parser</td></tr>
+</table>
+
+<pre class="code"><code>fs.createReadStream("large.log")
+  .pipe(zlib.createGzip())
+  .pipe(fs.createWriteStream("large.log.gz"));
+
+// Backpressure — writable signals slow down when overwhelmed
+// .pipe() handles automatically</code></pre>
+
+<!-- ==================== 8. HTTP ==================== -->
+<h2 id="http">8. HTTP Module</h2>
+
+<pre class="code"><code>const http = require("http");
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ ok: true }));
+});
+server.listen(3000);</code></pre>
+
+<!-- ==================== 9. EXPRESS ==================== -->
+<h2 id="express">9. Express &amp; Middleware</h2>
+
+<pre class="code"><code>const app = express();
+app.use(helmet());
+app.use(express.json({ limit: "1mb" }));
+app.use(cors({ origin: allowedOrigins }));
+app.use(requestLogger);
+
+app.get("/api/users/:id", auth, async (req, res, next) => {
+  try {
+    const user = await userService.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "Not found" });
+    res.json(user);
+  } catch (err) { next(err); }
+});
+
+// 404 then error handler LAST
+app.use((req, res) => res.status(404).json({ error: "Not found" }));
+app.use((err, req, res, next) => {
+  logger.error(err);
+  res.status(err.status || 500).json({ error: err.message });
+});</code></pre>
+
+<p><strong>Middleware:</strong> <code>(req, res, next)</code> — runs in order. <code>next()</code> continue, <code>next(err)</code> jump to error handler.</p>
+
+<!-- ==================== 10. REST ==================== -->
+<h2 id="rest">10. REST API Design</h2>
+
+<table class="ref">
+  <tr><th>Method</th><th>Use</th><th>Idempotent?</th></tr>
+  <tr><td>GET</td><td>Read resource</td><td>Yes</td></tr>
+  <tr><td>POST</td><td>Create</td><td>No</td></tr>
+  <tr><td>PUT</td><td>Full replace</td><td>Yes</td></tr>
+  <tr><td>PATCH</td><td>Partial update</td><td>No</td></tr>
+  <tr><td>DELETE</td><td>Remove</td><td>Yes</td></tr>
+</table>
+
+<pre class="code"><code>GET    /api/users          // list
+GET    /api/users/:id      // one
+POST   /api/users          // create → 201 + Location header
+PUT    /api/users/:id      // replace
+PATCH  /api/users/:id      // partial
+DELETE /api/users/:id      // 204 No Content</code></pre>
+
+<ul>
+  <li>Plural nouns, version prefix <code>/api/v1/</code></li>
+  <li>Consistent error shape: <code>{ error, code, details }</code></li>
+  <li>Pagination: <code>?page=1&amp;limit=20</code> or cursor-based</li>
+  <li>Status codes: 200, 201, 204, 400, 401, 403, 404, 409, 422, 429, 500</li>
+</ul>
+
+<!-- ==================== 11. VALIDATION ==================== -->
+<h2 id="validation">11. API Validation</h2>
+
+<pre class="code"><code>// Zod example
+const CreateUser = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  age: z.number().int().min(18).optional(),
+});
+
+app.post("/users", (req, res, next) => {
+  const result = CreateUser.safeParse(req.body);
+  if (!result.success) {
+    return res.status(422).json({ errors: result.error.flatten() });
+  }
+  // use result.data — typed and validated
+});</code></pre>
+<p>Validate at boundary — never trust <code>req.body</code>, query params, or headers. Reject early with 422.</p>
+
+<!-- ==================== 12. ERRORS ==================== -->
+<h2 id="errors">12. Error Handling</h2>
+
+<pre class="code"><code>class AppError extends Error {
+  constructor(message, status = 500, code = "INTERNAL") {
+    super(message);
+    this.status = status;
+    this.code = code;
+  }
+}
+
+// Async wrapper
+const asyncHandler = fn => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled rejection", reason);
+  process.exit(1);
+});</code></pre>
+
+<!-- ==================== 13. AUTH ==================== -->
+<h2 id="auth">13. Authentication &amp; Authorization</h2>
+
+<h3>Authentication — who are you?</h3>
+<pre class="code"><code>// JWT flow
+const token = jwt.sign({ sub: user.id, roles: user.roles }, SECRET, { expiresIn: "15m" });
+
+function authMiddleware(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header?.startsWith("Bearer ")) return res.status(401).json({ error: "Unauthorized" });
+  try {
+    req.user = jwt.verify(header.slice(7), SECRET);
+    next();
+  } catch { res.status(401).json({ error: "Invalid token" }); }
+}</code></pre>
+
+<h3>Authorization — what can you do?</h3>
+<pre class="code"><code>function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!roles.some(r => req.user.roles.includes(r))) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    next();
+  };
+}
+
+app.delete("/api/users/:id", auth, requireRole("admin"), deleteUser);</code></pre>
+
+<table class="ref">
+  <tr><th>Pattern</th><th>Use</th></tr>
+  <tr><td>JWT access + httpOnly refresh cookie</td><td>Short-lived access in memory/header</td></tr>
+  <tr><td>OAuth 2.0 / OIDC</td><td>Third-party login (Google, Auth0)</td></tr>
+  <tr><td>RBAC</td><td>Roles → permissions</td></tr>
+  <tr><td>ABAC</td><td>Attribute-based — fine-grained</td></tr>
+</table>
+
+<!-- ==================== 14. DATABASE ==================== -->
+<h2 id="database">14. SQL, Transactions &amp; Prisma</h2>
+
+<pre class="code"><code>// Parameterized query — prevent SQL injection
+const result = await pool.query(
+  "SELECT * FROM users WHERE email = $1",
+  [email]
+);
+
+// Transaction
+const client = await pool.connect();
+try {
+  await client.query("BEGIN");
+  await client.query("INSERT INTO orders ...", [order]);
+  await client.query("UPDATE inventory SET qty = qty - 1 ...", [sku]);
+  await client.query("COMMIT");
+} catch (e) {
+  await client.query("ROLLBACK");
+  throw e;
+} finally {
+  client.release();
+}</code></pre>
+
+<h3>Prisma ORM</h3>
+<pre class="code"><code>const user = await prisma.user.create({ data: { email, name } });
+
+await prisma.$transaction(async (tx) => {
+  const order = await tx.order.create({ data: { userId, total } });
+  await tx.product.update({ where: { id }, data: { stock: { decrement: 1 } } });
+});</code></pre>
+
+<table class="ref">
+  <tr><th>Concept</th><th>Detail</th></tr>
+  <tr><td>ACID</td><td>Atomicity, Consistency, Isolation, Durability</td></tr>
+  <tr><td>Isolation levels</td><td>Read uncommitted → serializable — trade consistency vs performance</td></tr>
+  <tr><td>Indexes</td><td>Speed reads, slow writes — index columns in WHERE/JOIN</td></tr>
+  <tr><td>N+1 problem</td><td>Fix with JOIN or ORM <code>include</code></td></tr>
+</table>
+
+<!-- ==================== 15. REDIS ==================== -->
+<h2 id="redis">15. Redis &amp; Caching</h2>
+
+<pre class="code"><code>// Cache-aside pattern
+async function getUser(id) {
+  const cached = await redis.get(`user:${id}`);
+  if (cached) return JSON.parse(cached);
+
+  const user = await db.findUser(id);
+  await redis.setex(`user:${id}`, 3600, JSON.stringify(user)); // TTL 1hr
+  return user;
+}
+
+// Session store
+await redis.set(`session:${sid}`, JSON.stringify(session), "EX", 86400);</code></pre>
+
+<table class="ref">
+  <tr><th>Pattern</th><th>Use</th></tr>
+  <tr><td>Cache-aside</td><td>App checks cache → DB on miss → populate cache</td></tr>
+  <tr><td>Write-through</td><td>Write cache + DB together</td></tr>
+  <tr><td>TTL</td><td>Expire stale data — balance freshness vs load</td></tr>
+  <tr><td>Invalidation</td><td>Delete/update cache key on write</td></tr>
+  <tr><td>Rate limiting</td><td>INCR + EXPIRE per IP/key</td></tr>
+  <tr><td>Pub/Sub</td><td>Realtime notifications (not durable)</td></tr>
+</table>
+
+<!-- ==================== 16. SECURITY ==================== -->
+<h2 id="security">16. Security</h2>
+<ul>
+  <li><strong>Helmet</strong> — secure HTTP headers (CSP, HSTS, X-Frame-Options)</li>
+  <li><strong>Rate limiting</strong> — express-rate-limit, Redis-backed for distributed</li>
+  <li><strong>Input validation</strong> — Zod/Joi at every boundary</li>
+  <li><strong>Parameterized queries</strong> — no string concatenation SQL</li>
+  <li><strong>Secrets</strong> — env vars, never in code/git</li>
+  <li><strong>HTTPS</strong> — TLS in production</li>
+  <li><strong>Dependency audit</strong> — <code>npm audit</code>, Dependabot</li>
+  <li><strong>Least privilege</strong> — DB user permissions, IAM roles</li>
+</ul>
+
+<!-- ==================== 17. TESTING & LOGGING ==================== -->
+<h2 id="testing">17. Testing &amp; Logging</h2>
+
+<h3>Testing</h3>
+<table class="ref">
+  <tr><th>Layer</th><th>Tool</th></tr>
+  <tr><td>Unit</td><td>Jest / Vitest — pure functions, services</td></tr>
+  <tr><td>Integration</td><td>Supertest — HTTP endpoints against real/test DB</td></tr>
+  <tr><td>E2E</td><td>Postman, Playwright against staging</td></tr>
+  <tr><td>Mocking</td><td>jest.mock, test containers for DB</td></tr>
+</table>
+
+<pre class="code"><code>const res = await request(app)
+  .post("/api/users")
+  .send({ email: "a@b.com", name: "Ada" })
+  .expect(201);
+expect(res.body.email).toBe("a@b.com");</code></pre>
+
+<h3>Logging &amp; observability</h3>
+<pre class="code"><code>// Structured logging — pino / winston
+logger.info({ userId, orderId, durationMs }, "Order placed");
+
+// Correlation ID middleware
+req.correlationId = req.headers["x-request-id"] || uuid();</code></pre>
+<ul>
+  <li>Structured JSON logs — searchable in ELK/Datadog/CloudWatch</li>
+  <li>Metrics — Prometheus, request latency, error rate</li>
+  <li>Tracing — OpenTelemetry, Jaeger — follow requests across services</li>
+  <li>Health checks — <code>/health</code>, <code>/ready</code> for K8s probes</li>
+</ul>
+
+<!-- ==================== 18. WORKERS ==================== -->
+<h2 id="workers">18. Worker Threads, Child Processes &amp; Cluster</h2>
+
+<table class="ref">
+  <tr><th></th><th>Cluster</th><th>Worker Threads</th><th>Child Process</th></tr>
+  <tr><td>Model</td><td>Separate processes</td><td>Threads same process</td><td>Separate process</td></tr>
+  <tr><td>Memory</td><td>Isolated</td><td>SharedArrayBuffer possible</td><td>Isolated</td></tr>
+  <tr><td>Use</td><td>Scale HTTP across cores</td><td>CPU-heavy JS work</td><td>Shell commands, CLI tools</td></tr>
+</table>
+
+<pre class="code"><code>// Worker Threads
+const { Worker } = require("worker_threads");
+new Worker("./hash-worker.js", { workerData: { file } });
+
+// Cluster
+if (cluster.isPrimary) {
+  for (let i = 0; i < os.cpus().length; i++) cluster.fork();
+} else {
+  require("./server.js");
+}</code></pre>
+
+<!-- ==================== 19. MESSAGING ==================== -->
+<h2 id="messaging">19. Queues, WebSockets, GraphQL &amp; Rate Limiting</h2>
+
+<h3>Job queues (BullMQ / RabbitMQ)</h3>
+<pre class="code"><code>// Producer
+await emailQueue.add("send", { to, subject, body }, { attempts: 3, backoff: 5000 });
+
+// Consumer — separate worker process
+worker.process(async (job) => await sendEmail(job.data));</code></pre>
+
+<h3>Kafka (event streaming)</h3>
+<ul>
+  <li>Durable log — topics, partitions, consumer groups</li>
+  <li>Replay events, high throughput, decoupled services</li>
+  <li>Use for event-driven microservices, analytics pipelines</li>
+</ul>
+
+<h3>WebSockets</h3>
+<pre class="code"><code>const { WebSocketServer } = require("ws");
+const wss = new WebSocketServer({ server });
+wss.on("connection", (ws) => {
+  ws.on("message", (data) => broadcast(data));
+});</code></pre>
+
+<h3>GraphQL</h3>
+<p>Single endpoint, client specifies shape — avoids over/under fetching. Trade-off: complexity, caching harder than REST, N+1 needs DataLoader.</p>
+
+<h3>Rate limiting</h3>
+<pre class="code"><code>// Token bucket / sliding window — Redis for multi-instance
+const key = `rate:${req.ip}`;
+const count = await redis.incr(key);
+if (count === 1) await redis.expire(key, 60);
+if (count > 100) return res.status(429).json({ error: "Too many requests" });</code></pre>
+
+<!-- ==================== 20. PERFORMANCE ==================== -->
+<h2 id="performance">20. Performance &amp; Memory</h2>
+<ul>
+  <li>Async I/O everywhere — no sync fs/crypto on request path</li>
+  <li>Connection pooling — DB, Redis, HTTP keep-alive</li>
+  <li>Streams for large payloads</li>
+  <li>Profile: <code>node --inspect</code>, clinic.js, 0x flame graphs</li>
+  <li>Memory: watch heap growth, listener leaks, unclosed connections</li>
+  <li>Graceful shutdown — SIGTERM → stop accepting → drain → close DB → exit</li>
+</ul>
+
+<pre class="code"><code>process.on("SIGTERM", async () => {
+  server.close();
+  await pool.end();
+  await redis.quit();
+  process.exit(0);
+});</code></pre>
+
+<!-- ==================== 21. OPS ==================== -->
+<h2 id="ops">21. Docker, CI/CD &amp; AWS</h2>
+
+<h3>Docker</h3>
+<pre class="code"><code>FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY . .
+USER node
+EXPOSE 3000
+CMD ["node", "index.js"]</code></pre>
+
+<h3>CI/CD pipeline</h3>
+<ol>
+  <li>Lint + typecheck</li>
+  <li>Unit + integration tests</li>
+  <li>Build Docker image</li>
+  <li>Push to registry (ECR)</li>
+  <li>Deploy to staging → smoke tests → production</li>
+</ol>
+
+<h3>AWS (common services)</h3>
+<table class="ref">
+  <tr><th>Service</th><th>Use</th></tr>
+  <tr><td>ECS/EKS</td><td>Container orchestration</td></tr>
+  <tr><td>ALB / API Gateway</td><td>Load balancing, routing, throttling</td></tr>
+  <tr><td>RDS</td><td>Managed PostgreSQL/MySQL</td></tr>
+  <tr><td>ElastiCache</td><td>Managed Redis</td></tr>
+  <tr><td>SQS / SNS</td><td>Queues, pub/sub</td></tr>
+  <tr><td>Lambda</td><td>Serverless functions</td></tr>
+  <tr><td>CloudWatch</td><td>Logs, metrics, alarms</td></tr>
+</table>
+
+<!-- ==================== 22. DISTRIBUTED ==================== -->
+<h2 id="distributed">22. Distributed Systems &amp; Architecture</h2>
+
+<h3>Microservices</h3>
+<ul>
+  <li>Independent deploy, own DB per service</li>
+  <li>Communication: REST, gRPC, message queues</li>
+  <li>Challenges: distributed transactions, observability, versioning</li>
+</ul>
+
+<h3>CAP theorem</h3>
+<p>In partition, choose Consistency or Availability. CP: bank transfers. AP: social feeds. Most systems are tunable — not purely one.</p>
+
+<h3>Patterns</h3>
+<table class="ref">
+  <tr><th>Pattern</th><th>Solves</th></tr>
+  <tr><td><strong>Saga</strong></td><td>Distributed transaction — compensating actions on failure</td></tr>
+  <tr><td><strong>CQRS</strong></td><td>Separate read/write models — scale reads independently</td></tr>
+  <tr><td><strong>Event sourcing</strong></td><td>Store events not state — replay to rebuild</td></tr>
+  <tr><td><strong>Outbox</strong></td><td>Atomic DB write + event publish via outbox table + poller</td></tr>
+  <tr><td><strong>Idempotency</strong></td><td>Same request twice = same result — idempotency keys</td></tr>
+  <tr><td><strong>Circuit breaker</strong></td><td>Stop calling failing service — fail fast, recover gradually</td></tr>
+  <tr><td><strong>Distributed lock</strong></td><td>Redis Redlock — coordinate exclusive access</td></tr>
+  <tr><td><strong>Eventual consistency</strong></td><td>Replicas converge over time — design UX for stale reads</td></tr>
+</table>
+
+<h3>Service discovery &amp; tracing</h3>
+<ul>
+  <li>Consul, Eureka, K8s DNS — services find each other</li>
+  <li>OpenTelemetry + Jaeger — trace ID across microservices</li>
+  <li>API Gateway — auth, rate limit, routing at edge</li>
+</ul>
+
+<p class="footer-note"><a href="quick-revision.html">Quick Revision</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeScript Notes — Basic to Advanced</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>TypeScript Notes</h1>
+<p class="subtitle">Senior Full Stack TypeScript — types, generics, narrowing, and React/Node patterns. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#basics">1. Basics</a> · <a href="#types">2. Types</a> ·
+  <a href="#functions">3. Functions</a> · <a href="#objects">4. Objects &amp; Interfaces</a> ·
+  <a href="#generics">5. Generics</a> · <a href="#narrowing">6. Narrowing</a> ·
+  <a href="#utilities">7. Utility Types</a> · <a href="#advanced">8. Advanced</a> ·
+  <a href="#react">9. TypeScript + React</a> · <a href="#node">10. TypeScript + Node</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Senior TypeScript</h2>
+
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Basic types, inference, annotations</td><td><a href="#basics">§1–2</a></td></tr>
+  <tr><td>Interfaces vs types, unions, literals</td><td><a href="#objects">§4</a></td></tr>
+  <tr><td>Function types, optional/default params</td><td><a href="#functions">§3</a></td></tr>
+  <tr><td>Generics — functions, interfaces, constraints</td><td><a href="#generics">§5</a></td></tr>
+  <tr><td>Narrowing — typeof, in, discriminated unions</td><td><a href="#narrowing">§6</a></td></tr>
+  <tr><td>Utility types — Partial, Pick, Omit, ReturnType</td><td><a href="#utilities">§7</a></td></tr>
+  <tr><td>React props, events, hooks typing</td><td><a href="#react">§9</a></td></tr>
+  <tr><td>Node/Express request typing, env vars</td><td><a href="#node">§10</a></td></tr>
+</table>
+
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><td><code>unknown</code> vs <code>any</code>, type guards, asserts</td><td><a href="#narrowing">§6</a>, <a href="#advanced">§8</a></td></tr>
+  <tr><td><code>satisfies</code>, <code>as const</code>, template literal types</td><td><a href="#advanced">§8</a></td></tr>
+  <tr><td>Mapped types, conditional types, infer</td><td><a href="#advanced">§8</a></td></tr>
+  <tr><td>Zod inference, Prisma types</td><td><a href="#node">§10</a></td></tr>
+</table>
+
+<h3>Tier 3 — Staff</h3>
+<table class="ref">
+  <tr><td>Module augmentation, declaration merging</td><td><a href="#advanced">§8</a></td></tr>
+  <tr><td>Variance, strict compiler flags</td><td><a href="#advanced">§8</a></td></tr>
+</table>
+
+<h2 id="basics">1. Basics</h2>
+<pre class="code"><code>// TypeScript = JavaScript + static types ( erased at compile time )
+let name: string = "Ada";
+let count = 42;              // inferred as number
+
+// strict mode (tsconfig) — always enable for new projects
+// strict, noImplicitAny, strictNullChecks</code></pre>
+
+<h2 id="types">2. Core Types</h2>
+<table class="ref">
+  <tr><th>Type</th><th>Example</th></tr>
+  <tr><td>Primitives</td><td><code>string</code>, <code>number</code>, <code>boolean</code>, <code>bigint</code>, <code>symbol</code></td></tr>
+  <tr><td>Arrays</td><td><code>string[]</code>, <code>Array&lt;number&gt;</code></td></tr>
+  <tr><td>Tuples</td><td><code>[string, number]</code></td></tr>
+  <tr><td>Unions</td><td><code>string | number</code></td></tr>
+  <tr><td>Literals</td><td><code>"pending" | "done"</code></td></tr>
+  <tr><td><code>void</code></td><td>Function returns nothing</td></tr>
+  <tr><td><code>never</code></td><td>Never returns (throw, infinite loop)</td></tr>
+  <tr><td><code>unknown</code></td><td>Safe top type — must narrow before use</td></tr>
+  <tr><td><code>any</code></td><td>Escape hatch — avoid in production code</td></tr>
+</table>
+
+<h2 id="functions">3. Functions</h2>
+<pre class="code"><code>function greet(name: string, greeting = "Hello"): string {
+  return `${greeting}, ${name}`;
+}
+
+const add = (a: number, b: number): number => a + b;
+
+type Handler = (event: MouseEvent) => void;
+type AsyncFn&lt;T&gt; = () => Promise&lt;T&gt;;</code></pre>
+
+<h2 id="objects">4. Objects, Interfaces &amp; Types</h2>
+<pre class="code"><code>interface User {
+  id: string;
+  email: string;
+  role?: "admin" | "user";  // optional
+  readonly createdAt: Date;
+}
+
+type ID = string | number;
+
+// Interface — extend, merge declarations
+interface Admin extends User { permissions: string[]; }
+
+// Type alias — unions, intersections, mapped types
+type Result = { ok: true; data: User } | { ok: false; error: string };</code></pre>
+
+<table class="ref">
+  <tr><th></th><th>interface</th><th>type</th></tr>
+  <tr><td>Extend</td><td><code>extends</code></td><td><code>&amp;</code> intersection</td></tr>
+  <tr><td>Declaration merge</td><td>Yes</td><td>No</td></tr>
+  <tr><td>Unions</td><td>No</td><td>Yes</td></tr>
+  <tr><td>Prefer</td><td>Object shapes, public API</td><td>Unions, utilities, complex types</td></tr>
+</table>
+
+<h2 id="generics">5. Generics</h2>
+<pre class="code"><code>function first&lt;T&gt;(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+interface ApiResponse&lt;T&gt; {
+  data: T;
+  status: number;
+}
+
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+class Store&lt;T&gt; {
+  private items: T[] = [];
+  add(item: T) { this.items.push(item); }
+}</code></pre>
+
+<h2 id="narrowing">6. Type Narrowing</h2>
+<pre class="code"><code>function printId(id: string | number) {
+  if (typeof id === "string") {
+    console.log(id.toUpperCase());  // string
+  } else {
+    console.log(id.toFixed());      // number
+  }
+}
+
+// Discriminated union
+type Shape =
+  | { kind: "circle"; radius: number }
+  | { kind: "rect"; width: number; height: number };
+
+function area(s: Shape) {
+  switch (s.kind) {
+    case "circle": return Math.PI * s.radius ** 2;
+    case "rect": return s.width * s.height;
+  }
+}
+
+// Type guard
+function isUser(x: unknown): x is User {
+  return typeof x === "object" && x !== null && "email" in x;
+}</code></pre>
+
+<h2 id="utilities">7. Utility Types</h2>
+<table class="ref">
+  <tr><th>Utility</th><th>Effect</th></tr>
+  <tr><td><code>Partial&lt;T&gt;</code></td><td>All props optional</td></tr>
+  <tr><td><code>Required&lt;T&gt;</code></td><td>All props required</td></tr>
+  <tr><td><code>Pick&lt;T, K&gt;</code></td><td>Subset of props</td></tr>
+  <tr><td><code>Omit&lt;T, K&gt;</code></td><td>Exclude props</td></tr>
+  <tr><td><code>Record&lt;K, V&gt;</code></td><td>Object with key type K, value V</td></tr>
+  <tr><td><code>ReturnType&lt;F&gt;</code></td><td>Function return type</td></tr>
+  <tr><td><code>Parameters&lt;F&gt;</code></td><td>Function param tuple</td></tr>
+  <tr><td><code>NonNullable&lt;T&gt;</code></td><td>Exclude null/undefined</td></tr>
+</table>
+
+<pre class="code"><code>type UpdateUser = Partial&lt;Pick&lt;User, "email" | "role"&gt;&gt;;
+type UserKeys = keyof User;  // "id" | "email" | "role" | "createdAt"</code></pre>
+
+<h2 id="advanced">8. Advanced TypeScript</h2>
+
+<h3>satisfies &amp; as const</h3>
+<pre class="code"><code>const config = {
+  port: 3000,
+  env: "production",
+} as const;  // readonly, literal types
+
+const routes = {
+  home: "/",
+  users: "/users",
+} satisfies Record&lt;string, string&gt;;  // validate shape, keep inference</code></pre>
+
+<h3>Conditional &amp; mapped types</h3>
+<pre class="code"><code>type IsString&lt;T&gt; = T extends string ? true : false;
+
+type ReadonlyFields&lt;T&gt; = {
+  readonly [K in keyof T]: T[K];
+};</code></pre>
+
+<h3>Strict compiler flags (tsconfig)</h3>
+<ul>
+  <li><code>strict: true</code> — enables strictNullChecks, noImplicitAny, etc.</li>
+  <li><code>noUncheckedIndexedAccess</code> — array access may be undefined</li>
+  <li><code>exactOptionalPropertyTypes</code> — strict optional handling</li>
+</ul>
+
+<h2 id="react">9. TypeScript + React</h2>
+<pre class="code"><code>interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+function Button({ label, onClick, disabled = false }: ButtonProps) {
+  return &lt;button onClick={onClick} disabled={disabled}&gt;{label}&lt;/button&gt;;
+}
+
+// Children
+interface CardProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+// Events
+function Input({ onChange }: { onChange: (e: React.ChangeEvent&lt;HTMLInputElement&gt;) => void }) {}
+
+// useState inference
+const [user, setUser] = useState&lt;User | null&gt;(null);
+
+// Generic component
+function List&lt;T&gt;({ items, render }: { items: T[]; render: (item: T) => React.ReactNode }) {
+  return &lt;ul&gt;{items.map((item, i) =&gt; &lt;li key={i}&gt;{render(item)}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre>
+
+<h2 id="node">10. TypeScript + Node</h2>
+<pre class="code"><code>// Typed environment variables
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      PORT: string;
+      DATABASE_URL: string;
+      JWT_SECRET: string;
+    }
+  }
+}
+
+// Express request extension
+interface AuthRequest extends Request {
+  user?: { id: string; roles: string[] };
+}
+
+// Zod → TypeScript
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+});
+type CreateUser = z.infer&lt;typeof CreateUserSchema&gt;;
+
+// Prisma generates types automatically
+const user: User = await prisma.user.create({ data: { email, name } });</code></pre>
+
+<p class="footer-note"><a href="quick-revision.html">Quick Revision</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

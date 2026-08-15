@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 5 · Recovery and Flow</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="../reference/quick-reference.html">Quick reference</a>
+    <span>·</span>
+    <a href="./0004-choosing-your-few-things.html">← Lesson 4</a>
+  </nav>
+
+  <div class="kicker">Lesson 5 of 5 · ~10 min · Sustaining the session</div>
+  <h1>Recovery and Flow</h1>
+  <p class="subtitle">Lessons 1–3 taught you how to defend a focus block. This lesson is about what happens between blocks — and how to calibrate a block so it doesn't depend on brute willpower to finish.</p>
+  <div class="meta">Builds on <a href="./0003-time-blocking-and-shutdown.html">Lesson 3</a> (time blocking) and <a href="./0001-why-attention-fragments.html">Lesson 1</a> (internal triggers). If you haven't done those, start there — recovery only matters once you have blocks worth recovering from.</div>
+
+  <h2>Directed attention runs out</h2>
+
+  <p>Deep work uses <a href="../reference/glossary.html">directed attention</a> — the effortful, voluntary kind you spend ignoring distractions and holding a complex problem in mind. Rachel and Stephen Kaplan's <strong>Attention Restoration Theory</strong> treats it as a finite resource: it depletes with sustained use, and a depleted tank is exactly when internal triggers (boredom, fatigue, restlessness) win — not because you're weak, but because you have nothing left to spend.</p>
+
+  <p>That's why a day of back-to-back deep-work blocks, with no real recovery between them, tends to collapse in the afternoon even when the morning went fine. You didn't lose the skill; you ran out of the resource the skill requires.</p>
+
+  <h2>Why a scrolling "break" isn't a break</h2>
+
+  <p>Most people recover between focus blocks the same way they distract themselves during them: phone, feed, quick messages. It feels like rest because it's not the hard task. But scrolling is not low-demand — every post is a micro-decision (keep scrolling? react? click?), which keeps directed attention engaged. You're switching tasks, not restoring capacity.</p>
+
+  <p>What actually restores directed attention, according to ART, is <strong>soft fascination</strong>: an environment that holds your interest effortlessly, without asking you to direct it. Classic examples are nature — moving water, trees, sky — but anything with gentle, involuntary engagement works: a walk outside, sitting by a window, even watching fish in a tank. The key test: could you do it without making choices every few seconds?</p>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Which break best restores depleted directed attention?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Scrolling your social feed</button>
+      <button class="quiz-choice">Checking work email quickly</button>
+      <button class="quiz-choice" data-correct="true">Walking outside near greenery</button>
+      <button class="quiz-choice">Watching a complex documentary</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="callout callout-exercise">
+    <span class="callout-label">Exercise — design one recovery block</span>
+    Between your next two deep-work blocks, schedule a real recovery period — not leftover time, an actual block on the plan. Write what you'll do (specific, screen-free, 10–20 minutes). Soft fascination beats willpower here: pick something you'd actually do, not something virtuous you'll skip.
+    <div style="margin-top:1em;">
+      <input type="text" class="quiz-input" id="recovery-input" placeholder="e.g. 10:30–10:45 — walk to the corner and back, phone stays inside">
+      <button class="quiz-btn" id="recovery-save">Save my recovery block</button>
+      <div class="quiz-feedback" id="recovery-feedback"></div>
+    </div>
+  </div>
+
+  <h2>When willpower runs out: flow vs. friction</h2>
+
+  <p>Even with a full attention tank, a block can still feel like a grind. Mihaly Csikszentmihalyi's research on <a href="../reference/glossary.html">flow</a> points to one lever you control: the <strong>challenge-skill balance</strong>. When difficulty matches your current ability, the session can self-sustain — you stop monitoring the clock and start tracking the problem. When it doesn't match, internal triggers show up fast:</p>
+
+  <ul>
+    <li><strong>Too easy</strong> → boredom → you reach for stimulation (phone, email, a "quick" side task).</li>
+    <li><strong>Too hard</strong> → anxiety → you avoid starting, or you switch to something safer that still feels productive.</li>
+  </ul>
+
+  <p>Both look like "I can't focus." The fix is different in each case — and adjusting the task is usually more reliable than pushing harder on willpower.</p>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. Why doesn't a phone scroll break restore focus?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice" data-correct="true">It uses directed attention</button>
+      <button class="quiz-choice">Screens emit blue light waves</button>
+      <button class="quiz-choice">Social apps are designed badly</button>
+      <button class="quiz-choice">Breaks should always be longer</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="callout callout-exercise">
+    <span class="callout-label">Exercise — diagnose a stalled session</span>
+    Think of a recent focus block that fell apart. Which fit better?
+    <div class="pick-list" id="flow-diagnostic" style="margin-top:0.8em;">
+      <button type="button" class="pick-item" data-state="bored">
+        <span>Restless — checking the clock, tempted to "just quickly" check something</span>
+      </button>
+      <button type="button" class="pick-item" data-state="anxious">
+        <span>Stuck — avoiding the hard part, doing easier work instead</span>
+      </button>
+      <button type="button" class="pick-item" data-state="flow">
+        <span>Absorbed — lost track of time on the actual task</span>
+      </button>
+    </div>
+    <div class="quiz-feedback" id="flow-feedback" style="display:none;margin-top:0.8em;"></div>
+  </div>
+
+  <h2>How this connects to your mission</h2>
+
+  <p><a href="./0004-choosing-your-few-things.html">Lesson 4</a> was about choosing the few things worth going deep on. Depth only compounds if you can actually sustain long sessions on them — not once, but repeatedly. Recovery blocks protect the second session of the day; challenge-skill calibration protects the session you're in. Both are how "focus on a few things" becomes a practice instead of a lucky morning.</p>
+
+  <p>The full session-level loop, five lessons in: know the mechanism → design the environment → schedule defended blocks and close the day → choose what deserves those blocks → recover between blocks and calibrate difficulty so blocks self-sustain.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Primary sources: Rachel &amp; Stephen Kaplan's <a href="https://en.wikipedia.org/wiki/Attention_restoration_theory">Attention Restoration Theory</a> (overview) and the <a href="https://www.tandfonline.com/doi/full/10.1080/10937404.2016.1196155">systematic review of ART evidence</a>; Mihaly Csikszentmihalyi's flow research — start with this <a href="https://positivepsychology.com/mihaly-csikszentmihalyi-father-of-flow/">overview of the challenge-skill balance and flow antecedents</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, skeptical, or curious?</span>
+    If you don't have access to greenery, or your work doesn't allow screen-free breaks, tell me what your day actually looks like — ART and flow both have practical adaptations that don't require a forest walk or a perfect schedule.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0004-choosing-your-few-things.html">← Lesson 4</a>
+    <a href="../index.html">Index →</a>
+  </p>
+
+</div>
+
+<script>
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var buttons = quiz.querySelectorAll('.quiz-choice');
+    var feedback = quiz.querySelector('.quiz-feedback');
+    var answered = false;
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (answered) return;
+        answered = true;
+        var correct = btn.getAttribute('data-correct') === 'true';
+        buttons.forEach(function(b) {
+          if (b.getAttribute('data-correct') === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        feedback.textContent = correct
+          ? 'Correct.'
+          : 'Not quite — the correct answer is highlighted above.';
+        feedback.classList.add('show', correct ? 'correct' : 'incorrect');
+      });
+    });
+  });
+
+  (function() {
+    var input = document.getElementById('recovery-input');
+    var btn = document.getElementById('recovery-save');
+    var fb = document.getElementById('recovery-feedback');
+    var KEY = 'attn-recovery-block';
+    var saved = localStorage.getItem(KEY);
+    if (saved) input.value = saved;
+
+    btn.addEventListener('click', function() {
+      var val = input.value.trim();
+      fb.classList.add('show');
+      if (!val) {
+        fb.textContent = 'Write a specific recovery block first — time, activity, and where your phone stays.';
+        fb.classList.remove('correct');
+        fb.classList.add('incorrect');
+        return;
+      }
+      localStorage.setItem(KEY, val);
+      fb.textContent = 'Saved. Add this block to tomorrow\'s time plan before your second deep-work block — recovery only works if it\'s scheduled, not improvised.';
+      fb.classList.remove('incorrect');
+      fb.classList.add('correct');
+    });
+  })();
+
+  (function() {
+    var items = document.querySelectorAll('#flow-diagnostic .pick-item');
+    var fb = document.getElementById('flow-feedback');
+    var messages = {
+      bored: 'Likely boredom (task too easy). Try: raise the difficulty — set a tighter deadline, add a constraint, or tackle the hardest sub-problem first instead of warming up with admin.',
+      anxious: 'Likely anxiety (task too hard). Try: shrink the next step until it\'s embarrassingly small — "open the file and write one sentence," not "finish the chapter." Starting is the skill; size is the dial.',
+      flow: 'You were in flow — challenge and skill were matched. Note what you were doing and how hard it felt; that\'s your calibration target for the next session on this task.'
+    };
+
+    items.forEach(function(item) {
+      item.addEventListener('click', function() {
+        items.forEach(function(i) { i.classList.remove('selected'); });
+        item.classList.add('selected');
+        var state = item.getAttribute('data-state');
+        fb.textContent = messages[state];
+        fb.classList.add('show', 'correct');
+        fb.style.display = 'block';
+      });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — TypeScript</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Concepts in <a href="typescript-notes.html">TypeScript Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#basics">Basics</a> · <a href="#types">Types</a> ·
+  <a href="#generics">Generics</a> · <a href="#narrowing">Narrowing</a> ·
+  <a href="#utilities">Utilities</a> · <a href="#advanced">Advanced</a> ·
+  <a href="#react">React/Node</a>
+</nav>
+
+<h2 id="basics">Basics</h2>
+
+<div class="qa">
+  <p class="qa-q">What is TypeScript and why use it?</p>
+  <p class="qa-a">A typed superset of JavaScript that compiles to JS. Catches errors at compile time, improves IDE autocomplete/refactoring, documents APIs via types, and scales better in large codebases. Types are erased at runtime — no performance cost.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between TypeScript and JavaScript?</p>
+  <p class="qa-a">TypeScript adds static type checking, interfaces, generics, enums, and compile-time analysis. JavaScript runs directly; TypeScript must be compiled (tsc, esbuild, swc) or transpiled on the fly (ts-node). All valid JS is valid TS (with strict settings, implicit any may error).</p>
+</div>
+
+<h2 id="types">Types</h2>
+
+<div class="qa">
+  <p class="qa-q"><code>any</code> vs <code>unknown</code> vs <code>never</code>?</p>
+  <p class="qa-a"><code>any</code> disables type checking — escape hatch, avoid. <code>unknown</code> is type-safe top type — must narrow before use. <code>never</code> represents values that never occur — functions that always throw, exhaustive switch default.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">interface vs type?</p>
+  <p class="qa-a">Both define object shapes. Interfaces support declaration merging and <code>extends</code>. Types support unions, intersections, mapped/conditional types. Use interface for public object contracts; type for unions and complex transformations.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is type inference?</p>
+  <p class="qa-a">TypeScript deduces types without explicit annotations — variable initialization, return types, generic parameters. Best practice: annotate public APIs and function parameters; let inference handle locals when obvious.</p>
+</div>
+
+<h2 id="generics">Generics</h2>
+
+<div class="qa">
+  <p class="qa-q">What are generics and why use them?</p>
+  <p class="qa-a">Type parameters that make functions/classes work with multiple types while preserving type relationships. <code>function identity&lt;T&gt;(x: T): T</code> — input and output stay same type. Avoid duplication and unsafe casts.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is <code>extends</code> in generics?</p>
+  <p class="qa-a">A constraint — <code>&lt;T extends string&gt;</code> means T must be assignable to string. <code>&lt;K extends keyof T&gt;</code> ensures K is a valid key of T. Enables safe property access on generic objects.</p>
+</div>
+
+<h2 id="narrowing">Narrowing</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a discriminated union?</p>
+  <p class="qa-a">Union of object types sharing a literal discriminant field (e.g. <code>kind</code> or <code>type</code>). Switch/if on discriminant narrows to specific member — TypeScript knows which fields exist. Pattern for API results, Redux actions, state machines.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a type guard?</p>
+  <p class="qa-a">Function returning <code>x is Type</code> predicate — tells compiler to narrow type in true branch. Built-in: <code>typeof</code>, <code>instanceof</code>, <code>in</code>. Custom guards for runtime validation (often paired with Zod).</p>
+</div>
+
+<h2 id="utilities">Utility Types</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain Partial, Pick, and Omit.</p>
+  <p class="qa-a"><code>Partial&lt;T&gt;</code> — all properties optional (update DTOs). <code>Pick&lt;T, K&gt;</code> — select subset of keys. <code>Omit&lt;T, K&gt;</code> — exclude keys. All derive from existing types — single source of truth.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is <code>ReturnType&lt;typeof fn&gt;</code>?</p>
+  <p class="qa-a">Extracts the return type of a function type. Useful when wrapping functions or building on existing APIs without duplicating type definitions.</p>
+</div>
+
+<h2 id="advanced">Advanced</h2>
+
+<div class="qa">
+  <p class="qa-q">What does <code>satisfies</code> do?</p>
+  <p class="qa-a">Validates a value matches a type while preserving the narrower inferred type (literal types, specific keys). Unlike <code>as Type</code> which widens/loses inference. TS 4.9+ — great for config objects and route maps.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is <code>as const</code>?</p>
+  <p class="qa-a">Assertion making value deeply readonly with literal types — <code>"hello"</code> not <code>string</code>. Used for tuple types, enum-like objects, and discriminant maps.</p>
+</div>
+
+<h2 id="react">React &amp; Node</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you type React component props?</p>
+  <p class="qa-a">Interface or type for props object; destructure in parameters. Use <code>React.ReactNode</code> for children, <code>React.ChangeEvent&lt;HTMLInputElement&gt;</code> for events. Generic components: <code>&lt;T&gt;</code> on function. <code>ComponentProps&lt;typeof Button&gt;</code> to extract props from existing component.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does Zod integrate with TypeScript?</p>
+  <p class="qa-a">Define schema once, infer type with <code>z.infer&lt;typeof Schema&gt;</code>. Runtime validation at API boundary + compile-time types from same source — no drift between validation and types.</p>
+</div>
+
+<p class="footer-note"><a href="typescript-notes.html">TypeScript Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

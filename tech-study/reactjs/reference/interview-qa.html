@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — React.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="reactjs-notes.html">React.js Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#basics">Basics</a> ·
+  <a href="#jsx">JSX</a> ·
+  <a href="#state">State</a> ·
+  <a href="#hooks">Hooks</a> ·
+  <a href="#data">Data</a> ·
+  <a href="#rendering">Rendering</a> ·
+  <a href="#performance">Performance</a> ·
+  <a href="#ssr">SSR/RSC</a> ·
+  <a href="#patterns">Patterns</a> ·
+  <a href="#advanced">Advanced</a> ·
+  <a href="#architecture">Architecture</a>
+</nav>
+
+<h2 id="basics">Basics</h2>
+
+<div class="qa">
+  <p class="qa-q">What is React?</p>
+  <p class="qa-a">A JavaScript library for building user interfaces using components. It's declarative — you describe UI as a function of state — and uses a Virtual DOM for efficient updates. It's a library, not a full framework (routing, data fetching are separate choices).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the Virtual DOM?</p>
+  <p class="qa-a">A lightweight JavaScript representation of the UI tree. On state change, React builds a new Virtual DOM, diffs it against the previous (reconciliation), and applies minimal changes to the real DOM. Batching and diffing reduce expensive DOM operations.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is one-way data flow?</p>
+  <p class="qa-a">Data flows down from parent to child via props. Children notify parents of changes via callbacks — never mutate parent state directly from child. Keeps data flow predictable and easier to debug.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Function components vs class components?</p>
+  <p class="qa-a">Function components with hooks are the modern standard — simpler, less boilerplate. Class components use <code>this.state</code>, lifecycle methods, and still needed for Error Boundaries. New code should use functions + hooks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is reconciliation?</p>
+  <p class="qa-a">React's process of comparing the new element tree with the previous one and determining the minimum DOM updates needed. Uses heuristics: different element types replace the subtree; keys identify stable list items across renders.</p>
+</div>
+
+<h2 id="jsx">JSX</h2>
+
+<div class="qa">
+  <p class="qa-q">What does JSX compile to?</p>
+  <p class="qa-a"><code>React.createElement(component, props, ...children)</code>. Babel (or similar) transforms JSX at build time. React 17+ can use automatic JSX runtime without importing React in every file.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why use className instead of class?</p>
+  <p class="qa-a"><code>class</code> is a reserved keyword in JavaScript. JSX uses <code>className</code> to set the HTML class attribute. Same for <code>htmlFor</code> instead of <code>for</code> on labels.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can you use if statements inside JSX?</p>
+  <p class="qa-a">Not directly — JSX expressions must be a single expression. Use ternary (<code>cond ? a : b</code>), logical AND (<code>cond && &lt;Comp /&gt;</code>), or compute the value in a variable/function before the return.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why do lists need keys?</p>
+  <p class="qa-a">Keys help React identify which items changed, were added, or removed. Stable unique keys (usually IDs) preserve component state correctly. Using array index as key causes bugs when list reorders or inserts — state can attach to wrong item.</p>
+</div>
+
+<h2 id="state">State &amp; Props</h2>
+
+<div class="qa">
+  <p class="qa-q">Difference between props and state?</p>
+  <p class="qa-a">Props are read-only inputs from parent — component cannot change them. State is internal, mutable via setter (<code>setState</code> or <code>useState</code>), and triggers re-render when updated. Both cause re-render when they change (props when parent re-renders).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is lifting state up?</p>
+  <p class="qa-a">When two sibling components need the same data, move state to their closest common ancestor. Parent owns state, passes data down as props and callbacks to update. Single source of truth.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why shouldn't you mutate state directly?</p>
+  <p class="qa-a">React compares state by reference for re-render decisions. Mutating objects/arrays in place doesn't change reference — React may skip re-render. Always create new objects/arrays: <code>setItems([...items, newItem])</code> or functional updates.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Controlled vs uncontrolled components?</p>
+  <p class="qa-a">Controlled: React state drives input value — single source of truth, easy validation. Uncontrolled: DOM holds value via ref — less code for simple forms. File inputs are typically uncontrolled.</p>
+</div>
+
+<h2 id="hooks">Hooks</h2>
+
+<div class="qa">
+  <p class="qa-q">What are the Rules of Hooks?</p>
+  <p class="qa-a">Only call hooks at the top level — not inside loops, conditions, or nested functions. Only call from React function components or custom hooks. Ensures hooks run in same order every render.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does useState return?</p>
+  <p class="qa-a">A tuple: <code>[currentValue, setterFunction]</code>. Setter can take new value or updater function <code>(prev) =&gt; newVal</code>. Updater form is safe when next state depends on previous — e.g. counters, toggles.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain useEffect and the dependency array.</p>
+  <p class="qa-a">Runs side effects after render. Empty array <code>[]</code> = mount only. <code>[dep]</code> = re-run when dep changes. No array = every render (usually wrong). Return a cleanup function for subscriptions, timers, listeners — runs before next effect and on unmount.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">useRef vs useState?</p>
+  <p class="qa-a"><code>useRef</code> holds a mutable value that persists across renders without triggering re-render — DOM refs, timers IDs, previous values. <code>useState</code> triggers re-render when updated — for UI-visible data.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When to use useReducer instead of useState?</p>
+  <p class="qa-a">Complex state logic with multiple sub-values, next state depending on previous, or when actions are well-defined (ADD, REMOVE, RESET). Similar to Redux pattern locally. useState for simple independent values.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a custom hook?</p>
+  <p class="qa-a">A function starting with <code>use</code> that composes other hooks — extracts reusable stateful logic. Example: <code>useFetch</code>, <code>useLocalStorage</code>. Shares logic, not state — each call gets its own state.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">useEffect vs useLayoutEffect?</p>
+  <p class="qa-a"><code>useEffect</code> runs asynchronously after paint — doesn't block browser. <code>useLayoutEffect</code> runs synchronously after DOM updates, before paint — use for measuring DOM or preventing visual flicker. Default to useEffect.</p>
+</div>
+
+<!-- ===== DATA ===== -->
+<h2 id="data">React Query, Redux &amp; API</h2>
+
+<div class="qa">
+  <p class="qa-q">When to use React Query vs Redux?</p>
+  <p class="qa-a">React Query: server/async state — caching, refetching, mutations, pagination. Redux Toolkit: client/global UI state — cart, wizard steps, feature flags. Often used together, not as replacements.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a queryKey in React Query?</p>
+  <p class="qa-a">Unique cache identifier — array like <code>["users", id]</code>. Used for caching, deduplication, and invalidation. Changing key = separate cache entry.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain Redux Toolkit's createSlice.</p>
+  <p class="qa-a">Generates actions and reducer from a slice definition. Uses Immer internally — you write "mutating" logic that's converted to immutable updates. Includes action creators automatically.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you cancel a fetch in useEffect?</p>
+  <p class="qa-a">Use <code>AbortController</code> — pass <code>signal</code> to fetch, call <code>controller.abort()</code> in cleanup. Ignore <code>AbortError</code> in catch. Prevents setState on unmounted components.</p>
+</div>
+
+<h2 id="rendering">Rendering</h2>
+
+<div class="qa">
+  <p class="qa-q">What triggers a re-render in React?</p>
+  <p class="qa-a">State update in the component, parent re-render (child re-renders by default), context value change for consumers, and force update (rare). Props change alone doesn't trigger if parent doesn't re-render.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is React.memo?</p>
+  <p class="qa-a">Higher-order component that memoizes a function component — skips re-render if props are shallow-equal to previous. Use when parent re-renders often but child props haven't changed. Pair with useCallback for function props.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between useMemo and useCallback?</p>
+  <p class="qa-a"><code>useMemo</code> caches a computed value — returns memoized result. <code>useCallback</code> caches a function reference — returns same function if deps unchanged. useCallback is useMemo for functions: <code>useCallback(fn, deps) ≈ useMemo(() =&gt; fn, deps)</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is code splitting with React.lazy?</p>
+  <p class="qa-a"><code>const Page = lazy(() =&gt; import('./Page'))</code> — loads component JS on demand. Wrap in <code>&lt;Suspense fallback={...}&gt;</code> while loading. Reduces initial bundle size.</p>
+</div>
+
+<h2 id="lifecycle">Effects &amp; Lifecycle</h2>
+
+<div class="qa">
+  <p class="qa-q">How do hooks map to class lifecycle methods?</p>
+  <p class="qa-a"><code>useEffect(fn, [])</code> ≈ componentDidMount. <code>useEffect</code> with deps ≈ componentDidUpdate for those deps. Cleanup ≈ componentWillUnmount. No exact 1:1 — effects combine mount/update/unmount per dependency set.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is Strict Mode and why double-invoke effects?</p>
+  <p class="qa-a">Dev-only wrapper that intentionally double-mounts components and double-runs effects to expose side effects that aren't cleaned up properly. Helps find bugs — production behavior is single run.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are Error Boundaries?</p>
+  <p class="qa-a">Class components that catch JS errors in child tree during render — show fallback UI instead of crashing whole app. Use <code>getDerivedStateFromError</code> and <code>componentDidCatch</code>. No hook equivalent yet — still need a class wrapper.</p>
+</div>
+
+<h2 id="performance">Performance</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you optimize a slow React list?</p>
+  <p class="qa-a">Stable keys, virtualization (react-window) for long lists, memoize row components with React.memo, avoid inline object/function props, paginate or infinite scroll instead of rendering thousands of DOM nodes.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is React 18 automatic batching?</p>
+  <p class="qa-a">Multiple setState calls in event handlers, promises, timeouts, and native handlers batch into one re-render. Previously only batched in React event handlers. Improves performance — fewer renders.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">useTransition vs useDeferredValue?</p>
+  <p class="qa-a"><code>useTransition</code> wraps state updates you initiate — marks them low priority. <code>useDeferredValue</code> defers a value you're receiving — keeps UI responsive while expensive render catches up. Both for non-urgent updates.</p>
+</div>
+
+<!-- ===== SSR ===== -->
+<h2 id="ssr">SSR, Hydration &amp; RSC</h2>
+
+<div class="qa">
+  <p class="qa-q">What are React Server Components?</p>
+  <p class="qa-a">Components that run only on the server — can access databases directly, zero JS sent to client for that component. No useState/useEffect. Client Components (<code>"use client"</code>) handle interactivity. Enables smaller bundles and streaming.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What causes hydration mismatch errors?</p>
+  <p class="qa-a">Server HTML differs from client's first render — e.g. <code>Date.now()</code>, random IDs, browser-only APIs in initial render, invalid HTML nesting. Fix: render same on server/client, defer browser-only code to useEffect.</p>
+</div>
+
+<h2 id="patterns">Patterns &amp; Architecture</h2>
+
+<div class="qa">
+  <p class="qa-q">When to use Context vs Redux?</p>
+  <p class="qa-a">Context: infrequent updates — theme, locale, auth user. Redux/Zustand: complex global state, frequent updates, middleware, devtools, time-travel. Context re-renders all consumers on change — can hurt performance without splitting contexts.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is prop drilling and how to avoid it?</p>
+  <p class="qa-a">Passing props through many intermediate layers that don't use them. Fix: Context, component composition (children), state management library, or colocate state closer to where it's needed.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Presentational vs container components?</p>
+  <p class="qa-a">Presentational: how things look — receive props, no data fetching. Container: how things work — fetch data, manage state, pass to presentational. Pattern less rigid now — hooks often replace containers.</p>
+</div>
+
+<h2 id="advanced">Advanced</h2>
+
+<div class="qa">
+  <p class="qa-q">What is React Fiber?</p>
+  <p class="qa-a">React's reconciliation engine rewrite. Enables incremental rendering — work can be split, paused, resumed, and prioritized. Powers concurrent features, Suspense, and smoother UX for heavy updates.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between React and ReactDOM?</p>
+  <p class="qa-a"><code>react</code> — core (components, hooks, createElement). <code>react-dom</code> — renderer for web browsers (<code>createRoot</code>, <code>render</code>). Other renderers exist: react-native, react-three-fiber.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does React handle synthetic events?</p>
+  <p class="qa-a">React wraps native browser events in SyntheticEvent for cross-browser consistency. React 17+ attaches listeners to root container, not document — better for micro-frontends. Pooling removed in React 17.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Server-side rendering (SSR) vs client-side rendering (CSR)?</p>
+  <p class="qa-a">CSR: blank HTML shell, JS loads and renders in browser — slower first paint. SSR: server sends fully rendered HTML — faster first paint, needs hydration. Next.js supports SSR, SSG, and hybrid.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is hydration?</p>
+  <p class="qa-a">Attaching React event listeners and state to server-rendered HTML on the client. React expects client render to match server HTML — mismatch causes hydration errors. useEffect for browser-only code avoids mismatches.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Render phase vs commit phase?</p>
+  <p class="qa-a">Render: call components, build fiber tree, diff — can be interrupted in concurrent mode. Commit: apply DOM mutations, run useLayoutEffect, schedule useEffect — must complete atomically, not interruptible.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you optimize Context performance?</p>
+  <p class="qa-a">Split into smaller contexts (theme vs auth). Memoize provider value with useMemo. Move state down — don't put frequently changing values in wide contexts. Consider Zustand/selectors for granular subscriptions.</p>
+</div>
+
+<!-- ===== ARCHITECTURE ===== -->
+<h2 id="architecture">Architecture &amp; Production</h2>
+
+<div class="qa">
+  <p class="qa-q">What is Module Federation?</p>
+  <p class="qa-a">Webpack 5 feature — apps share modules at runtime without rebuilding. Host app loads remoteEntry.js from another deploy. Enables micro frontends with shared React/component libraries.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are Core Web Vitals?</p>
+  <p class="qa-a">LCP (loading), INP (interactivity), CLS (visual stability). Google ranking signals. Target: LCP &lt;2.5s, INP &lt;200ms, CLS &lt;0.1. Measure with Lighthouse, RUM tools.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you test React components?</p>
+  <p class="qa-a">React Testing Library — render, query by role/label (user-centric), fire events with userEvent, assert DOM. Mock API with MSW. E2E with Playwright/Cypress. Storybook for isolated development.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">React security best practices?</p>
+  <p class="qa-a">JSX auto-escapes strings. Sanitize dangerouslySetInnerHTML. Avoid localStorage for tokens (XSS). CSP headers. Validate server-side. Keep dependencies updated. httpOnly cookies for refresh tokens.</p>
+</div>
+
+<p class="footer-note"><a href="reactjs-notes.html">React.js Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

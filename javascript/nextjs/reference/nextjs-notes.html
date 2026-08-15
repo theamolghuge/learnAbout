@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Next.js Notes — Basic to Advanced</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Next.js Notes</h1>
+<p class="subtitle">Senior Full Stack Next.js — App Router, RSC, caching, Server Actions, auth, deployment. Assumes <a href="../../reactjs/reference/reactjs-notes.html">React</a>. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#intro">1. What is Next.js</a> · <a href="#routing">2. App Router</a> ·
+  <a href="#rsc">3. Server &amp; Client Components</a> · <a href="#data">4. Data Fetching</a> ·
+  <a href="#caching">5. Caching ⭐</a> · <a href="#rendering">6. SSR/SSG/ISR</a> ·
+  <a href="#actions">7. Server Actions</a> · <a href="#api">8. Route Handlers</a> ·
+  <a href="#middleware">9. Middleware</a> · <a href="#auth">10. Authentication</a> ·
+  <a href="#performance">11. Performance</a> · <a href="#deployment">12. Deployment</a> ·
+  <a href="#advanced">13. Advanced</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Senior Next.js</h2>
+
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>App Router file conventions (page, layout, loading, error)</td><td><a href="#routing">§2</a></td></tr>
+  <tr><td>Server vs Client Components, "use client"</td><td><a href="#rsc">§3</a></td></tr>
+  <tr><td>Async Server Components, fetch in RSC</td><td><a href="#data">§4</a></td></tr>
+  <tr><td>Caching — fetch, revalidate, dynamic/static</td><td><a href="#caching">§5</a></td></tr>
+  <tr><td>SSR vs SSG vs ISR</td><td><a href="#rendering">§6</a></td></tr>
+  <tr><td>Server Actions</td><td><a href="#actions">§7</a></td></tr>
+  <tr><td>Route Handlers (API routes)</td><td><a href="#api">§8</a></td></tr>
+  <tr><td>Middleware — auth, redirects</td><td><a href="#middleware">§9</a></td></tr>
+  <tr><td>Auth patterns (NextAuth / Auth.js)</td><td><a href="#auth">§10</a></td></tr>
+  <tr><td>next/image, next/font, Metadata API</td><td><a href="#performance">§11</a></td></tr>
+</table>
+
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><td>Streaming, Suspense boundaries, loading.tsx</td><td><a href="#routing">§2</a>, <a href="#data">§4</a></td></tr>
+  <tr><td>Parallel routes, intercepting routes</td><td><a href="#advanced">§13</a></td></tr>
+  <tr><td>Edge vs Node runtime</td><td><a href="#middleware">§9</a>, <a href="#advanced">§13</a></td></tr>
+  <tr><td>Pages Router vs App Router migration</td><td><a href="#advanced">§13</a></td></tr>
+  <tr><td>React Query / TanStack in Client Components</td><td><a href="#data">§4</a></td></tr>
+  <tr><td>Standalone Docker deploy, env vars</td><td><a href="#deployment">§12</a></td></tr>
+</table>
+
+<h3>Tier 3 — Staff</h3>
+<table class="ref">
+  <tr><td>Cache invalidation strategies at scale</td><td><a href="#caching">§5</a></td></tr>
+  <tr><td>Multi-tenant, i18n routing</td><td><a href="#advanced">§13</a></td></tr>
+  <tr><td>Monorepo + Turborepo with Next.js</td><td><a href="#deployment">§12</a></td></tr>
+</table>
+
+<h3>Learning order</h3>
+<pre class="code"><code>React fundamentals → App Router → RSC vs Client
+  → Data fetching → Caching ⭐ → Server Actions
+  → Middleware + Auth → Route Handlers → SSR/SSG/ISR
+  → Performance → Deployment</code></pre>
+
+<h2 id="intro">1. What is Next.js?</h2>
+<p>Next.js is a React framework for production — routing, rendering (SSR/SSG/ISR), API routes, optimizations, and deployment. Built on React Server Components in the App Router era.</p>
+
+<table class="ref">
+  <tr><th>vs CRA/Vite SPA</th><th>Next.js adds</th></tr>
+  <tr><td>Client-only render</td><td>SSR, SSG, ISR, RSC on server</td></tr>
+  <tr><td>Manual routing</td><td>File-system App Router</td></tr>
+  <tr><td>Manual API server</td><td>Route Handlers, Server Actions</td></tr>
+  <tr><td>Manual SEO</td><td>Metadata API, streaming HTML</td></tr>
+</table>
+
+<h2 id="routing">2. App Router</h2>
+
+<pre class="code"><code>app/
+├── layout.tsx          # root layout (required)
+├── page.tsx            # /
+├── loading.tsx         # Suspense fallback
+├── error.tsx           # error boundary ('use client')
+├── not-found.tsx       # 404
+├── users/
+│   ├── layout.tsx      # nested layout
+│   ├── page.tsx        # /users
+│   └── [id]/
+│       └── page.tsx    # /users/:id
+└── api/
+    └── health/
+        └── route.ts    # GET /api/health</code></pre>
+
+<table class="ref">
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr><td><code>layout.tsx</code></td><td>Shared UI, persists on navigation</td></tr>
+  <tr><td><code>page.tsx</code></td><td>Unique route UI</td></tr>
+  <tr><td><code>loading.tsx</code></td><td>Instant loading state (Suspense)</td></tr>
+  <tr><td><code>error.tsx</code></td><td>Segment error boundary</td></tr>
+  <tr><td><code>template.tsx</code></td><td>Re-mounts on navigation (unlike layout)</td></tr>
+  <tr><td><code>route.ts</code></td><td>API endpoint (Route Handler)</td></tr>
+</table>
+
+<h2 id="rsc">3. Server &amp; Client Components</h2>
+
+<table class="ref">
+  <tr><th></th><th>Server Component (default)</th><th>Client Component</th></tr>
+  <tr><td>Directive</td><td>None</td><td><code>"use client"</code></td></tr>
+  <tr><td>Runs on</td><td>Server only</td><td>Server + client (hydrates)</td></tr>
+  <tr><td>Hooks</td><td>No useState/useEffect</td><td>All hooks OK</td></tr>
+  <tr><td>Browser APIs</td><td>No</td><td>Yes</td></tr>
+  <tr><td>DB/API direct</td><td>Yes</td><td>Via fetch/actions</td></tr>
+  <tr><td>JS to client</td><td>Zero for RSC payload</td><td>Full component JS</td></tr>
+</table>
+
+<pre class="code"><code>// Server Component (default) — app/users/page.tsx
+async function UsersPage() {
+  const users = await db.user.findMany();  // direct DB OK
+  return &lt;UserList users={users} /&gt;;
+}
+
+// Client Component — components/Counter.tsx
+"use client";
+export function Counter() {
+  const [n, setN] = useState(0);
+  return &lt;button onClick={() =&gt; setN(n + 1)}&gt;{n}&lt;/button&gt;;
+}</code></pre>
+
+<p><strong>Rule:</strong> push Client Components down the tree — keep leaves interactive, keep pages/layouts as Server Components when possible.</p>
+
+<h2 id="data">4. Data Fetching</h2>
+
+<pre class="code"><code>// Async Server Component
+async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await fetch(`https://api.example.com/products/${params.id}`, {
+    next: { revalidate: 3600 },  // ISR — revalidate every hour
+  }).then(r =&gt; r.json());
+
+  return &lt;ProductDetails product={product} /&gt;;
+}
+
+// Client-side (interactive UI, polling)
+"use client";
+function Dashboard() {
+  const { data } = useQuery({ queryKey: ["stats"], queryFn: fetchStats });
+  return &lt;Stats data={data} /&gt;;
+}</code></pre>
+
+<p><strong>When to fetch where:</strong> Server Component for initial data, SEO, secrets. Client + React Query for user-driven refetch, optimistic updates, realtime.</p>
+
+<h2 id="caching">5. Caching ⭐</h2>
+
+<p>Next.js 14+ caching layers — interview favorite:</p>
+
+<table class="ref">
+  <tr><th>Cache</th><th>What</th><th>Opt out</th></tr>
+  <tr><td>Request memoization</td><td>Same fetch in one render — deduped</td><td>Automatic</td></tr>
+  <tr><td>Data cache</td><td>fetch() results persisted</td><td><code>cache: 'no-store'</code></td></tr>
+  <tr><td>Full Route cache</td><td>HTML/RSC payload at build/revalidate</td><td><code>dynamic = 'force-dynamic'</code></td></tr>
+  <tr><td>Router cache</td><td>Client-side prefetched segments</td><td><code>router.refresh()</code></td></tr>
+</table>
+
+<pre class="code"><code>// Static — cached at build
+fetch(url, { cache: 'force-cache' });  // default
+
+// Dynamic — every request
+fetch(url, { cache: 'no-store' });
+
+// ISR — revalidate after N seconds
+fetch(url, { next: { revalidate: 60 } });
+
+// Route segment config
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600;</code></pre>
+
+<h2 id="rendering">6. SSR, SSG &amp; ISR</h2>
+
+<table class="ref">
+  <tr><th>Mode</th><th>When rendered</th><th>Use</th></tr>
+  <tr><td>SSG (static)</td><td>Build time</td><td>Marketing, docs, rarely changing</td></tr>
+  <tr><td>ISR</td><td>Build + revalidate on interval</td><td>Product catalog, blog with updates</td></tr>
+  <tr><td>SSR (dynamic)</td><td>Each request</td><td>Personalized, auth-gated pages</td></tr>
+  <tr><td>CSR</td><td>Client only</td><td>Dashboard widgets in Client Components</td></tr>
+</table>
+
+<h3>Hydration</h3>
+<p>Server sends HTML + RSC payload. Client hydrates interactive Client Components. Mismatch → hydration error. Fix: same server/client output, browser-only code in useEffect, suppressHydrationWarning sparingly for timestamps.</p>
+
+<h2 id="actions">7. Server Actions</h2>
+
+<pre class="code"><code>// app/actions.ts
+"use server";
+
+export async function createPost(formData: FormData) {
+  const title = formData.get("title") as string;
+  await db.post.create({ data: { title } });
+  revalidatePath("/posts");
+}
+
+// app/posts/new/page.tsx
+import { createPost } from "../actions";
+
+export default function NewPost() {
+  return (
+    &lt;form action={createPost}&gt;
+      &lt;input name="title" /&gt;
+      &lt;button type="submit"&gt;Create&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+<ul>
+  <li>Progressive enhancement — works without JS</li>
+  <li>Call from Client Components too</li>
+  <li>Validate with Zod inside action</li>
+  <li>Use <code>revalidatePath</code> / <code>revalidateTag</code> after mutations</li>
+</ul>
+
+<h2 id="api">8. Route Handlers</h2>
+
+<pre class="code"><code>// app/api/users/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const users = await db.user.findMany();
+  return NextResponse.json(users);
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const user = await db.user.create({ data: body });
+  return NextResponse.json(user, { status: 201 });
+}</code></pre>
+
+<p>Route Handlers replace Pages Router <code>pages/api/*</code>. Use for webhooks, REST APIs, when Server Actions aren't enough.</p>
+
+<h2 id="middleware">9. Middleware</h2>
+
+<pre class="code"><code>// middleware.ts — runs on Edge
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get("session")?.value;
+  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/dashboard/:path*", "/api/:path*"],
+};</code></pre>
+
+<p>Edge runtime — fast, limited Node APIs. Auth checks, redirects, geo, A/B tests, rewrite URLs.</p>
+
+<h2 id="auth">10. Authentication</h2>
+
+<h3>Auth.js (NextAuth v5)</h3>
+<pre class="code"><code>// auth.ts
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers: [Google, Credentials],
+  callbacks: {
+    session({ session, token }) { /* attach user id */ return session; },
+  },
+});
+
+// middleware.ts — protect routes with auth()</code></pre>
+
+<table class="ref">
+  <tr><th>Pattern</th><th>Detail</th></tr>
+  <tr><td>Session cookie</td><td>httpOnly — SSR-friendly, middleware can read</td></tr>
+  <tr><td>JWT in header</td><td>SPA-style API clients — less SSR integration</td></tr>
+  <tr><td>Middleware guard</td><td>Redirect before page renders</td></tr>
+  <tr><td>Server Component</td><td><code>const session = await auth()</code> — no client flash</td></tr>
+</table>
+
+<h2 id="performance">11. Performance</h2>
+
+<pre class="code"><code>import Image from "next/image";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
+
+// Image — lazy load, responsive, WebP
+&lt;Image src="/hero.jpg" alt="Hero" width={1200} height={600} priority /&gt;
+
+// Metadata — SEO
+export const metadata = {
+  title: "My App",
+  description: "...",
+  openGraph: { title: "...", images: ["/og.png"] },
+};</code></pre>
+
+<ul>
+  <li>Code split automatically per route</li>
+  <li><code>dynamic(() =&gt; import())</code> for heavy Client Components</li>
+  <li>Streaming with Suspense — send HTML as ready</li>
+  <li>Partial Prerendering (PPR) — static shell + dynamic holes</li>
+</ul>
+
+<h2 id="deployment">12. Deployment</h2>
+
+<pre class="code"><code>// next.config.js
+module.exports = {
+  output: "standalone",  // Docker-friendly minimal server
+};
+
+// Dockerfile
+// COPY .next/standalone . && node server.js</code></pre>
+
+<ul>
+  <li><strong>Vercel</strong> — zero-config, edge, previews per PR</li>
+  <li><strong>Docker + K8s</strong> — standalone output, health check on <code>/api/health</code></li>
+  <li><strong>Env vars</strong> — <code>.env.local</code> dev; server-only secrets without <code>NEXT_PUBLIC_</code></li>
+  <li><code>NEXT_PUBLIC_*</code> — exposed to browser — never secrets</li>
+</ul>
+
+<h2 id="advanced">13. Advanced</h2>
+
+<h3>Pages Router (legacy) — know for interviews</h3>
+<table class="ref">
+  <tr><th>Pages Router</th><th>App Router equivalent</th></tr>
+  <tr><td><code>getStaticProps</code></td><td>async Server Component + static fetch</td></tr>
+  <tr><td><code>getServerSideProps</code></td><td><code>cache: 'no-store'</code> or <code>dynamic = 'force-dynamic'</code></td></tr>
+  <tr><td><code>pages/api/*</code></td><td><code>app/api/*/route.ts</code></td></tr>
+  <tr><td><code>_app.tsx</code></td><td><code>app/layout.tsx</code></td></tr>
+</table>
+
+<h3>Parallel &amp; intercepting routes</h3>
+<pre class="code"><code>app/
+├── @modal/(.)photo/[id]/page.tsx   # intercept — show modal over feed
+├── layout.tsx                       # accepts @modal slot
+└── photo/[id]/page.tsx              # full page on direct visit</code></pre>
+
+<h3>revalidateTag for fine-grained cache</h3>
+<pre class="code"><code>fetch(url, { next: { tags: ["products"] } });
+// after mutation:
+revalidateTag("products");</code></pre>
+
+<p class="footer-note"><a href="quick-revision.html">Quick Revision</a> · <a href="interview-qa.html">Interview Q&amp;A</a> · <a href="../../reactjs/reference/reactjs-notes.html">React Notes</a></p>
+
+</body>
+</html>

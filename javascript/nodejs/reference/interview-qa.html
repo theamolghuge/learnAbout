@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Node.js Interview Q&amp;A</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">← Interview Prep</a></p>
+<h1>Node.js Interview Q&amp;A</h1>
+<p class="subtitle">Common senior-level questions with concise answers. Practice explaining aloud.</p>
+
+<nav class="toc">
+<strong>Sections</strong><br>
+<a href="#event-loop">Event Loop</a> ·
+<a href="#streams">Streams</a> ·
+<a href="#express">Express</a> ·
+<a href="#auth">Auth</a> ·
+<a href="#sql">SQL</a> ·
+<a href="#redis">Redis</a> ·
+<a href="#distributed">Distributed Systems</a> ·
+<a href="#mongodb">MongoDB</a> ·
+<a href="#grpc">gRPC</a> ·
+<a href="#kubernetes">Kubernetes</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="event-loop">Event Loop</h2>
+
+<div class="qa">
+<p class="qa-q">Q: Explain the Node.js event loop phases.</p>
+<p class="qa-a">The event loop has six phases executed in order: <strong>timers</strong> (setTimeout/setInterval), <strong>pending callbacks</strong> (deferred I/O), <strong>idle/prepare</strong> (internal), <strong>poll</strong> (fetch new I/O events, may block), <strong>check</strong> (setImmediate), and <strong>close callbacks</strong> (socket.on('close')). Between each phase, Node drains the microtask queue (Promise callbacks) and then the nextTick queue. The loop continues until no more work is scheduled.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is the difference between process.nextTick and setImmediate?</p>
+<p class="qa-a"><code>process.nextTick</code> runs before the event loop continues to the next phase — it's the highest priority async callback. <code>setImmediate</code> runs in the check phase, after the poll phase completes. In practice: nextTick can starve I/O if used recursively; setImmediate is safer for deferring work. Inside an I/O callback, setImmediate runs before setTimeout(0).</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What happens when you block the event loop?</p>
+<p class="qa-a">All I/O callbacks, timers, and incoming HTTP requests stall. Latency spikes, health checks fail, and the process may appear hung. Detect with event-loop-lag monitoring or clinic.js. Fix by offloading CPU work to worker threads, using streams for large data, or moving heavy computation to a separate service.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is the output order of this code?</p>
+<pre class="code">console.log('A');
+setTimeout(() => console.log('B'), 0);
+setImmediate(() => console.log('C'));
+Promise.resolve().then(() => console.log('D'));
+process.nextTick(() => console.log('E'));</pre>
+<p class="qa-a">A, E, D, then either B or C (timers vs check phase order varies by context), then the other. At top level outside I/O, setTimeout(0) may run before or after setImmediate depending on Node version and system timing.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How does libuv's thread pool relate to the event loop?</p>
+<p class="qa-a">Some operations (file system, DNS lookup, certain crypto/compression) run on libuv's thread pool (default 4 threads, configurable via UV_THREADPOOL_SIZE). When the thread completes, the callback enters the event loop's poll phase. The JS thread itself never blocks on these — but if all pool threads are busy, new file operations queue up.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="streams">Streams</h2>
+
+<div class="qa">
+<p class="qa-q">Q: What are the four types of streams?</p>
+<p class="qa-a"><strong>Readable</strong> (source — fs.createReadStream), <strong>Writable</strong> (sink — fs.createWriteStream), <strong>Duplex</strong> (both — TCP socket), and <strong>Transform</strong> (modifies data — zlib.createGzip). All are EventEmitters. Object mode streams carry JS objects instead of Buffers.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is backpressure and how do you handle it?</p>
+<p class="qa-a">Backpressure occurs when a writable stream can't accept data as fast as the readable produces it. When <code>writable.write()</code> returns false, pause the readable. Resume on the writable's <code>drain</code> event. Use <code>stream.pipeline()</code> or <code>stream/promises.pipeline()</code> to handle this automatically with proper error propagation.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Why use streams instead of reading a file into a Buffer?</p>
+<p class="qa-a">Memory efficiency — a 1 GB file processed in 64 KB chunks uses constant memory. Streams also enable piping (file → gzip → HTTP response) without intermediate storage. For large uploads/downloads, streaming is mandatory to avoid OOM crashes.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you consume a readable stream in modern Node?</p>
+<p class="qa-a">Three ways: event-based (<code>on('data')</code>/<code>on('end')</code>), callback (<code>readable.pipe(writable)</code>), or async iteration: <code>for await (const chunk of readable) { ... }</code>. The async iterator approach is cleanest for transform logic in async functions.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="express">Express</h2>
+
+<div class="qa">
+<p class="qa-q">Q: How does Express middleware work?</p>
+<p class="qa-a">Middleware functions have signature <code>(req, res, next)</code>. Express executes them in registration order. Each can modify req/res, end the response, or call <code>next()</code> to pass control. Error middleware has 4 parameters <code>(err, req, res, next)</code> and must be registered last. If <code>next(err)</code> is called, Express skips to the next error handler.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you structure a production Express app?</p>
+<p class="qa-a">Separate concerns: routes, controllers, services, middleware. Order: helmet/cors → body parser → request logger → auth → routes → 404 handler → error handler. Use environment-based config. Don't put business logic in route handlers — delegate to service layer. Mount routers with <code>app.use('/api/v1/users', userRouter)</code>.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Express vs Fastify — when would you choose each?</p>
+<p class="qa-a">Fastify is ~2-3x faster, has built-in schema validation (JSON Schema), and async-first middleware. Choose Fastify for performance-critical APIs and when you want schema-driven development. Choose Express for largest ecosystem, team familiarity, and legacy codebases. Both are production-ready.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you handle async errors in Express route handlers?</p>
+<p class="qa-a">Wrap in try/catch and call <code>next(err)</code>, or use an async wrapper: <code>const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)</code>. Without this, rejected promises in async handlers become unhandled rejections — they won't reach error middleware automatically (though Express 5 fixes this).</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="auth">Auth</h2>
+
+<div class="qa">
+<p class="qa-q">Q: JWT vs session cookies — trade-offs?</p>
+<p class="qa-a"><strong>Sessions</strong>: server-side state (Redis), easy revocation, smaller cookies, requires session store. <strong>JWT</strong>: stateless, scales horizontally without shared store, but hard to revoke (need blocklist or short expiry + refresh tokens). JWT payload is readable (base64) — never store secrets in it. Use httpOnly secure cookies for refresh tokens; access tokens in memory or Authorization header.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How should you store passwords?</p>
+<p class="qa-a">Never plain text or reversible encryption. Use bcrypt (cost 10-12) or argon2. Each password gets a unique salt (bcrypt handles this). On login, compare with <code>bcrypt.compare()</code>. Never implement your own hashing. Add rate limiting on login endpoints to prevent brute force.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is refresh token rotation?</p>
+<p class="qa-a">When a client uses a refresh token to get a new access token, also issue a new refresh token and invalidate the old one. If an old refresh token is reused (possible theft), revoke the entire token family. Store refresh tokens hashed in the database. Detect reuse as a security signal.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you implement RBAC in Express?</p>
+<p class="qa-a">After authentication middleware attaches user to req, authorization middleware checks roles: <code>if (!req.user.roles.includes('admin')) return res.status(403).json(...)</code>. For resource-level permissions, check ownership: <code>if (order.userId !== req.user.id && !req.user.roles.includes('admin'))</code>. Consider CASL or accesscontrol libraries for complex rules.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sql">SQL</h2>
+
+<div class="qa">
+<p class="qa-q">Q: What is the N+1 query problem?</p>
+<p class="qa-a">Fetching a list of N items, then running 1 query per item for related data (N additional queries). Fix with JOINs, eager loading (<code>include</code> in Prisma), or DataLoader batching. Example: get 100 orders, then 100 separate queries for each order's user. Instead: one query with JOIN or <code>include: { user: true }</code>.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Explain transaction isolation levels.</p>
+<p class="qa-a"><strong>Read Uncommitted</strong> — dirty reads possible. <strong>Read Committed</strong> — only see committed data (PostgreSQL default). <strong>Repeatable Read</strong> — same query returns same rows within transaction. <strong>Serializable</strong> — full isolation, may cause serialization failures. Higher isolation = more consistency but more locking/retries. Use Read Committed for most apps; Serializable for financial operations.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: When should you use a database transaction?</p>
+<p class="qa-a">When multiple writes must succeed or fail together: transfer money (debit + credit), create order + decrement inventory, insert record + outbox event. Don't wrap read-only operations. Keep transactions short to avoid lock contention. In Prisma: <code>prisma.$transaction([...])</code> or interactive transactions with callback.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do indexes work and when can they hurt?</p>
+<p class="qa-a">B-tree indexes speed up WHERE, JOIN, ORDER BY on indexed columns. Composite index column order matters — leftmost prefix rule. Too many indexes slow writes (each INSERT/UPDATE must update indexes). Don't index low-cardinality columns alone (boolean). Use EXPLAIN ANALYZE to verify query plans. Partial indexes for filtered queries.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="redis">Redis</h2>
+
+<div class="qa">
+<p class="qa-q">Q: Explain the cache-aside pattern.</p>
+<p class="qa-a">Application checks cache first. On miss, read from database, write result to cache with TTL, return data. On cache hit, skip DB entirely. On write/update, invalidate (delete) the cache key or update it. Simple and effective. Watch for race conditions: two concurrent misses can both hit DB — use locking or accept occasional duplicate reads.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What happens when Redis goes down?</p>
+<p class="qa-a">With cache-aside: requests fall through to the database — slower but functional (cache is not source of truth). Implement circuit breaker to avoid hammering a failing Redis. For session store or rate limiter in Redis: users get logged out or rate limits fail open/closed depending on policy. Use Redis Sentinel or Cluster for HA in production.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Redis vs in-memory cache (Node Map)?</p>
+<p class="qa-a">Redis: shared across multiple Node processes/instances, persistence options, rich data structures, TTL built-in, pub/sub. In-memory Map: faster (no network), but per-process only, lost on restart, no sharing between cluster workers. Use Redis when running multiple instances; in-memory for single-process caching of computed values with short TTL.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you use Redis for rate limiting?</p>
+<p class="qa-a">Sliding window with sorted sets: add timestamp as score, remove entries older than window, count remaining. Or use INCR with EXPIRE for fixed window (simpler but boundary burst issue). Libraries like rate-limiter-flexible abstract this. Store in Redis so limits apply across all app instances. Return 429 with Retry-After header.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="distributed">Distributed Systems</h2>
+
+<div class="qa">
+<p class="qa-q">Q: What is the Saga pattern?</p>
+<p class="qa-a">A distributed transaction split into local transactions, each with a compensating action if a later step fails. Example: CreateOrder → ProcessPayment → ReserveInventory → Ship. If shipping fails, compensate: ReleaseInventory → RefundPayment → CancelOrder. Two styles: choreography (event-driven, decentralized) and orchestration (central coordinator). Prefer orchestration for complex flows with many steps.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Explain the Transactional Outbox pattern.</p>
+<p class="qa-a">Problem: you need to update DB and publish a message atomically — but they're different systems. Solution: write the event to an outbox table in the same DB transaction as the business write. A separate relay/poller reads unsent outbox rows and publishes to Kafka/RabbitMQ, then marks them sent. Guarantees at-least-once delivery without dual-write inconsistency.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is CQRS and when would you use it?</p>
+<p class="qa-a">Command Query Responsibility Segregation separates write model (commands, business rules) from read model (optimized queries, denormalized views). They sync via events. Use when read and write patterns differ greatly — e.g., complex writes but heavy analytical reads. Trade-off: eventual consistency between write and read sides. Don't use for simple CRUD apps.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do idempotency keys prevent duplicate processing?</p>
+<p class="qa-a">Client sends a unique key (UUID) with the request (header: Idempotency-Key). Server checks if key exists in store (Redis/DB). If found, return the cached response without reprocessing. If not, process the request, store result with the key, return response. Critical for payment APIs and webhook handlers where retries are common.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is a circuit breaker and why use it?</p>
+<p class="qa-a">Prevents cascading failures when a downstream service is unhealthy. States: Closed (normal), Open (fail fast, don't call service), Half-Open (send test request). After N failures → open. After timeout → half-open. If test succeeds → closed. Libraries: opossum for Node. Combined with retries (with exponential backoff and jitter) and timeouts on every outbound call.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: At-least-once vs exactly-once delivery?</p>
+<p class="qa-a"><strong>At-least-once</strong>: message delivered one or more times (consumer must be idempotent). Most common and practical. <strong>At-most-once</strong>: may lose messages but never duplicates. <strong>Exactly-once</strong>: hardest — requires transactional messaging or idempotent consumers + dedup. In practice, aim for at-least-once + idempotent handlers.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="mongodb">MongoDB</h2>
+
+<div class="qa">
+<p class="qa-q">Q: When would you choose MongoDB over PostgreSQL?</p>
+<p class="qa-a">When data is document-shaped (nested objects, arrays), schema changes frequently, you need horizontal sharding early, or write-heavy workloads with simple queries. Examples: content management, product catalogs, IoT telemetry, user activity feeds. Choose PostgreSQL when you need complex joins, strict ACID across entities, or ad-hoc analytical queries.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do MongoDB transactions compare to SQL?</p>
+<p class="qa-a">Multi-document ACID transactions available since MongoDB 4.0 (replica set required). Single-document writes were always atomic. Transactions have overhead — design documents to minimize cross-document transactions when possible. SQL databases have decades of mature transaction support with more isolation level options.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is the aggregation pipeline?</p>
+<p class="qa-a">MongoDB's data processing framework — stages like $match (filter), $group (aggregate), $lookup (join), $project (reshape), $sort, $limit. Similar to SQL GROUP BY + JOIN but pipeline-based. Example: $match status → $group by category → $sum revenue. Runs on the server, reducing data transfer to the app.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you model relationships in MongoDB?</p>
+<p class="qa-a">Three approaches: <strong>Embedding</strong> (one-to-few, data accessed together — address inside user doc). <strong>Referencing</strong> (one-to-many, many-to-many — store ObjectId, use $lookup or app-level join). <strong>Hybrid</strong> (embed frequently accessed fields, reference the rest). Denormalize for read performance; accept duplication trade-off.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="grpc">gRPC</h2>
+
+<div class="qa">
+<p class="qa-q">Q: When would you choose gRPC over REST?</p>
+<p class="qa-a">Internal microservice communication where performance matters, strong typing is needed, and clients are other services (not browsers). gRPC uses HTTP/2 + Protocol Buffers for smaller/faster payloads and supports bidirectional streaming. Choose REST for public APIs, browser clients, and when human-readable JSON and broad tooling (curl, Postman) are priorities.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What are the four gRPC call types?</p>
+<p class="qa-a"><strong>Unary</strong> — single request, single response (like REST). <strong>Server streaming</strong> — client sends one request, server streams responses. <strong>Client streaming</strong> — client streams requests, server sends one response. <strong>Bidirectional streaming</strong> — both sides stream independently. Streaming is a major advantage over REST for real-time data feeds.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How does gRPC handle schema evolution?</p>
+<p class="qa-a">Protocol Buffer definitions (.proto files) define services and messages. Fields have numbered tags — never reuse tag numbers. Add new optional fields without breaking old clients (unknown fields ignored). Use reserved keyword for removed fields. Code generation produces typed client/server stubs in multiple languages. Breaking changes require careful versioning.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Can browsers call gRPC directly?</p>
+<p class="qa-a">Not natively — browsers can't send HTTP/2 trailers needed for gRPC. Use <strong>gRPC-Web</strong> with a proxy (Envoy, grpc-web proxy) that translates between gRPC-Web and gRPC. Alternatively, expose REST/GraphQL gateway for browser clients and gRPC for service-to-service. This is a common reason REST remains the public API choice.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="kubernetes">Kubernetes</h2>
+
+<div class="qa">
+<p class="qa-q">Q: Explain Pods, Deployments, and Services.</p>
+<p class="qa-a"><strong>Pod</strong>: smallest deployable unit — one or more containers sharing IP/network. Usually one container per pod for Node apps. <strong>Deployment</strong>: manages pod replicas, rolling updates, rollbacks — you declare desired state (3 replicas). <strong>Service</strong>: stable network endpoint (ClusterIP for internal, LoadBalancer for external) that load-balances across pod replicas via label selectors.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do liveness and readiness probes work?</p>
+<p class="qa-a"><strong>Liveness probe</strong>: is the container alive? If it fails, K8s restarts the pod. Hit your /health endpoint. <strong>Readiness probe</strong>: is the container ready to receive traffic? If it fails, pod is removed from Service endpoints but not restarted. Use readiness during startup (DB connection not yet established) and liveness for deadlock detection. Set appropriate initialDelaySeconds.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: How do you manage config and secrets in K8s?</p>
+<p class="qa-a"><strong>ConfigMap</strong>: non-sensitive config (feature flags, API URLs) — mounted as env vars or files. <strong>Secret</strong>: sensitive data (DB passwords, API keys) — base64 encoded (not encrypted by default; use external secret managers like AWS Secrets Manager with CSI driver). Never bake secrets into Docker images. Inject at runtime via env vars from K8s secrets.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: What is a rolling update and how do you roll back?</p>
+<p class="qa-a">Deployment gradually replaces old pods with new ones (default: maxUnavailable 25%, maxSurge 25%). Zero-downtime if readiness probes pass. Rollback: <code>kubectl rollout undo deployment/node-api</code> reverts to previous ReplicaSet. Keep old ReplicaSets for history. Use CI/CD to automate deploy → smoke test → auto-rollback on failure.</p>
+</div>
+
+<div class="qa">
+<p class="qa-q">Q: Docker Compose vs Kubernetes — when to use each?</p>
+<p class="qa-a">Docker Compose: local development, simple staging, single-host deployments. Fast to set up, easy to understand. Kubernetes: production at scale — multi-node, auto-scaling, self-healing, rolling updates, service discovery, network policies. The complexity cost is justified when you need HA, horizontal scaling, and multi-service orchestration across machines.</p>
+</div>
+
+<p class="footer-note">Review <a href="nodejs-notes.html">Node.js Notes</a> for deeper context on each topic.</p>
+
+</body>
+</html>

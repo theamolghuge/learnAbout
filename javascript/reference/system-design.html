@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Design — Full Stack</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../index.html">Index</a></p>
+<h1>System Design — Full Stack</h1>
+<p class="subtitle">Whiteboard framework for senior Full Stack interviews — React + Node + Postgres + Redis + queues. Use with <a href="implement-from-memory.html">Implement from Memory</a>.</p>
+
+<nav class="toc">
+  <a href="#framework">Framework</a> ·
+  <a href="#components">Stack Map</a> ·
+  <a href="#patterns">Patterns</a> ·
+  <a href="#designs">Classic Designs</a> ·
+  <a href="#tradeoffs">Trade-offs</a>
+</nav>
+
+<h2 id="framework">Interview framework (45 min)</h2>
+<ol>
+  <li><strong>Clarify requirements</strong> — functional (features) + non-functional (scale, latency, consistency)</li>
+  <li><strong>Estimate scale</strong> — DAU, QPS, storage (back-of-envelope)</li>
+  <li><strong>High-level diagram</strong> — client → CDN → LB → API → services → DB/cache/queue</li>
+  <li><strong>Deep dive</strong> — data model, API design, bottlenecks, failure modes</li>
+  <li><strong>Trade-offs</strong> — why this over that; mention alternatives</li>
+</ol>
+
+<h3>Questions to ask</h3>
+<ul>
+  <li>Read-heavy or write-heavy?</li>
+  <li>Strong consistency or eventual consistency OK?</li>
+  <li>Real-time requirements (WebSockets)?</li>
+  <li>Multi-region? Mobile + web?</li>
+  <li>Auth model — sessions, JWT, OAuth?</li>
+</ul>
+
+<h2 id="components">Where your stack fits</h2>
+<table class="ref">
+  <tr><th>Layer</th><th>Technology</th><th>When</th></tr>
+  <tr><td>UI</td><td>React / <a href="../nextjs/reference/nextjs-notes.html">Next.js</a></td><td>SPA, SSR for SEO, RSC for data-heavy pages</td></tr>
+  <tr><td>API</td><td>Node.js + Express</td><td>I/O-heavy REST/GraphQL, realtime with ws</td></tr>
+  <tr><td>Auth</td><td>JWT + refresh cookie / OAuth</td><td>Stateless API, third-party login</td></tr>
+  <tr><td>Primary DB</td><td>PostgreSQL</td><td>Relational data, ACID transactions</td></tr>
+  <tr><td>Document DB</td><td>MongoDB</td><td>Flexible schema, nested docs, rapid iteration</td></tr>
+  <tr><td>Cache</td><td>Redis</td><td>Hot reads, sessions, rate limits, pub/sub</td></tr>
+  <tr><td>Queue</td><td>BullMQ / SQS</td><td>Async jobs — email, image processing</td></tr>
+  <tr><td>Events</td><td>Kafka</td><td>Event streaming, analytics, service decoupling</td></tr>
+  <tr><td>CDN</td><td>CloudFront</td><td>Static assets, edge caching</td></tr>
+  <tr><td>Deploy</td><td>Docker + K8s / ECS</td><td>Horizontal scale, health checks</td></tr>
+</table>
+
+<h2 id="patterns">Architecture patterns</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Use when</th></tr>
+  <tr><td>Monolith</td><td>Small team, MVP, simple deploy</td></tr>
+  <tr><td>Modular monolith</td><td>Clear domains, not ready for ops overhead of microservices</td></tr>
+  <tr><td>Microservices</td><td>Independent scale/deploy, large org, clear bounded contexts</td></tr>
+  <tr><td>BFF (Backend for Frontend)</td><td>Mobile vs web need different API shapes</td></tr>
+  <tr><td>Event-driven</td><td>Loose coupling, audit trail, async workflows</td></tr>
+  <tr><td>CQRS</td><td>Read/write scale differently — separate read models</td></tr>
+  <tr><td>Saga</td><td>Distributed transaction across services — compensating steps</td></tr>
+  <tr><td>Outbox</td><td>Reliable event publish with DB write</td></tr>
+  <tr><td>Circuit breaker</td><td>Protect from cascading downstream failures</td></tr>
+</table>
+
+<h2 id="designs">Classic designs — talking points</h2>
+
+<h3>URL shortener</h3>
+<ul>
+  <li>Generate unique short code (base62) — DB unique index or counter + encode</li>
+  <li>Read-heavy → Redis cache mapping short → long URL</li>
+  <li>302 redirect on GET /:code</li>
+  <li>Analytics — async queue for click events</li>
+</ul>
+
+<h3>Social feed (Twitter-like)</h3>
+<ul>
+  <li><strong>Fan-out on write</strong> — push to followers' feeds (good for celebrities problem: hybrid)</li>
+  <li><strong>Fan-out on read</strong> — merge at read time (simpler, slower for hot users)</li>
+  <li>Redis sorted sets for timeline; Postgres for posts/follows</li>
+  <li>React infinite scroll + React Query pagination</li>
+</ul>
+
+<h3>Chat / realtime</h3>
+<ul>
+  <li>WebSockets (ws/Socket.io) or SSE for server push</li>
+  <li>Redis pub/sub or dedicated message broker between API instances</li>
+  <li>Store messages in Postgres; deliver via WS; presence in Redis</li>
+  <li>Node handles many concurrent WS on event loop — scale horizontally with sticky sessions or shared pub/sub</li>
+</ul>
+
+<h3>E-commerce checkout</h3>
+<ul>
+  <li>Inventory reservation — DB transaction or optimistic locking</li>
+  <li>Payment — idempotency key, saga with compensate on failure</li>
+  <li>Order service + payment service + notification queue</li>
+  <li>Redis for cart session; Postgres for orders</li>
+</ul>
+
+<h3>Rate-limited public API</h3>
+<ul>
+  <li>API Gateway or middleware — token bucket in Redis</li>
+  <li>429 + Retry-After header</li>
+  <li>Per-user and per-IP limits</li>
+</ul>
+
+<h2 id="tradeoffs">Key trade-offs (say these out loud)</h2>
+<table class="ref">
+  <tr><th>Decision</th><th>Option A</th><th>Option B</th></tr>
+  <tr><td>Consistency</td><td>Strong (Postgres TX)</td><td>Eventual (cache, replicas)</td></tr>
+  <tr><td>SQL vs NoSQL</td><td>Structured, joins, ACID</td><td>Flexible schema, horizontal scale</td></tr>
+  <tr><td>REST vs GraphQL</td><td>Simple, cacheable, standard</td><td>Flexible client queries, complexity</td></tr>
+  <tr><td>Sync vs async</td><td>Simpler UX, tighter coupling</td><td>Resilient, queue for slow work</td></tr>
+  <tr><td>SSR vs CSR</td><td>SEO, fast FCP</td><td>Simpler deploy, rich interactivity</td></tr>
+  <tr><td>Cache</td><td>Redis shared</td><td>In-process LRU (single instance)</td></tr>
+</table>
+
+<h3>Back-of-envelope</h3>
+<pre class="code"><code>1M DAU × 10 requests/day = 10M requests/day
+≈ 115 QPS average (×10 peak ≈ 1,150 QPS)
+
+1KB per record × 100M records = 100 GB storage</code></pre>
+
+<h3>Diagram checklist</h3>
+<ul>
+  <li>Draw boxes: Client → LB → API → DB, Cache, Queue</li>
+  <li>Label read vs write paths</li>
+  <li>Show where auth happens</li>
+  <li>Mention failure: DB down, cache miss, retry, circuit breaker</li>
+  <li>Observability: logs, metrics, traces with correlation ID</li>
+</ul>
+
+<p class="footer-note"><a href="../index.html">Index</a> · <a href="implement-from-memory.html">Implement from Memory</a></p>
+
+</body>
+</html>

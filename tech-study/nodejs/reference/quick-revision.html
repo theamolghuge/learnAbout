@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Node.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Senior Node.js scan. Full tiers in <a href="nodejs-notes.html#study-guide">Node.js Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Architecture</td><td>V8 executes JS · libuv event loop + thread pool</td></tr>
+  <tr><td>Call stack</td><td>Sync JS — one frame per call · overflow = too deep</td></tr>
+  <tr><td>Event Loop ⭐</td><td>Timers → Pending → Poll → Check → Close</td></tr>
+  <tr><td>nextTick</td><td>Before loop continues — highest priority</td></tr>
+  <tr><td>Microtasks</td><td>Promises, await — after nextTick</td></tr>
+  <tr><td>Macrotasks</td><td>setTimeout, setImmediate, I/O callbacks</td></tr>
+  <tr><td>EventEmitter</td><td>on/emit/once — pub/sub core of Node</td></tr>
+  <tr><td>Streams ⭐</td><td>Readable/Writable/Duplex/Transform · pipe · backpressure</td></tr>
+  <tr><td>Buffer</td><td>Raw binary — Buffer.from(), toString()</td></tr>
+  <tr><td>Express middleware</td><td>(req, res, next) — pipeline in order</td></tr>
+  <tr><td>REST</td><td>GET read · POST create · PUT replace · PATCH partial · DELETE</td></tr>
+  <tr><td>Error handler</td><td>4 args (err, req, res, next) — must be last</td></tr>
+  <tr><td>Auth vs Authz</td><td>401 who you are · 403 what you can do</td></tr>
+  <tr><td>JWT</td><td>Sign payload · verify on each request · short expiry</td></tr>
+  <tr><td>SQL</td><td>Parameterized queries — never concat user input</td></tr>
+  <tr><td>Transactions</td><td>BEGIN → ops → COMMIT or ROLLBACK</td></tr>
+  <tr><td>Redis cache</td><td>Cache-aside · TTL · invalidate on write</td></tr>
+  <tr><td>Validation</td><td>Zod/Joi at boundary — 422 on fail</td></tr>
+  <tr><td>Security</td><td>Helmet · rate limit · env secrets · HTTPS</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Worker Threads</td><td>CPU work off main thread · shared memory</td></tr>
+  <tr><td>Cluster</td><td>Fork processes — scale HTTP across cores</td></tr>
+  <tr><td>Child process</td><td>spawn/exec — shell commands</td></tr>
+  <tr><td>Queues</td><td>BullMQ — async jobs, retries, backoff</td></tr>
+  <tr><td>Kafka</td><td>Durable event log · partitions · consumer groups</td></tr>
+  <tr><td>WebSockets</td><td>Full-duplex realtime — ws library</td></tr>
+  <tr><td>GraphQL</td><td>Client picks fields — DataLoader for N+1</td></tr>
+  <tr><td>Rate limiting</td><td>Redis INCR + EXPIRE — 429</td></tr>
+  <tr><td>Graceful shutdown</td><td>SIGTERM → close server → drain DB → exit</td></tr>
+  <tr><td>Observability</td><td>Structured logs · metrics · OpenTelemetry traces</td></tr>
+  <tr><td>Docker</td><td>Multi-stage · non-root user · npm ci</td></tr>
+  <tr><td>CI/CD</td><td>Lint → test → build image → deploy</td></tr>
+</table>
+
+<h2>Tier 3 — Architect (skim)</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Microservices</td><td>Own DB per service · independent deploy</td></tr>
+  <tr><td>CAP</td><td>Partition → Consistency OR Availability</td></tr>
+  <tr><td>Saga</td><td>Compensating transactions across services</td></tr>
+  <tr><td>CQRS</td><td>Separate read/write models</td></tr>
+  <tr><td>Event sourcing</td><td>Store events · replay for state</td></tr>
+  <tr><td>Outbox</td><td>Atomic DB + event via outbox table</td></tr>
+  <tr><td>Idempotency</td><td>Same request twice = same result · idempotency key</td></tr>
+  <tr><td>Circuit breaker</td><td>Fail fast when downstream unhealthy</td></tr>
+  <tr><td>Eventual consistency</td><td>Replicas converge — design for stale reads</td></tr>
+</table>
+
+<h2>Event loop priority</h2>
+<ol>
+  <li>Sync code (call stack)</li>
+  <li><code>process.nextTick</code></li>
+  <li>Microtasks (Promises)</li>
+  <li>Event loop phases (timers, poll, check…)</li>
+</ol>
+
+<h2>Senior Developer Core</h2>
+<p>libuv → Event Loop → Promises → EventEmitter → Streams → Express Middleware → REST → Auth → PostgreSQL/Transactions → Redis → Queues → Error Handling → Security → Docker → Microservices → Kafka → System Design</p>
+
+<h2>30-second answers</h2>
+
+<p><strong>Event loop in Node?</strong><br>
+libuv drives phases. nextTick and Promises run between phases. Blocking sync code stalls all I/O. Thread pool handles fs/crypto off main thread.</p>
+
+<p><strong>Streams vs readFile?</strong><br>
+readFile loads entire file into memory. Streams process chunks with backpressure — essential for large files and HTTP piping.</p>
+
+<p><strong>Authentication vs authorization?</strong><br>
+Authentication verifies identity (401). Authorization checks permissions (403). JWT proves identity; RBAC checks roles on routes.</p>
+
+<p><strong>Cache-aside pattern?</strong><br>
+Check Redis → miss → query DB → write to Redis with TTL → return. Invalidate key on updates.</p>
+
+<h2>Revision order</h2>
+<ol>
+  <li><a href="nodejs-notes.html#eventloop">Event Loop ⭐</a> + <a href="nodejs-notes.html#streams">Streams ⭐</a></li>
+  <li><a href="nodejs-notes.html#express">Express &amp; REST</a></li>
+  <li><a href="nodejs-notes.html#auth">Auth</a> + <a href="nodejs-notes.html#database">SQL/Transactions</a> + <a href="nodejs-notes.html#redis">Redis</a></li>
+  <li><a href="nodejs-notes.html#distributed">Distributed Systems</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="nodejs-notes.html">Node.js Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

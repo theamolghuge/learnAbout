@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision — TypeScript</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision — TypeScript</h1>
+<p class="subtitle">Tiers in <a href="typescript-notes.html#study-guide">TypeScript Notes</a>.</p>
+
+<h2>Tier 1</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Inference</td><td>TS deduces types — annotate public APIs</td></tr>
+  <tr><td>Union</td><td><code>A | B</code> — one of several types</td></tr>
+  <tr><td>Literal</td><td><code>"admin" | "user"</code> — exact values</td></tr>
+  <tr><td>interface vs type</td><td>interface: extend/merge · type: unions/utilities</td></tr>
+  <tr><td>Generics</td><td><code>&lt;T&gt;</code> — reusable type params</td></tr>
+  <tr><td>keyof</td><td>Union of object keys</td></tr>
+  <tr><td>Narrowing</td><td>typeof · in · discriminated union</td></tr>
+  <tr><td>Partial/Pick/Omit</td><td>Transform existing types</td></tr>
+</table>
+
+<h2>any vs unknown vs never</h2>
+<table class="ref">
+  <tr><th>Type</th><th>Use</th></tr>
+  <tr><td><code>any</code></td><td>Disable checking — avoid</td></tr>
+  <tr><td><code>unknown</code></td><td>Safe unknown — narrow first</td></tr>
+  <tr><td><code>never</code></td><td>Impossible value / exhaustive check</td></tr>
+</table>
+
+<h2>Utility types</h2>
+<table class="ref">
+  <tr><th>Utility</th><th>Result</th></tr>
+  <tr><td><code>Partial&lt;T&gt;</code></td><td>All optional</td></tr>
+  <tr><td><code>Pick&lt;T, K&gt;</code></td><td>Selected keys</td></tr>
+  <tr><td><code>Omit&lt;T, K&gt;</code></td><td>Excluded keys</td></tr>
+  <tr><td><code>ReturnType&lt;F&gt;</code></td><td>Function return type</td></tr>
+  <tr><td><code>Record&lt;K,V&gt;</code></td><td>Keyed object type</td></tr>
+</table>
+
+<h2>Comparison: interface vs type</h2>
+<table class="ref">
+  <tr><th></th><th>interface</th><th>type</th></tr>
+  <tr><td>Unions</td><td>No</td><td>Yes</td></tr>
+  <tr><td>Merge</td><td>Yes</td><td>No</td></tr>
+  <tr><td>extends</td><td>Yes</td><td>Use <code>&amp;</code></td></tr>
+</table>
+
+<h2>React/Node quick patterns</h2>
+<pre class="code"><code>// Props
+interface Props { name: string; onClick: () => void; }
+
+// Zod infer
+type User = z.infer&lt;typeof UserSchema&gt;;
+
+// satisfies
+const routes = { home: "/" } satisfies Record&lt;string, string&gt;;</code></pre>
+
+<p class="footer-note"><a href="typescript-notes.html">TypeScript Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Next.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A — Next.js</h1>
+<p class="subtitle">Concepts in <a href="nextjs-notes.html">Next.js Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#basics">Basics</a> ·
+  <a href="#rsc">RSC</a> ·
+  <a href="#caching">Caching</a> ·
+  <a href="#rendering">Rendering</a> ·
+  <a href="#actions">Actions</a> ·
+  <a href="#auth">Auth</a> ·
+  <a href="#advanced">Advanced</a>
+</nav>
+
+<h2 id="basics">Basics</h2>
+
+<div class="qa">
+  <p class="qa-q">What is Next.js and how is it different from React?</p>
+  <p class="qa-a">Next.js is a React framework — it adds file-based routing, SSR/SSG/ISR, API routes, Server Components, optimizations (image, font), and deployment tooling. React is the UI library; Next.js is the full-stack framework built on React.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">App Router vs Pages Router?</p>
+  <p class="qa-a">App Router (<code>app/</code>) is the modern default — Server Components, layouts, streaming, Server Actions, nested routing. Pages Router (<code>pages/</code>) uses <code>getStaticProps</code>/<code>getServerSideProps</code> — still supported but legacy. New projects use App Router.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the purpose of layout.tsx?</p>
+  <p class="qa-a">Shared UI wrapper that persists across navigations within its segment — nav, sidebar, providers. Child pages render in the <code>{children}</code> slot. Root layout is required and wraps the entire app.</p>
+</div>
+
+<h2 id="rsc">Server &amp; Client Components</h2>
+
+<div class="qa">
+  <p class="qa-q">When do you use "use client"?</p>
+  <p class="qa-a">When the component needs useState, useEffect, event handlers, browser APIs, or third-party libs that use hooks. Default is Server Component — no directive needed. Push "use client" to leaf components to minimize client JS bundle.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can Server Components import Client Components?</p>
+  <p class="qa-a">Yes — Server can import and render Client Components, passing serializable props. Client Components cannot import Server Components directly — pass Server output as children prop instead (composition pattern).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can you fetch data in Client Components?</p>
+  <p class="qa-a">Yes via useEffect/fetch or React Query — but data hits client bundle path, no direct DB access, worse for SEO. Prefer async Server Components for initial data; Client + React Query for interactive refetching.</p>
+</div>
+
+<h2 id="caching">Caching</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain Next.js caching layers.</p>
+  <p class="qa-a">Request memoization (dedupe same fetch in one render), Data cache (fetch results persisted), Full Route cache (rendered HTML/RSC at build/revalidate), Router cache (client prefetched segments). Opt out with <code>cache: 'no-store'</code> or <code>dynamic = 'force-dynamic'</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between revalidatePath and revalidateTag?</p>
+  <p class="qa-a"><code>revalidatePath('/posts')</code> — invalidate specific route's cache. <code>revalidateTag('products')</code> — invalidate all fetch calls tagged with that tag — finer-grained for shared data across routes.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you make a route fully dynamic?</p>
+  <p class="qa-a"><code>export const dynamic = 'force-dynamic'</code> or use <code>fetch(url, { cache: 'no-store' }</code> or read cookies/headers in Server Component (automatically dynamic). Each request renders fresh.</p>
+</div>
+
+<h2 id="rendering">SSR, SSG &amp; ISR</h2>
+
+<div class="qa">
+  <p class="qa-q">SSR vs SSG vs ISR in Next.js App Router?</p>
+  <p class="qa-a">SSG: static at build — default static fetch. SSR: render per request — <code>no-store</code> or dynamic. ISR: static + background revalidate — <code>next: { revalidate: N }</code>. Choose based on freshness vs performance trade-off.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What causes hydration errors?</p>
+  <p class="qa-a">Server HTML doesn't match client's first render — Date.now(), random IDs, browser-only APIs in initial render, invalid HTML nesting. Fix: render consistently, defer browser code to useEffect, use suppressHydrationWarning only for known mismatches like timestamps.</p>
+</div>
+
+<h2 id="actions">Server Actions &amp; API</h2>
+
+<div class="qa">
+  <p class="qa-q">What are Server Actions?</p>
+  <p class="qa-a">Async functions marked <code>"use server"</code> that run on server — callable from forms or Client Components. Handle mutations without building API routes. Progressive enhancement — forms work without JS. Revalidate cache after mutations.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Server Actions vs Route Handlers?</p>
+  <p class="qa-a">Server Actions: form mutations, typed functions, integrated with RSC cache revalidation — not a public HTTP API. Route Handlers: REST/webhook endpoints at <code>app/api/*/route.ts</code> — external clients, mobile apps, third-party integrations.</p>
+</div>
+
+<h2 id="auth">Auth &amp; Middleware</h2>
+
+<div class="qa">
+  <p class="qa-q">How does Next.js middleware work?</p>
+  <p class="qa-a">Runs on Edge before request completes — auth checks, redirects, rewrites. <code>middleware.ts</code> at root with <code>matcher</code> config. Can read cookies/headers, return NextResponse.redirect. Fast but limited Node APIs.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Best auth pattern for Next.js App Router?</p>
+  <p class="qa-a">Auth.js (NextAuth v5) with session in httpOnly cookie — works with middleware, Server Components (<code>await auth()</code>), and Server Actions. Avoid localStorage tokens for SSR pages — causes flash and XSS risk.</p>
+</div>
+
+<h2 id="advanced">Advanced</h2>
+
+<div class="qa">
+  <p class="qa-q">Edge runtime vs Node runtime?</p>
+  <p class="qa-a">Edge: middleware, low latency globally, limited APIs (no fs, native modules). Node: full Node.js APIs, DB drivers, heavy computation — default for Server Components and Route Handlers unless <code>export const runtime = 'edge'</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you deploy Next.js in Docker?</p>
+  <p class="qa-a"><code>output: 'standalone'</code> in next.config — produces minimal <code>server.js</code> + traced deps. Multi-stage Docker build: install, build, copy standalone + static + public. Run <code>node server.js</code>. Set env vars at runtime.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is Partial Prerendering (PPR)?</p>
+  <p class="qa-a">Static HTML shell at build with dynamic holes streamed in — combines SSG speed with personalized dynamic content. Suspense boundaries mark static vs dynamic regions. Next.js experimental feature for optimal Core Web Vitals.</p>
+</div>
+
+<p class="footer-note"><a href="nextjs-notes.html">Next.js Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

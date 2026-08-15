@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — JavaScript</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="javascript-notes.html">JavaScript Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#types">Types</a> ·
+  <a href="#scope">Scope &amp; Closures</a> ·
+  <a href="#this">this &amp; Bind</a> ·
+  <a href="#proto">Prototypes</a> ·
+  <a href="#es6">ES6+</a> ·
+  <a href="#async">Async</a> ·
+  <a href="#data">Data</a> ·
+  <a href="#dom">DOM</a> ·
+  <a href="#patterns">Patterns</a> ·
+  <a href="#advanced">Advanced</a> ·
+  <a href="#tricks">Tricks</a> ·
+  <a href="#misc">Misc</a>
+</nav>
+
+<!-- ===== TYPES ===== -->
+<h2 id="types">Types, Variables &amp; Equality</h2>
+
+<div class="qa">
+  <p class="qa-q">What are the data types in JavaScript?</p>
+  <p class="qa-a">Seven primitives: <code>undefined</code>, <code>null</code>, <code>boolean</code>, <code>number</code>, <code>bigint</code>, <code>string</code>, and <code>symbol</code>. Everything else — plain objects, arrays, functions, dates, regex — is an object. <code>typeof</code> reports functions as <code>"function"</code> even though they are technically objects.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Is JavaScript pass-by-value or pass-by-reference?</p>
+  <p class="qa-a">Primitives are passed by value — the function gets a copy. Objects are passed by reference value — the reference (pointer) is copied, so the function and caller can both mutate the same object. Reassigning the parameter to a new object does not affect the caller's variable.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does <code>typeof null</code> return <code>"object"</code>?</p>
+  <p class="qa-a">A bug from the first JavaScript engine in 1995 — <code>null</code> was stored as a null pointer with type tag 0, same as objects. Fixing it would break existing code. Always use <code>value === null</code> to test for null.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between <code>==</code> and <code>===</code>?</p>
+  <p class="qa-a"><code>===</code> (strict) compares type and value without conversion. <code>==</code> (loose) coerces types first — e.g. <code>null == undefined</code> is true, <code>"5" == 5</code> is true, <code>[] == false</code> is true. Use <code>===</code> everywhere unless you have a deliberate reason for coercion.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are all falsy values?</p>
+  <p class="qa-a"><code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>""</code> (empty string), <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Only these eight. Surprisingly truthy: <code>[]</code>, <code>{}</code>, <code>"0"</code>, <code>"false"</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>var</code>, <code>let</code>, and <code>const</code>?</p>
+  <p class="qa-a"><code>var</code> is function-scoped, hoisted as <code>undefined</code>, and can be redeclared. <code>let</code> and <code>const</code> are block-scoped and sit in the Temporal Dead Zone until their line runs. <code>const</code> must be assigned at declaration but object/array contents can still be mutated. Rule: <code>const</code> by default, <code>let</code> when reassigning, avoid <code>var</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the Temporal Dead Zone?</p>
+  <p class="qa-a">The period from the start of a block until a <code>let</code> or <code>const</code> declaration is reached and initialized. Accessing the variable name in the TDZ throws <code>ReferenceError</code>. Unlike <code>var</code>, which is hoisted as <code>undefined</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is <code>NaN === NaN</code> false? How do you check for NaN?</p>
+  <p class="qa-a">IEEE 754 defines NaN as not equal to anything, including itself. Use <code>Number.isNaN(value)</code> (doesn't coerce) or <code>Object.is(value, NaN)</code>. Avoid global <code>isNaN()</code> — it coerces: <code>isNaN("hello")</code> is true.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>??</code> and <code>||</code>?</p>
+  <p class="qa-a"><code>??</code> (nullish coalescing) falls back only on <code>null</code> or <code>undefined</code>. <code>||</code> falls back on any falsy value. Example: <code>0 ?? 1</code> is 0, but <code>0 || 1</code> is 1. Use <code>??</code> when 0 or <code>""</code> are valid values.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is optional chaining (<code>?.</code>)?</p>
+  <p class="qa-a">Safely accesses nested properties — returns <code>undefined</code> instead of throwing if any part of the chain is <code>null</code> or <code>undefined</code>. Works for properties (<code>user?.address?.city</code>), array indices (<code>arr?.[0]</code>), and method calls (<code>callback?.()</code>).</p>
+</div>
+
+<!-- ===== SCOPE ===== -->
+<h2 id="scope">Scope, Hoisting &amp; Closures</h2>
+
+<div class="qa">
+  <p class="qa-q">What is hoisting?</p>
+  <p class="qa-a">JavaScript processes declarations before running code. <code>var</code> is hoisted and initialized to <code>undefined</code>. Function declarations are fully hoisted (callable before their line). <code>let</code> and <code>const</code> are hoisted but remain in the TDZ until initialized.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is an execution context?</p>
+  <p class="qa-a">The environment created when code runs — variable bindings, lexical outer reference (scope chain), and <code>this</code> binding. Each function call pushes a new context onto the call stack. When the function returns, its context is popped.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the call stack?</p>
+  <p class="qa-a">A LIFO structure holding active execution contexts. Synchronous code runs frame by frame. Too many nested calls overflow the stack. Async callbacks run later via the event loop — not on the current stack frame.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a closure?</p>
+  <p class="qa-a">A function that retains access to variables from its outer lexical scope even after the outer function has returned. The inner function "closes over" those variables. Used for: data privacy (module pattern), factory functions, event handlers, memoization, debounce/throttle timers, and partial application.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does <code>var</code> in a loop with <code>setTimeout</code> print the same number?</p>
+  <p class="qa-a"><code>var</code> is function-scoped — there is one shared <code>i</code> for all iterations. By the time callbacks run, the loop finished and <code>i</code> equals the final value (e.g. 3). Fix: use <code>let</code> (new binding per iteration), an IIFE to capture <code>i</code>, or pass <code>i</code> as an argument to a wrapper function.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is lexical scope?</p>
+  <p class="qa-a">Scope is determined by where code is physically written, not where it is called. Inner functions can read variables from outer functions. The engine walks up the scope chain to find a binding — stopping at the first match or throwing <code>ReferenceError</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is an IIFE?</p>
+  <p class="qa-a">Immediately Invoked Function Expression — <code>(function(){ ... })()</code>. Runs right away and creates a private scope so variables inside don't leak to global. Common before block scope and ES modules existed. Still found in legacy code.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a higher-order function?</p>
+  <p class="qa-a">A function that takes another function as an argument and/or returns a function. Built-in examples: <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>sort</code>. Custom examples: <code>debounce</code>, <code>once</code>, <code>curry</code>, <code>memoize</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Give a real-world use case for closures.</p>
+  <p class="qa-a">Module pattern: outer function holds private state, returns public methods that close over it. Also: React hooks store state between renders via closures; debounce keeps a timer ID in closure; event handlers remember configuration without globals.</p>
+</div>
+
+<!-- ===== THIS ===== -->
+<h2 id="this">this, call, apply, bind</h2>
+
+<div class="qa">
+  <p class="qa-q">How is <code>this</code> determined?</p>
+  <p class="qa-a">By how the function is called (priority): (1) <code>new</code> → new object, (2) <code>call</code>/<code>apply</code>/<code>bind</code> → specified object, (3) <code>obj.method()</code> → obj, (4) plain call → <code>undefined</code> in strict mode or <code>globalThis</code> otherwise. Arrow functions ignore all rules and inherit <code>this</code> from the enclosing scope where they were written.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What happens when you do <code>const fn = obj.method; fn()</code>?</p>
+  <p class="qa-a">Implicit binding is lost — it becomes a plain function call. In strict mode, <code>this</code> is <code>undefined</code>, so <code>this.name</code> fails. Fix: <code>obj.method.bind(obj)</code>, wrap in arrow function, or call as <code>obj.method()</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>call</code>, <code>apply</code>, and <code>bind</code>?</p>
+  <p class="qa-a"><code>call(thisArg, arg1, arg2)</code> — invokes immediately, args listed individually. <code>apply(thisArg, [args])</code> — invokes immediately, args as array. <code>bind(thisArg, ...args)</code> — returns a new function with fixed <code>this</code> and optional pre-filled args; does not invoke until you call the result.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When use arrow functions vs regular functions?</p>
+  <p class="qa-a">Use arrows for callbacks needing lexical <code>this</code> (class methods passed to timers, array callbacks referencing outer <code>this</code>). Use regular functions for object methods needing dynamic <code>this</code>, constructors, generators, and when you need the <code>arguments</code> object or to use <code>new</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does <code>new</code> do?</p>
+  <p class="qa-a">(1) Creates a new empty object. (2) Sets its <code>[[Prototype]]</code> to <code>Constructor.prototype</code>. (3) Runs the constructor with <code>this</code> bound to that object. (4) Returns the object — unless the constructor explicitly returns a different object.</p>
+</div>
+
+<!-- ===== PROTOTYPES ===== -->
+<h2 id="proto">Prototypes &amp; Classes</h2>
+
+<div class="qa">
+  <p class="qa-q">How does prototypal inheritance work?</p>
+  <p class="qa-a">Every object has an internal <code>[[Prototype]]</code> link (use <code>Object.getPrototypeOf(obj)</code>). When you access a property, JS checks the object itself, then walks up the prototype chain until it finds the property or reaches <code>null</code>. Constructor functions have a <code>.prototype</code> object; <code>new</code> links instances to it.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>__proto__</code> and <code>prototype</code>?</p>
+  <p class="qa-a"><code>prototype</code> is a property on constructor functions — the object used as the prototype for instances created with <code>new</code>. <code>__proto__</code> (deprecated; use <code>Object.getPrototypeOf</code>) is the actual prototype link on any object instance. Every object has <code>[[Prototype]]</code>; only functions have <code>.prototype</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does <code>instanceof</code> check?</p>
+  <p class="qa-a">Whether <code>Constructor.prototype</code> appears anywhere on the object's prototype chain. It answers "does this object inherit from this constructor?" — not whether <code>new</code> was literally used. Can be overridden with <code>Symbol.hasInstance</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Are ES6 classes the same as Java classes?</p>
+  <p class="qa-a">No. ES6 classes are syntactic sugar over constructor functions and prototypes. Methods still live on <code>ClassName.prototype</code>. Inheritance is prototypal delegation, not copy-based classical inheritance. Under the hood: <code>extends</code> uses <code>Object.create</code> to link prototype chains.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why call <code>super()</code> before <code>this</code> in a subclass?</p>
+  <p class="qa-a">The subclass instance isn't initialized until the parent constructor runs. <code>super()</code> invokes the parent constructor and sets up <code>this</code>. Accessing <code>this</code> before <code>super()</code> in a derived class throws <code>ReferenceError</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>hasOwnProperty</code> vs <code>in</code> operator?</p>
+  <p class="qa-a"><code>obj.hasOwnProperty("key")</code> or <code>Object.hasOwn(obj, "key")</code> — checks only the object's own properties, not the prototype chain. <code>"key" in obj</code> — returns true if the property exists anywhere on the object or its prototype chain.</p>
+</div>
+
+<!-- ===== ES6 ===== -->
+<h2 id="es6">ES6+ &amp; Modern Syntax</h2>
+
+<div class="qa">
+  <p class="qa-q">What is destructuring?</p>
+  <p class="qa-a">Extracting values from arrays or properties from objects into variables in one step. Supports defaults (<code>{ x = 0 }</code>), renaming (<code>{ name: userName }</code>), rest (<code>...rest</code>), and nesting. Commonly used for function parameters and unpacking API responses.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between spread and rest?</p>
+  <p class="qa-a">Same <code>...</code> syntax, opposite direction. <strong>Spread</strong> expands — copies array elements, merges objects, passes array as individual arguments. <strong>Rest</strong> collects — gathers remaining array elements or object properties, or collects extra function arguments into an array.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">ES modules vs CommonJS?</p>
+  <p class="qa-a">ESM (<code>import</code>/<code>export</code>): static, hoisted imports, tree-shakeable, strict mode, async in browsers. CommonJS (<code>require</code>/<code>module.exports</code>): synchronous, dynamic, Node legacy. Modern Node supports both; bundlers convert between them.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a Symbol used for?</p>
+  <p class="qa-a">Creating guaranteed-unique property keys — <code>Symbol("id") !== Symbol("id")</code>. Not included in <code>Object.keys</code>, <code>for...in</code>, or JSON. Used for hidden metadata, well-known behaviors (<code>Symbol.iterator</code>, <code>Symbol.toStringTag</code>), and avoiding property name collisions.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are generators?</p>
+  <p class="qa-a">Functions declared with <code>function*</code> that can pause and resume using <code>yield</code>. Return an iterator. Useful for lazy sequences, infinite series, and custom iteration. Each <code>yield</code> produces a value; calling <code>.next()</code> resumes until the next yield or return.</p>
+</div>
+
+<!-- ===== ASYNC ===== -->
+<h2 id="async">Async, Promises &amp; Event Loop</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the event loop.</p>
+  <p class="qa-a">JavaScript runs synchronously on one call stack. When async operations complete (timers, fetch, I/O), their callbacks go into queues. When the stack is empty, the event loop drains all microtasks (Promise callbacks), then executes one macrotask (setTimeout, click handler), then repeats. This enables non-blocking async on a single thread.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Microtasks vs macrotasks?</p>
+  <p class="qa-a"><strong>Microtasks</strong> (run after current script, before next paint): <code>Promise.then/catch/finally</code>, <code>queueMicrotask</code>, <code>MutationObserver</code>. All microtasks drain before the next macrotask. <strong>Macrotasks</strong> (one per loop): <code>setTimeout</code>, <code>setInterval</code>, I/O, UI events. That's why Promise callbacks beat <code>setTimeout(fn, 0)</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Promise states and immutability?</p>
+  <p class="qa-a">Three states: <code>pending</code>, <code>fulfilled</code>, <code>rejected</code>. Once settled (fulfilled or rejected), the state and value/reason cannot change. Calling <code>resolve</code> then <code>reject</code> — only the first counts.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>async/await</code> vs Promises?</p>
+  <p class="qa-a"><code>async/await</code> is syntactic sugar. An <code>async</code> function always returns a Promise. <code>await</code> pauses that function until a Promise settles, then unwraps the value or throws the rejection. Same event loop behavior — easier to read, but you still need <code>try/catch</code> for errors. Under the hood it's Promises and microtasks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Output order: sync, <code>setTimeout(0)</code>, <code>Promise.then</code>?</p>
+  <p class="qa-a">Synchronous code first, then all Promise microtasks, then setTimeout macrotask. Classic: <code>console.log(1); setTimeout(()=>log(2),0); Promise.resolve().then(()=>log(3)); console.log(4);</code> → 1, 4, 3, 2.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>Promise.all</code> vs <code>Promise.race</code> vs <code>Promise.allSettled</code>?</p>
+  <p class="qa-a"><code>all</code> — waits for all to fulfill, returns array in order; rejects on first failure. <code>race</code> — settles when first promise settles (fulfill or reject). <code>allSettled</code> — waits for all, returns <code>{status, value/reason}</code> for each; never rejects. <code>any</code> — first fulfillment wins; rejects only if all reject.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How to run async operations in parallel with await?</p>
+  <p class="qa-a">Start promises first (don't await individually), then await together: <code>const [a, b] = await Promise.all([fetchA(), fetchB()])</code>. If you <code>await</code> inside a loop sequentially, each waits for the previous — much slower.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is callback hell?</p>
+  <p class="qa-a">Deeply nested callbacks where each async step is inside the previous callback's success handler. Hard to read, hard to error-handle (must check errors at every level). Promises flatten this with chainable <code>.then</code> and a single <code>.catch</code>. async/await makes it read like synchronous code.</p>
+</div>
+
+<!-- ===== DATA ===== -->
+<h2 id="data">Arrays, Objects &amp; Collections</h2>
+
+<div class="qa">
+  <p class="qa-q"><code>map</code> vs <code>filter</code> vs <code>reduce</code>?</p>
+  <p class="qa-a"><code>map</code> — transforms every element, returns new array of same length. <code>filter</code> — keeps elements where callback returns truthy, returns shorter (or equal) array. <code>reduce</code> — folds array into a single value (number, object, array) using an accumulator. None mutate the original array.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Which array methods mutate the original?</p>
+  <p class="qa-a">Mutating: <code>push, pop, shift, unshift, splice, sort, reverse, fill</code>. Non-mutating: <code>map, filter, reduce, slice, concat, flat, flatMap, find, some, every</code>. In React/immutable patterns, prefer non-mutating methods.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>slice</code> vs <code>splice</code>?</p>
+  <p class="qa-a"><code>slice(start, end)</code> — returns a shallow copy of a portion; does not mutate. <code>splice(start, deleteCount, ...items)</code> — removes/replaces/inserts elements in place; mutates the array and returns removed elements.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does <code>[10, 2, 1].sort()</code> give <code>[1, 10, 2]</code>?</p>
+  <p class="qa-a">Default sort converts elements to strings and compares lexicographically — "1" &lt; "10" &lt; "2". For numbers always pass: <code>.sort((a, b) => a - b)</code> for ascending, <code>b - a</code> for descending.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When use Map over a plain object?</p>
+  <p class="qa-a">When keys aren't strings/symbols (objects, functions as keys), you need guaranteed insertion order, frequent add/delete operations, or a built-in <code>.size</code> property. Plain objects are better for fixed-shape records and JSON serialization.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a Set?</p>
+  <p class="qa-a">Collection of unique values — duplicates are ignored on add. Dedupe an array: <code>[...new Set(arr)]</code>. Fast <code>.has()</code> membership checks. No key-value pairs — just values.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Shallow copy vs deep copy?</p>
+  <p class="qa-a">Shallow (<code>spread</code>, <code>Object.assign</code>, <code>Array.slice</code>) — copies top-level only; nested objects/arrays are still shared references. Deep — duplicates the entire tree. Use <code>structuredClone(obj)</code> in modern JS, or write recursive copy with <code>WeakMap</code> to handle circular references.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is WeakMap?</p>
+  <p class="qa-a">Like Map but keys must be objects, entries don't prevent garbage collection of key objects, and there's no <code>.size</code> or iteration. Use for attaching private metadata to DOM nodes or objects without causing memory leaks.</p>
+</div>
+
+<!-- ===== PATTERNS ===== -->
+<h2 id="patterns">Patterns &amp; Live Coding</h2>
+
+<div class="qa">
+  <p class="qa-q">Debounce vs throttle — when to use each?</p>
+  <p class="qa-a"><strong>Debounce</strong> — delays execution until triggers stop for X ms; each new trigger resets the timer. Use: search-as-you-type, resize-end detection. <strong>Throttle</strong> — executes at most once per X ms regardless of trigger count. Use: scroll position tracking, mousemove, rate-limiting button clicks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is currying?</p>
+  <p class="qa-a">Transforming <code>f(a, b, c)</code> into <code>f(a)(b)(c)</code> — a chain of functions each taking one (or fewer) arguments. Enables partial application: fix some arguments now, supply the rest later. Implementation checks <code>args.length >= fn.length</code> to know when to invoke.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How to implement <code>Function.prototype.bind</code>?</p>
+  <p class="qa-a">Return a new function that, when called, invokes the original function with: (1) <code>this</code> set to the bound context, (2) pre-filled arguments from bind prepended to any arguments passed at call time. Must preserve the original function's behavior via <code>apply</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How to implement <code>Promise.all</code>?</p>
+  <p class="qa-a">Return a new Promise. Track a results array indexed by position and a remaining counter. For each input, wrap with <code>Promise.resolve()</code>, on fulfill store result at index and decrement counter — when counter hits 0, resolve with results array. On any reject, immediately reject the outer promise.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Deep clone with circular references?</p>
+  <p class="qa-a">Recursively copy each property. Maintain a <code>WeakMap</code> mapping original objects to their copies. Before recursing into an object, check the map — if seen, return the existing copy instead of recursing infinitely. Handle <code>Date</code>, <code>RegExp</code>, and arrays as special cases.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is memoization?</p>
+  <p class="qa-a">Caching function results keyed by arguments so repeated calls with the same input return instantly from cache. Works best on pure functions (same input → same output, no side effects). Trade memory for speed. Example: caching Fibonacci or expensive API lookups.</p>
+</div>
+
+<!-- ===== DOM ===== -->
+<h2 id="dom">DOM &amp; Events</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain event bubbling and capturing.</p>
+  <p class="qa-a">When an event fires, it goes through three phases: capturing (window → target), target phase, then bubbling (target → window). Default listeners run in the bubbling phase. Use <code>addEventListener(el, fn, true)</code> or <code>{ capture: true }</code> for capture phase.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is event delegation?</p>
+  <p class="qa-a">Attach one listener to a parent instead of many on children. On click, check <code>event.target</code> (or <code>closest()</code>) to see which child was clicked. Works for dynamic lists — new children automatically covered. More memory-efficient.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>stopPropagation</code> and <code>preventDefault</code>?</p>
+  <p class="qa-a"><code>stopPropagation</code> stops the event from traveling to other elements in the bubble/capture chain. <code>preventDefault</code> stops the browser's default action (e.g. following a link, submitting a form) — doesn't stop propagation.</p>
+</div>
+
+<!-- ===== ADVANCED ===== -->
+<h2 id="advanced">Advanced &amp; Senior</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a Proxy in JavaScript?</p>
+  <p class="qa-a">Wraps an object and intercepts operations (get, set, delete, etc.) via handler traps. Used for validation, logging, reactive data (Vue 3), default values. Use <code>Reflect</code> methods inside traps for default behavior.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are property descriptors?</p>
+  <p class="qa-a">Metadata on object properties: <code>value</code>, <code>writable</code> (can reassign), <code>enumerable</code> (shows in Object.keys), <code>configurable</code> (can delete/reconfigure). Set with <code>Object.defineProperty</code>. Non-enumerable props are hidden from <code>for...in</code> and <code>Object.keys</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">WeakMap vs Map vs WeakSet?</p>
+  <p class="qa-a">Map: any keys, iterable, has .size. WeakMap: object keys only, not iterable, weak refs allow GC of keys. WeakSet: stores objects weakly — check membership without preventing GC. Use WeakMap/WeakSet for metadata on objects/DOM nodes without memory leaks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is AbortController?</p>
+  <p class="qa-a">API to cancel async operations — pass <code>signal</code> to <code>fetch</code> or custom async code. Call <code>controller.abort()</code> to cancel. Caught as <code>AbortError</code>. Useful for timeouts, user cancellation, cleanup on unmount.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are hidden classes in V8?</p>
+  <p class="qa-a">V8's internal object "shapes" — objects with the same properties in the same order share a hidden class for fast property access. Adding/deleting properties or creating objects with different property order creates new shapes and can deoptimize inline caches.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is tree shaking?</p>
+  <p class="qa-a">Dead code elimination at build time — bundlers remove unused exports. Requires ESM static <code>import</code>/<code>export</code> (analyzable). CommonJS dynamic <code>require</code> is harder to tree-shake. Vite/Rollup/webpack all support it with ESM.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Name common JavaScript design patterns.</p>
+  <p class="qa-a">Module (IIFE/ESM encapsulation), Observer (EventEmitter, pub/sub), Factory (functions returning objects), Singleton (one shared instance), Decorator (HOC in React, wrapper functions), Strategy (swappable algorithm functions).</p>
+</div>
+
+<!-- ===== TRICKS ===== -->
+<h2 id="tricks">Output &amp; Tricky Questions</h2>
+
+<div class="qa">
+  <p class="qa-q">What is <code>[] + []</code>?</p>
+  <p class="qa-a"><code>""</code> (empty string). The <code>+</code> operator with an object/array triggers <code>toString()</code> — arrays become comma-separated strings, empty arrays become <code>""</code>. Then string concatenation: <code>"" + ""</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is <code>[] == ![]</code>?</p>
+  <p class="qa-a"><code>true</code>. <code>[]</code> is truthy, so <code>![]</code> is <code>false</code>. Abstract equality: <code>[]</code> → <code>""</code> → 0, and <code>false</code> → 0. So 0 == 0 is true.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>typeof typeof 1</code>?</p>
+  <p class="qa-a"><code>"string"</code>. <code>typeof 1</code> returns <code>"number"</code> (a string). <code>typeof "number"</code> returns <code>"string"</code>. typeof always returns a string.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>console.log(x); var x = 5;</code> — what prints?</p>
+  <p class="qa-a"><code>undefined</code>, not <code>ReferenceError</code>. Hoisting moves <code>var x</code> to the top and initializes it to <code>undefined</code> before the assignment line runs.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>0.1 + 0.2 === 0.3</code>?</p>
+  <p class="qa-a"><code>false</code>. IEEE 754 floating-point can't represent 0.1 exactly. Result is 0.30000000000000004. Use epsilon comparison: <code>Math.abs(a - b) &lt; Number.EPSILON</code>.</p>
+</div>
+
+<!-- ===== MISC ===== -->
+<h2 id="misc">Browser, Memory &amp; Misc</h2>
+
+<div class="qa">
+  <p class="qa-q">Is JavaScript single-threaded?</p>
+  <p class="qa-a">The main thread runs one call stack — yes, single-threaded for your JS code. Web Workers and Node worker threads run JS on separate threads with separate stacks and no shared DOM. Async concurrency on main is cooperative via the event loop, not parallel execution.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What causes memory leaks?</p>
+  <p class="qa-a">Forgotten event listeners, closures holding references to large/detached objects, accumulating global variables, detached DOM nodes still referenced in JS, uncleared <code>setInterval</code>/<code>setTimeout</code>, and unbounded caches. Fix: remove listeners, null references, use WeakMap for object-keyed caches.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>for...in</code> vs <code>for...of</code>?</p>
+  <p class="qa-a"><code>for...in</code> iterates enumerable property <strong>keys</strong> (strings) on objects — includes prototype chain; avoid on arrays (gives indices as strings). <code>for...of</code> iterates <strong>values</strong> of iterables — arrays, strings, Map, Set, generators.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is strict mode?</p>
+  <p class="qa-a"><code>"use strict"</code> enables stricter parsing and runtime: no accidental global variables, <code>this</code> is <code>undefined</code> in plain function calls, duplicate parameter names are errors, silent failures (assigning to non-writable property) throw. ES modules are strict by default.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q"><code>null</code> vs <code>undefined</code>?</p>
+  <p class="qa-a"><code>undefined</code> — variable declared but not assigned, missing function parameter, missing object property, function with no return. <code>null</code> — intentional assignment meaning "no value". <code>typeof undefined</code> is <code>"undefined"</code>; <code>typeof null</code> is <code>"object"</code>. In JSON, <code>undefined</code> is omitted; <code>null</code> is preserved.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does garbage collection work?</p>
+  <p class="qa-a">Mark-and-sweep: engine starts from roots (global object, call stack variables, closures), marks all reachable objects, then frees unreachable ones. Generational GC optimizes by collecting young objects more often. You cannot manually free memory — drop references when done.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Limitations of <code>JSON.stringify</code>?</p>
+  <p class="qa-a">Omits: <code>undefined</code>, functions, symbols, and non-enumerable properties. Converts <code>Date</code> to ISO string (not revived as Date on parse). No circular reference support (throws). <code>JSON.parse</code> doesn't restore types — everything becomes plain objects/arrays/strings/numbers/booleans/null.</p>
+</div>
+
+<p class="footer-note"><a href="javascript-notes.html">JavaScript Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

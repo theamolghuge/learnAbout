@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Implement from Memory</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../index.html">Index</a></p>
+<h1>Implement from Memory</h1>
+<p class="subtitle">Live coding drill checklist — write each blind in 10–15 minutes, then compare with notes. Pair with <a href="system-design.html">System Design</a>.</p>
+
+<h2>JavaScript</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Notes link</th></tr>
+  <tr><td>debounce(fn, delay)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>throttle(fn, limit)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>curry(fn)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>Function.prototype.bind polyfill</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>Promise.all polyfill</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>flatten array (recursive)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>deepClone (WeakMap for circular)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+  <tr><td>memoize(fn)</td><td><a href="../javascript/reference/javascript-notes.html#patterns">JS Notes §15</a></td></tr>
+</table>
+
+<h2>TypeScript</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Key points</th></tr>
+  <tr><td>Generic <code>getProperty&lt;T,K&gt;</code></td><td><code>K extends keyof T</code>, return <code>T[K]</code></td></tr>
+  <tr><td>Discriminated union + exhaustive switch</td><td><code>never</code> in default case</td></tr>
+  <tr><td>Type guard <code>isUser(x): x is User</code></td><td>Runtime check + predicate</td></tr>
+  <tr><td><code>Partial&lt;Pick&lt;User, "email"&gt;&gt;</code> update DTO</td><td>Utility type composition</td></tr>
+</table>
+
+<h2>Node.js</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Notes link</th></tr>
+  <tr><td>Express middleware (auth)</td><td><a href="../nodejs/reference/nodejs-notes.html#express">Node Notes §9</a></td></tr>
+  <tr><td>Global error handler (4 args)</td><td><a href="../nodejs/reference/nodejs-notes.html#errors">Node Notes §12</a></td></tr>
+  <tr><td>Rate limiter (Map or Redis INCR)</td><td><a href="../nodejs/reference/nodejs-notes.html#messaging">Node Notes §19</a></td></tr>
+  <tr><td>Cache-aside with Redis</td><td><a href="../nodejs/reference/nodejs-notes.html#redis">Node Notes §15</a></td></tr>
+  <tr><td>Graceful shutdown (SIGTERM)</td><td><a href="../nodejs/reference/nodejs-notes.html#performance">Node Notes §20</a></td></tr>
+  <tr><td>EventEmitter pub/sub</td><td><a href="../nodejs/reference/nodejs-notes.html#eventemitter">Node Notes §5</a></td></tr>
+  <tr><td>Stream pipe (read → gzip → write)</td><td><a href="../nodejs/reference/nodejs-notes.html#streams">Node Notes §7</a></td></tr>
+  <tr><td>DB transaction (BEGIN/COMMIT/ROLLBACK)</td><td><a href="../nodejs/reference/nodejs-notes.html#database">Node Notes §14</a></td></tr>
+  <tr><td>JWT auth middleware</td><td><a href="../nodejs/reference/nodejs-notes.html#auth">Node Notes §13</a></td></tr>
+  <tr><td>asyncHandler wrapper</td><td><a href="../nodejs/reference/nodejs-notes.html#errors">Node Notes §12</a></td></tr>
+</table>
+
+<h2>React</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Notes link</th></tr>
+  <tr><td>useFetch / custom hook</td><td><a href="../reactjs/reference/reactjs-notes.html#hooks">React Notes §5</a></td></tr>
+  <tr><td>useDebounce hook</td><td><a href="../reactjs/reference/reactjs-notes.html#hooks">React Notes §5</a></td></tr>
+  <tr><td>Controlled form input</td><td><a href="../reactjs/reference/reactjs-notes.html#communication">React Notes §6</a></td></tr>
+  <tr><td>React Hook Form + Zod</td><td><a href="../reactjs/reference/reactjs-notes.html#communication">React Notes §6</a></td></tr>
+  <tr><td>Context provider + useContext</td><td><a href="../reactjs/reference/reactjs-notes.html#hooks">React Notes §5</a></td></tr>
+  <tr><td>React.memo + useCallback child</td><td><a href="../reactjs/reference/reactjs-notes.html#performance">React Notes §9</a></td></tr>
+  <tr><td>lazy + Suspense route</td><td><a href="../reactjs/reference/reactjs-notes.html#performance">React Notes §9</a></td></tr>
+  <tr><td>Error boundary class</td><td><a href="../reactjs/reference/reactjs-notes.html#performance">React Notes §9</a></td></tr>
+  <tr><td>useEffect fetch + AbortController cleanup</td><td><a href="../reactjs/reference/reactjs-notes.html#hooks">React Notes §5</a></td></tr>
+</table>
+
+<h2>Next.js</h2>
+<table class="ref">
+  <tr><th>Pattern</th><th>Notes link</th></tr>
+  <tr><td>Async Server Component + fetch revalidate</td><td><a href="../nextjs/reference/nextjs-notes.html#data">Next.js Notes §4</a></td></tr>
+  <tr><td>Server Action + revalidatePath</td><td><a href="../nextjs/reference/nextjs-notes.html#actions">Next.js Notes §7</a></td></tr>
+  <tr><td>Route Handler GET/POST</td><td><a href="../nextjs/reference/nextjs-notes.html#api">Next.js Notes §8</a></td></tr>
+  <tr><td>Middleware auth redirect</td><td><a href="../nextjs/reference/nextjs-notes.html#middleware">Next.js Notes §9</a></td></tr>
+  <tr><td>Client Component with "use client"</td><td><a href="../nextjs/reference/nextjs-notes.html#rsc">Next.js Notes §3</a></td></tr>
+</table>
+
+<h2>Drill session (60 min)</h2>
+<ol>
+  <li>Pick 2 from JavaScript (debounce + Promise.all)</li>
+  <li>Pick 1 from Node (rate limiter or cache-aside)</li>
+  <li>Pick 1 from React (custom useFetch or controlled form)</li>
+  <li>Pick 1 from Next.js (Server Action or middleware auth)</li>
+  <li>Pick 1 TypeScript (discriminated union or generic utility)</li>
+  <li>Say out loud: event loop order, auth vs authz, React Query vs Redux</li>
+</ol>
+
+<h2>Self-check questions</h2>
+<ul>
+  <li>Did I handle edge cases (empty array, zero delay, unmount)?</li>
+  <li>Did I use <code>this</code> correctly in debounce/throttle?</li>
+  <li>Did Node middleware call <code>next()</code> or send response?</li>
+  <li>Did React effect return cleanup?</li>
+  <li>Did TypeScript narrow before using <code>unknown</code>?</li>
+</ul>
+
+<p class="footer-note"><a href="../index.html">Index</a> · <a href="system-design.html">System Design</a></p>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3 · Time Blocking and the Shutdown Ritual</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="../reference/quick-reference.html">Quick reference</a>
+    <span>·</span>
+    <a href="./0002-designing-your-environment.html">← Lesson 2</a>
+    <span>·</span>
+    <a href="./0004-choosing-your-few-things.html">Next: Lesson 4 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 3 of 4 · ~9 min · Building a system</div>
+  <h1>Time Blocking and the Shutdown Ritual</h1>
+  <p class="subtitle">Lessons 1 and 2 gave you one good session. This lesson turns that into something you can repeat every day without renegotiating it with yourself each morning.</p>
+  <div class="meta">Builds on Lessons 1 &amp; 2: attention residue, the cost of interruption, and answering internal/external triggers. If those aren't familiar yet, start at <a href="./0001-why-attention-fragments.html">Lesson 1</a>.</div>
+
+  <h2>Why a to-do list isn't enough</h2>
+
+  <p>A to-do list tells you what needs doing. It doesn't tell you <em>when</em>, which means the easiest, shallowest item on it — the one that takes no courage to start — is the one you'll do first, every time. Deep work never has a natural claim on your day; something has to reserve time for it in advance, or shallow work will eat all of it without you deciding that on purpose.</p>
+
+  <p>Cal Newport's fix, refined over fifteen years of his own practice: <strong>time blocking</strong>. Instead of a flat list, you partition your working hours into blocks, and every block gets exactly one assignment — a specific deep-work task, or a batch of shallow tasks grouped together. The block is the unit, not the item.</p>
+
+  <h2>How to actually do it</h2>
+
+  <ol>
+    <li>Before the day starts (or the night before), write down the hours you'll actually work.</li>
+    <li>Assign each block one thing. Deep, cognitively demanding work gets its own block — never squeezed into "whatever's left." Shallow tasks (email, admin, quick replies) get batched into one or two blocks instead of scattered through the day.</li>
+    <li>When a block overruns — and it will — don't just keep going and hope the rest of the day absorbs it. Immediately re-block the remaining hours around the new reality. The plan updates; it doesn't get abandoned.</li>
+    <li>Leave one buffer block most days. A schedule with zero slack breaks the first time reality disagrees with it, and then you stop trusting the method.</li>
+  </ol>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What should you do when a time block overruns?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice" data-correct="true">Immediately reschedule the remainder</button>
+      <button class="quiz-choice">Continue that same task</button>
+      <button class="quiz-choice">Skip your next meal</button>
+      <button class="quiz-choice">Abandon planning entirely today</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="callout callout-exercise">
+    <span class="callout-label">Exercise — build today's (or tomorrow's) blocks</span>
+    Add two or three real blocks below — a start time, an end time, and one specific task each. Put your deep-work block in first, at the time of day you're actually sharpest. This is saved in your browser, so it'll still be here if you close the tab.
+    <div class="block-form" style="margin-top:1em;">
+      <input type="time" id="block-start" value="09:00">
+      <input type="time" id="block-end" value="10:30">
+      <input type="text" id="block-task" placeholder="What happens in this block? (be specific)">
+      <button class="quiz-btn" id="block-add">Add block</button>
+    </div>
+    <ul class="block-list" id="block-list"></ul>
+  </div>
+
+  <h2>Closing the day on purpose</h2>
+
+  <p>You met attention residue in Lesson 1: an unfinished task keeps consuming attention even after you've stopped working on it. Left unmanaged, this doesn't just cost you the next 20 minutes — it costs you the evening. Open work loops are exactly the kind of unfinished, unresolved thing that lingers.</p>
+
+  <p>Newport's countermeasure is a fixed <strong>shutdown ritual</strong>: a short sequence, done at the same point every day, whose job is to make sure every open loop has either a trusted plan or a safe place to be captured — so your brain has permission to stop tracking it. He ends his with a spoken phrase, "shutdown complete," specifically because saying something out loud creates a clearer boundary than just closing a laptop.</p>
+
+  <div class="callout callout-exercise">
+    <span class="callout-label">Exercise — draft your shutdown ritual</span>
+    <ul class="checklist" style="margin-top:0.6em;">
+      <li><label><input type="checkbox"> Scan today's open tasks — for each unfinished one, either write its next concrete step or move it to tomorrow's block plan.</label></li>
+      <li><label><input type="checkbox"> Check calendar/inbox once, only to confirm nothing urgent is on fire — not to process it.</label></li>
+      <li><label><input type="checkbox"> Glance at tomorrow's first block, so the day has a known starting point.</label></li>
+    </ul>
+    <div style="margin-top:1em;">
+      <input type="text" class="quiz-input" id="phrase-input" placeholder="Your closing phrase (say it out loud when you're done — e.g. 'Shutdown complete')">
+      <button class="quiz-btn" id="phrase-save">Save my phrase</button>
+      <div class="quiz-feedback" id="phrase-feedback"></div>
+    </div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What's the purpose of the shutdown ritual's closing phrase?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice" data-correct="true">Signal work is over</button>
+      <button class="quiz-choice">Track total hours worked</button>
+      <button class="quiz-choice">Remind you of deadlines</button>
+      <button class="quiz-choice">Replace your daily planner</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>The full loop, three lessons in</h2>
+  <p>Know the mechanism (residue, recovery time, internal triggers dominate) → remove external triggers with friction, answer internal ones with a rehearsed if-then plan → schedule the day in defended blocks and close it with a deliberate ritual so residue doesn't bleed into tomorrow. That's a complete, repeatable system, not just one good session.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Primary source: Cal Newport, <em>Deep Work</em> (the "Work Deeply" chapter covers time blocking and the shutdown ritual in full) — see <a href="https://www.calnewport.com/books/deep-work/">calnewport.com</a> or the companion <a href="https://www.timeblockplanner.com/">Time-Block Planner</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, skeptical, or curious?</span>
+    If your work doesn't run on fixed hours (shift work, caregiving, unpredictable interrupts), the rigid version of time blocking won't fit — tell me and I'll help you adapt it instead of forcing the standard version.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0002-designing-your-environment.html">← Lesson 2</a>
+    <a href="./0004-choosing-your-few-things.html">Lesson 4: Choosing Your Few Things →</a>
+  </p>
+
+</div>
+
+<script>
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var buttons = quiz.querySelectorAll('.quiz-choice');
+    var feedback = quiz.querySelector('.quiz-feedback');
+    var answered = false;
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (answered) return;
+        answered = true;
+        var correct = btn.getAttribute('data-correct') === 'true';
+        buttons.forEach(function(b) {
+          if (b.getAttribute('data-correct') === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        feedback.textContent = correct
+          ? 'Correct.'
+          : 'Not quite — the correct answer is highlighted above.';
+        feedback.classList.add('show', correct ? 'correct' : 'incorrect');
+      });
+    });
+  });
+
+  (function() {
+    var listEl = document.getElementById('block-list');
+    var startEl = document.getElementById('block-start');
+    var endEl = document.getElementById('block-end');
+    var taskEl = document.getElementById('block-task');
+    var addBtn = document.getElementById('block-add');
+    var STORE_KEY = 'attn-workspace-blocks';
+
+    function load() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+      catch (e) { return []; }
+    }
+    function save(blocks) {
+      localStorage.setItem(STORE_KEY, JSON.stringify(blocks));
+    }
+    function render() {
+      var blocks = load();
+      listEl.innerHTML = '';
+      if (blocks.length === 0) {
+        var li = document.createElement('li');
+        li.className = 'block-empty';
+        li.style.border = 'none';
+        li.textContent = 'No blocks yet — add your first one above.';
+        listEl.appendChild(li);
+        return;
+      }
+      blocks.forEach(function(b, i) {
+        var li = document.createElement('li');
+        var time = document.createElement('span');
+        time.className = 'block-time';
+        time.textContent = b.start + '–' + b.end;
+        var task = document.createElement('span');
+        task.className = 'block-task';
+        task.textContent = b.task;
+        var remove = document.createElement('button');
+        remove.className = 'block-remove';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', function() {
+          var blocks2 = load();
+          blocks2.splice(i, 1);
+          save(blocks2);
+          render();
+        });
+        li.appendChild(time);
+        li.appendChild(task);
+        li.appendChild(remove);
+        listEl.appendChild(li);
+      });
+    }
+
+    addBtn.addEventListener('click', function() {
+      var task = taskEl.value.trim();
+      if (!task || !startEl.value || !endEl.value) return;
+      var blocks = load();
+      blocks.push({ start: startEl.value, end: endEl.value, task: task });
+      blocks.sort(function(a, b) { return a.start.localeCompare(b.start); });
+      save(blocks);
+      taskEl.value = '';
+      render();
+    });
+
+    render();
+  })();
+
+  (function() {
+    var input = document.getElementById('phrase-input');
+    var btn = document.getElementById('phrase-save');
+    var fb = document.getElementById('phrase-feedback');
+    var KEY = 'attn-shutdown-phrase';
+    var saved = localStorage.getItem(KEY);
+    if (saved) input.value = saved;
+
+    btn.addEventListener('click', function() {
+      var val = input.value.trim();
+      fb.classList.add('show');
+      if (!val) {
+        fb.textContent = 'Write a short phrase first — it only works if it\'s specific enough to say out loud.';
+        fb.classList.remove('correct');
+        fb.classList.add('incorrect');
+        return;
+      }
+      localStorage.setItem(KEY, val);
+      fb.textContent = 'Saved. Say "' + val + '" out loud at the end of your next work session — that\'s the actual ritual, not the text field.';
+      fb.classList.remove('incorrect');
+      fb.classList.add('correct');
+    });
+  })();
+</script>
+</body>
+</html>

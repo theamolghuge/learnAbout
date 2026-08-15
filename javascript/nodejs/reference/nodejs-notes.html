@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Node.js Notes — Senior Interview Prep</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">← Interview Prep</a></p>
+<h1>Node.js Notes</h1>
+<p class="subtitle">Senior-level guide: runtime internals, backend patterns, distributed systems, and production ops.</p>
+
+<nav class="toc">
+<strong>On this page</strong><br>
+<a href="#study-guide">Study Guide</a> ·
+<a href="#architecture">Architecture / V8 / libuv</a> ·
+<a href="#modules">Modules</a> ·
+<a href="#async">Async / Promises</a> ·
+<a href="#event-loop">Event Loop</a> ·
+<a href="#event-emitter">EventEmitter</a> ·
+<a href="#buffers">Buffers</a> ·
+<a href="#streams">Streams</a> ·
+<a href="#http">HTTP</a> ·
+<a href="#express">Express / Middleware</a> ·
+<a href="#rest">REST</a> ·
+<a href="#validation">Validation</a> ·
+<a href="#errors">Error Handling</a> ·
+<a href="#auth">Auth</a> ·
+<a href="#sql">SQL / Transactions / Prisma</a> ·
+<a href="#mongodb">MongoDB vs SQL</a> ·
+<a href="#redis">Redis / Caching</a> ·
+<a href="#security">Security</a> ·
+<a href="#testing">Testing / Logging</a> ·
+<a href="#workers">Workers / Cluster</a> ·
+<a href="#queues">Queues / Kafka / WebSockets / GraphQL / Rate Limiting</a> ·
+<a href="#grpc">gRPC vs REST</a> ·
+<a href="#performance">Performance</a> ·
+<a href="#docker">Docker / CI/CD / AWS</a> ·
+<a href="#nginx">Nginx Reverse Proxy</a> ·
+<a href="#kubernetes">Kubernetes</a> ·
+<a href="#openapi">OpenAPI / Swagger</a> ·
+<a href="#twelve-factor">12-Factor App</a> ·
+<a href="#versioning">API Versioning</a> ·
+<a href="#distributed">Distributed Systems</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="study-guide">Study Guide</h2>
+
+<h3>Tier 1 — Must know cold</h3>
+<ul>
+  <li>Event loop phases, microtasks vs macrotasks, <code>setImmediate</code> vs <code>process.nextTick</code></li>
+  <li>CommonJS vs ESM, module caching, circular dependencies</li>
+  <li>Promises, async/await, error propagation, unhandled rejections</li>
+  <li>Streams (readable/writable/transform), backpressure, piping</li>
+  <li>Express middleware chain, error middleware, request lifecycle</li>
+  <li>REST design, status codes, idempotency, pagination</li>
+  <li>JWT vs sessions, bcrypt, middleware auth patterns</li>
+  <li>SQL basics: indexes, transactions, N+1, connection pooling</li>
+  <li>Redis caching patterns: cache-aside, TTL, invalidation</li>
+  <li>Security: OWASP top items, helmet, rate limiting, input validation</li>
+</ul>
+
+<h3>Tier 2 — Senior differentiators</h3>
+<ul>
+  <li>Cluster module vs worker threads — when to use each</li>
+  <li>Prisma migrations, raw queries, transaction isolation levels</li>
+  <li>MongoDB vs SQL trade-offs, aggregation pipeline basics</li>
+  <li>Message queues (Bull/BullMQ, SQS), at-least-once vs exactly-once</li>
+  <li>WebSockets vs SSE, GraphQL N+1 and DataLoader</li>
+  <li>gRPC vs REST — protocol choice for microservices</li>
+  <li>Docker multi-stage builds, health checks, CI/CD pipelines</li>
+  <li>Nginx reverse proxy, load balancing, SSL termination</li>
+  <li>OpenAPI/Swagger for contract-first APIs</li>
+  <li>12-factor app principles in practice</li>
+  <li>API versioning strategies</li>
+  <li>Distributed patterns: Saga, Outbox, CQRS, idempotency keys</li>
+</ul>
+
+<h3>Tier 3 — Staff / system design depth</h3>
+<ul>
+  <li>Kubernetes: pods, services, deployments, HPA, config maps</li>
+  <li>Kafka: partitions, consumer groups, offset management</li>
+  <li>Performance profiling: clinic.js, 0x, flame graphs, event loop lag</li>
+  <li>AWS: ECS/EKS, RDS, ElastiCache, ALB, IAM roles for tasks</li>
+  <li>Observability: structured logging, correlation IDs, OpenTelemetry</li>
+  <li>CAP theorem applied, eventual consistency, conflict resolution</li>
+  <li>Rate limiting algorithms: token bucket, sliding window</li>
+</ul>
+
+<h3>Recommended learning order</h3>
+<ol>
+  <li>Architecture → Modules → Async → Event Loop (foundation)</li>
+  <li>Buffers → Streams → HTTP (I/O layer)</li>
+  <li>Express → REST → Validation → Errors → Auth (API layer)</li>
+  <li>SQL/Prisma → MongoDB comparison → Redis (data layer)</li>
+  <li>Security → Testing/Logging (production hygiene)</li>
+  <li>Workers/Cluster → Queues/Kafka → WebSockets/GraphQL (scale &amp; realtime)</li>
+  <li>gRPC → Performance → Docker/CI/CD → Nginx → K8s (ops &amp; infra)</li>
+  <li>OpenAPI → 12-Factor → Versioning → Distributed Systems (architecture maturity)</li>
+</ol>
+
+<h3>Senior Developer Core</h3>
+<p>A senior Node.js developer should be able to:</p>
+<ul>
+  <li>Explain why blocking the event loop is catastrophic and how to detect/fix it</li>
+  <li>Design RESTful APIs with proper error contracts, versioning, and documentation</li>
+  <li>Choose between SQL and MongoDB (or both) with clear trade-off reasoning</li>
+  <li>Implement auth securely (hashing, token rotation, RBAC) without rolling custom crypto</li>
+  <li>Handle failures gracefully: retries with backoff, circuit breakers, dead-letter queues</li>
+  <li>Write idempotent handlers for distributed systems (payment webhooks, queue consumers)</li>
+  <li>Profile and optimize: connection pools, caching layers, stream-based processing</li>
+  <li>Ship with CI/CD, containerization, health checks, and structured observability</li>
+  <li>Discuss Saga, Outbox, and CQRS patterns when asked about microservices consistency</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="architecture">Architecture / V8 / libuv</h2>
+
+<p>Node.js is a JavaScript runtime built on Chrome's <strong>V8</strong> engine and <strong>libuv</strong>, a C library providing the event loop, thread pool, and async I/O.</p>
+
+<h3>Key components</h3>
+<ul>
+  <li><strong>V8</strong> — compiles JS to machine code, manages heap/GC. Single-threaded for JS execution.</li>
+  <li><strong>libuv</strong> — event loop (epoll/kqueue/IOCP), thread pool (default 4 threads) for file I/O, DNS, crypto, compression.</li>
+  <li><strong>Node bindings</strong> — C++ layer connecting V8 to libuv and OS APIs.</li>
+</ul>
+
+<h3>Thread model</h3>
+<ul>
+  <li>One main thread runs JS + event loop.</li>
+  <li>libuv thread pool handles blocking OS calls (fs, some crypto, zlib).</li>
+  <li><code>worker_threads</code> spawn separate V8 isolates for CPU-bound work.</li>
+  <li><code>cluster</code> forks processes to use multiple CPU cores for I/O-bound servers.</li>
+</ul>
+
+<pre class="code">// CPU-bound work blocks the event loop — offload it
+const { Worker } = require('worker_threads');
+new Worker('./hash-worker.js', { workerData: bigPayload });</pre>
+
+<!-- ============================================================ -->
+<h2 id="modules">Modules</h2>
+
+<h3>CommonJS (CJS)</h3>
+<pre class="code">const fs = require('fs');
+module.exports = { readConfig };
+// require() is synchronous; modules are cached after first load</pre>
+
+<h3>ES Modules (ESM)</h3>
+<pre class="code">import fs from 'node:fs/promises';
+export default function handler() {}
+// "type": "module" in package.json enables ESM by default</pre>
+
+<h3>Important behaviors</h3>
+<ul>
+  <li>Module cache: <code>require.cache</code> — same module instance on repeated imports.</li>
+  <li>Circular deps: partially evaluated exports (often <code>undefined</code>) until both finish loading.</li>
+  <li>Dynamic import: <code>await import('./module.js')</code> — async, works in CJS too.</li>
+  <li>Path resolution: <code>node_modules</code> lookup, <code>package.json</code> <code>exports</code> field (conditional exports).</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="async">Async / Promises</h2>
+
+<h3>Callback → Promise → async/await evolution</h3>
+<pre class="code">// Promisify legacy callbacks
+const { promisify } = require('util');
+const readFile = promisify(fs.readFile);
+
+// Parallel vs sequential
+const [a, b] = await Promise.all([fetchA(), fetchB()]);
+const results = await Promise.allSettled(tasks); // never rejects</pre>
+
+<h3>Error handling rules</h3>
+<ul>
+  <li><code>async</code> functions always return a Promise; thrown errors become rejections.</li>
+  <li><code>try/catch</code> around <code>await</code> — mandatory for per-call error handling.</li>
+  <li><code>process.on('unhandledRejection')</code> — log and exit in production (Node 15+ warns, later crashes).</li>
+  <li>Never mix callbacks and Promises in the same function without careful bridging.</li>
+</ul>
+
+<h3>Utility patterns</h3>
+<ul>
+  <li><code>Promise.race</code> — timeout wrappers</li>
+  <li><code>AbortController</code> — cancel fetch/streams</li>
+  <li>Retry with exponential backoff + jitter for transient failures</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="event-loop">Event Loop</h2>
+
+<p>The event loop is libuv's mechanism for scheduling callbacks. Understanding phases is the #1 Node.js interview topic.</p>
+
+<h3>Phases (in order)</h3>
+<ol>
+  <li><strong>timers</strong> — <code>setTimeout</code>, <code>setInterval</code> callbacks</li>
+  <li><strong>pending callbacks</strong> — I/O callbacks deferred from previous iteration</li>
+  <li><strong>idle, prepare</strong> — internal use</li>
+  <li><strong>poll</strong> — retrieve new I/O events; may block here</li>
+  <li><strong>check</strong> — <code>setImmediate</code> callbacks</li>
+  <li><strong>close callbacks</strong> — e.g. <code>socket.on('close')</code></li>
+</ol>
+
+<h3>Microtasks vs macrotasks</h3>
+<ul>
+  <li><strong>Microtasks</strong> (between every phase): Promise callbacks (<code>.then</code>, <code>await</code>), <code>queueMicrotask</code></li>
+  <li><strong>nextTick queue</strong> (highest priority): <code>process.nextTick</code> — runs before other microtasks; can starve I/O if abused</li>
+  <li><strong>Macrotasks</strong>: timers, I/O, setImmediate</li>
+</ul>
+
+<pre class="code">console.log('1');
+setTimeout(() => console.log('2'), 0);
+Promise.resolve().then(() => console.log('3'));
+process.nextTick(() => console.log('4'));
+// Output: 1, 4, 3, 2</pre>
+
+<h3>Blocking the loop</h3>
+<p>Synchronous CPU work (JSON.parse of huge files, bcrypt rounds, tight loops) delays all I/O. Monitor with <code>perf_hooks</code> or <code>event-loop-lag</code> npm package.</p>
+
+<!-- ============================================================ -->
+<h2 id="event-emitter">EventEmitter</h2>
+
+<p>Node's pub/sub pattern. Core classes (<code>Stream</code>, <code>net.Server</code>, <code>process</code>) extend EventEmitter.</p>
+
+<pre class="code">const EventEmitter = require('events');
+class OrderService extends EventEmitter {
+  placeOrder(order) {
+    this.emit('order:placed', order);
+  }
+}
+const svc = new OrderService();
+svc.on('order:placed', (o) => console.log(o));
+svc.setMaxListeners(20); // avoid MaxListenersExceededWarning in large apps</pre>
+
+<ul>
+  <li><code>once</code> — auto-remove after first fire</li>
+  <li><code>error</code> event — if unhandled and no listener, process crashes</li>
+  <li><code>EventEmitter.asyncIterator</code> — consume events with <code>for await</code></li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="buffers">Buffers</h2>
+
+<p>Fixed-size raw memory for binary data. <code>Buffer</code> is a subclass of <code>Uint8Array</code>.</p>
+
+<pre class="code">const buf = Buffer.from('hello', 'utf8');
+buf.toString('base64');
+Buffer.alloc(1024);       // zero-filled (safe)
+Buffer.allocUnsafe(1024); // faster, may contain old data</pre>
+
+<ul>
+  <li>Use Buffers for TCP streams, file chunks, crypto operations.</li>
+  <li><code>Buffer.concat([buf1, buf2])</code> — combine chunks from streams.</li>
+  <li>Prefer <code>TextEncoder</code>/<code>TextDecoder</code> for string/binary in modern code.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="streams">Streams</h2>
+
+<p>Process data chunk-by-chunk instead of loading everything into memory.</p>
+
+<h3>Types</h3>
+<ul>
+  <li><strong>Readable</strong> — source (<code>fs.createReadStream</code>, HTTP request body)</li>
+  <li><strong>Writable</strong> — sink (<code>fs.createWriteStream</code>, HTTP response)</li>
+  <li><strong>Duplex</strong> — both (TCP socket)</li>
+  <li><strong>Transform</strong> — modify data in transit (<code>zlib.createGzip</code>)</li>
+</ul>
+
+<h3>Backpressure</h3>
+<pre class="code">writable.write(chunk);
+// if write() returns false, pause readable until 'drain'
+readable.on('data', (chunk) => {
+  if (!writable.write(chunk)) readable.pause();
+});
+writable.on('drain', () => readable.resume());
+
+// Or use pipeline (handles errors + backpressure)
+const { pipeline } = require('stream/promises');
+await pipeline(readable, transform, writable);</pre>
+
+<h3>Object mode</h3>
+<p>Streams can carry JS objects instead of Buffers (<code>{ objectMode: true }</code>) — useful for parsing pipelines.</p>
+
+<!-- ============================================================ -->
+<h2 id="http">HTTP</h2>
+
+<pre class="code">import http from 'node:http';
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ ok: true }));
+});
+server.listen(3000);</pre>
+
+<ul>
+  <li><code>http.Agent</code> — connection pooling for outbound requests (<code>keepAlive: true</code>)</li>
+  <li><code>node:http2</code> — multiplexing, server push (rarely used in Node APIs)</li>
+  <li>Prefer <code>fetch</code> (Node 18+) or <code>undici</code> for client requests</li>
+  <li>Always set timeouts: <code>server.requestTimeout</code>, <code>server.headersTimeout</code></li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="express">Express / Middleware</h2>
+
+<p>Express is a minimal web framework. Everything is middleware — functions with signature <code>(req, res, next)</code>.</p>
+
+<pre class="code">app.use(express.json({ limit: '1mb' }));
+app.use('/api', authMiddleware);
+
+app.get('/users/:id', async (req, res, next) => {
+  try {
+    const user = await userService.find(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Not found' });
+    res.json(user);
+  } catch (err) { next(err); }
+});
+
+// Error middleware — 4 args, must be last
+app.use((err, req, res, next) => {
+  logger.error(err);
+  res.status(err.status || 500).json({ error: err.message });
+});</pre>
+
+<h3>Middleware order matters</h3>
+<ol>
+  <li>Security (helmet, cors, rate limiter)</li>
+  <li>Body parsers</li>
+  <li>Authentication</li>
+  <li>Routes</li>
+  <li>404 handler</li>
+  <li>Error handler</li>
+</ol>
+
+<h3>Alternatives</h3>
+<p>Fastify (schema validation, faster), Koa (async middleware via <code>ctx</code>), Hono (edge/lightweight), NestJS (opinionated, DI, decorators).</p>
+
+<!-- ============================================================ -->
+<h2 id="rest">REST</h2>
+
+<h3>Design principles</h3>
+<ul>
+  <li>Resources as nouns: <code>/users</code>, <code>/orders/{id}</code></li>
+  <li>HTTP verbs: GET (read), POST (create), PUT (replace), PATCH (partial), DELETE</li>
+  <li>Status codes: 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Too Many Requests, 500 Internal Error</li>
+  <li>Idempotency: GET, PUT, DELETE are idempotent; POST is not</li>
+</ul>
+
+<h3>Pagination</h3>
+<pre class="code">GET /users?cursor=abc123&limit=20
+// Response: { data: [...], nextCursor: "def456", hasMore: true }</pre>
+
+<h3>HATEOAS (optional at senior level)</h3>
+<p>Include links in responses: <code>{ "id": 1, "_links": { "self": "/users/1", "orders": "/users/1/orders" } }</code></p>
+
+<!-- ============================================================ -->
+<h2 id="validation">Validation</h2>
+
+<p>Validate at the boundary — never trust client input.</p>
+
+<pre class="code">// Zod example
+const CreateUser = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(18),
+});
+const parsed = CreateUser.safeParse(req.body);
+if (!parsed.success) return res.status(422).json(parsed.error.flatten());</pre>
+
+<ul>
+  <li><strong>Zod</strong> — TypeScript-first, infer types from schemas</li>
+  <li><strong>Joi</strong> — mature, widely used in Express apps</li>
+  <li><strong>class-validator</strong> — NestJS decorator-based</li>
+  <li>Validate params, query, body, and headers separately</li>
+  <li>Sanitize strings (trim, escape HTML) before storage</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="errors">Error Handling</h2>
+
+<h3>Operational vs programmer errors</h3>
+<ul>
+  <li><strong>Operational</strong> — expected failures (404, validation, network timeout). Handle gracefully.</li>
+  <li><strong>Programmer</strong> — bugs (TypeError, null reference). Log, alert, possibly crash process.</li>
+</ul>
+
+<pre class="code">class AppError extends Error {
+  constructor(message, status = 500, code = 'INTERNAL') {
+    super(message);
+    this.status = status;
+    this.code = code;
+    this.isOperational = true;
+  }
+}</pre>
+
+<ul>
+  <li>Centralized error middleware in Express</li>
+  <li>Never expose stack traces in production responses</li>
+  <li><code>process.on('uncaughtException')</code> — log and graceful shutdown (don't continue serving)</li>
+  <li>Correlation IDs in logs to trace requests across services</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="auth">Auth</h2>
+
+<h3>Session-based</h3>
+<ul>
+  <li>Server stores session (Redis/DB); client gets session cookie (<code>httpOnly</code>, <code>secure</code>, <code>sameSite</code>)</li>
+  <li>Good for traditional web apps, easy revocation</li>
+</ul>
+
+<h3>JWT (stateless)</h3>
+<ul>
+  <li>Access token (short-lived, 15 min) + refresh token (long-lived, stored securely)</li>
+  <li>Payload: <code>{ sub, roles, iat, exp }</code> — don't store sensitive data (JWT is base64, not encrypted)</li>
+  <li>Verify signature on every request; rotate refresh tokens</li>
+</ul>
+
+<h3>Password storage</h3>
+<pre class="code">const hash = await bcrypt.hash(password, 12); // cost factor 10-12
+const valid = await bcrypt.compare(password, hash);</pre>
+
+<h3>OAuth 2.0 / OIDC</h3>
+<p>Delegate auth to providers (Google, GitHub). Use Passport.js or openid-client. Authorization Code flow with PKCE for SPAs.</p>
+
+<h3>RBAC / ABAC</h3>
+<p>Role-based (admin, editor) or attribute-based (owner of resource). Check permissions in middleware, not just authentication.</p>
+
+<!-- ============================================================ -->
+<h2 id="sql">SQL / Transactions / Prisma</h2>
+
+<h3>Core concepts</h3>
+<ul>
+  <li><strong>Indexes</strong> — B-tree default; composite index column order matters</li>
+  <li><strong>Transactions</strong> — ACID; use for multi-step writes that must succeed or fail together</li>
+  <li><strong>Isolation levels</strong> — Read Committed (default PG), Repeatable Read, Serializable</li>
+  <li><strong>N+1 problem</strong> — fix with JOINs or eager loading (<code>include</code> in Prisma)</li>
+</ul>
+
+<pre class="code">// Prisma transaction
+await prisma.$transaction(async (tx) => {
+  const account = await tx.account.update({
+    where: { id: fromId },
+    data: { balance: { decrement: amount } },
+  });
+  await tx.account.update({
+    where: { id: toId },
+    data: { balance: { increment: amount } },
+  });
+});</pre>
+
+<h3>Connection pooling</h3>
+<p>Use PgBouncer or Prisma Accelerate in serverless. Set pool size based on: <code>connections = (core_count * 2) + effective_spindle_count</code> — don't exceed DB max connections.</p>
+
+<!-- ============================================================ -->
+<h2 id="mongodb">MongoDB vs SQL</h2>
+
+<table class="ref">
+<tr><th>Aspect</th><th>SQL (PostgreSQL)</th><th>MongoDB</th></tr>
+<tr><td>Data model</td><td>Relational, normalized tables</td><td>Document (BSON), flexible schema</td></tr>
+<tr><td>Schema</td><td>Strict, migrations required</td><td>Schema-less (but enforce in app or JSON Schema)</td></tr>
+<tr><td>Joins</td><td>Native JOINs, powerful queries</td><td><code>$lookup</code> ( slower than SQL joins )</td></tr>
+<tr><td>Transactions</td><td>Mature, ACID default</td><td>Multi-doc ACID since 4.0 (replica set required)</td></tr>
+<tr><td>Scaling</td><td>Vertical + read replicas; sharding harder</td><td>Horizontal sharding built-in</td></tr>
+<tr><td>Best for</td><td>Complex relations, reporting, financial data</td><td>Rapid iteration, nested documents, high write throughput</td></tr>
+</table>
+
+<h3>When to use SQL</h3>
+<ul>
+  <li>Complex queries with multiple joins and aggregations</li>
+  <li>Strong consistency requirements (banking, inventory)</li>
+  <li>Well-defined schema that rarely changes</li>
+  <li>Need for foreign keys, constraints, and referential integrity</li>
+</ul>
+
+<h3>When to use MongoDB</h3>
+<ul>
+  <li>Document structure maps naturally to app objects (CMS, catalogs, IoT events)</li>
+  <li>Schema evolves frequently during early product stages</li>
+  <li>Horizontal scaling with sharding is a primary requirement</li>
+  <li>Geospatial queries, text search (Atlas Search)</li>
+</ul>
+
+<h3>Polyglot persistence</h3>
+<p>Many systems use PostgreSQL for transactional core + MongoDB/Elasticsearch for search/logs. Don't pick one database for everything.</p>
+
+<!-- ============================================================ -->
+<h2 id="redis">Redis / Caching</h2>
+
+<h3>Patterns</h3>
+<ul>
+  <li><strong>Cache-aside</strong> — app checks cache → miss → read DB → write cache</li>
+  <li><strong>Write-through</strong> — write to cache and DB simultaneously</li>
+  <li><strong>Write-behind</strong> — write cache first, async flush to DB (risk of data loss)</li>
+</ul>
+
+<pre class="code">async function getUser(id) {
+  const cached = await redis.get(`user:${id}`);
+  if (cached) return JSON.parse(cached);
+  const user = await db.users.find(id);
+  await redis.setex(`user:${id}`, 3600, JSON.stringify(user));
+  return user;
+}</pre>
+
+<h3>Redis data structures</h3>
+<ul>
+  <li>Strings — simple KV cache</li>
+  <li>Hashes — object fields</li>
+  <li>Sorted sets — leaderboards</li>
+  <li>Pub/Sub — lightweight messaging (no persistence)</li>
+  <li>Streams — persistent event log (lighter Kafka alternative)</li>
+</ul>
+
+<h3>Cache invalidation</h3>
+<p>Hardest problem in CS. Strategies: TTL expiry, event-driven invalidation (on write), versioned keys (<code>user:123:v2</code>).</p>
+
+<!-- ============================================================ -->
+<h2 id="security">Security</h2>
+
+<ul>
+  <li><strong>Helmet</strong> — sets security HTTP headers (CSP, HSTS, X-Frame-Options)</li>
+  <li><strong>CORS</strong> — whitelist origins; never <code>*</code> with credentials</li>
+  <li><strong>Rate limiting</strong> — express-rate-limit + Redis store for distributed apps</li>
+  <li><strong>Input validation</strong> — Zod/Joi at every entry point</li>
+  <li><strong>SQL injection</strong> — parameterized queries only (Prisma/ORM handles this)</li>
+  <li><strong>Secrets</strong> — env vars or vault; never commit .env</li>
+  <li><strong>Dependencies</strong> — <code>npm audit</code>, Dependabot, lock files</li>
+  <li><strong>CSRF</strong> — tokens for cookie-based auth; less relevant for JWT in Authorization header</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="testing">Testing / Logging</h2>
+
+<h3>Testing pyramid</h3>
+<ul>
+  <li><strong>Unit</strong> — Jest/Vitest, mock dependencies, fast</li>
+  <li><strong>Integration</strong> — supertest for HTTP, testcontainers for real DB/Redis</li>
+  <li><strong>E2E</strong> — full stack with Docker Compose</li>
+</ul>
+
+<pre class="code">// supertest example
+const res = await request(app).get('/api/users').set('Authorization', `Bearer ${token}`);
+expect(res.status).toBe(200);</pre>
+
+<h3>Logging</h3>
+<ul>
+  <li><strong>Structured logging</strong> — pino or winston with JSON output</li>
+  <li>Include: timestamp, level, requestId, userId, service name</li>
+  <li>Log levels: error (action needed), warn (investigate), info (business events), debug (dev only)</li>
+  <li>Ship logs to ELK, Datadog, or CloudWatch — don't rely on stdout alone in production</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="workers">Workers / Cluster</h2>
+
+<h3>Cluster module</h3>
+<pre class="code">const cluster = require('cluster');
+const os = require('os');
+if (cluster.isPrimary) {
+  for (let i = 0; i < os.cpus().length; i++) cluster.fork();
+  cluster.on('exit', (worker) => cluster.fork()); // auto-restart
+} else {
+  require('./server'); // each worker runs the HTTP server
+}</pre>
+<p>Forks processes — shared nothing. Good for I/O-bound HTTP servers. OS distributes connections.</p>
+
+<h3>Worker Threads</h3>
+<pre class="code">const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+if (isMainThread) {
+  new Worker(__filename, { workerData: { n: 40 } });
+} else {
+  const result = fibonacci(workerData.n);
+  parentPort.postMessage(result);
+}</pre>
+<p>Shared memory possible via <code>SharedArrayBuffer</code>. Use for CPU-bound tasks (image processing, PDF generation, heavy computation).</p>
+
+<table class="ref">
+<tr><th></th><th>Cluster</th><th>Worker Threads</th></tr>
+<tr><td>Unit</td><td>Process (separate memory)</td><td>Thread (can share memory)</td></tr>
+<tr><td>Best for</td><td>I/O-bound HTTP servers</td><td>CPU-bound computation</td></tr>
+<tr><td>Overhead</td><td>Higher (full process)</td><td>Lower (shared process)</td></tr>
+<tr><td>Crash isolation</td><td>One worker crash ≠ all down</td><td>Unhandled error can crash process</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="queues">Queues / Kafka / WebSockets / GraphQL / Rate Limiting</h2>
+
+<h3>Message queues</h3>
+<ul>
+  <li><strong>Bull/BullMQ</strong> — Redis-backed job queues for Node (email, reports, retries)</li>
+  <li><strong>AWS SQS</strong> — managed, at-least-once delivery, visibility timeout</li>
+  <li><strong>RabbitMQ</strong> — AMQP, routing, dead-letter exchanges</li>
+</ul>
+
+<h3>Apache Kafka</h3>
+<ul>
+  <li>Distributed commit log — topics partitioned across brokers</li>
+  <li>Consumer groups — each partition consumed by one consumer in group</li>
+  <li>Use for: event sourcing, log aggregation, stream processing, decoupling microservices</li>
+  <li>Node client: kafkajs — handle rebalances, idempotent producers</li>
+</ul>
+
+<h3>WebSockets</h3>
+<pre class="code">const { WebSocketServer } = require('ws');
+const wss = new WebSocketServer({ server });
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => ws.send(`echo: ${data}`));
+});</pre>
+<p>Full-duplex, persistent connection. Use for chat, live dashboards, collaborative editing. Consider SSE for server→client only (simpler, works through HTTP proxies).</p>
+
+<h3>GraphQL</h3>
+<ul>
+  <li>Single endpoint, client specifies shape of response</li>
+  <li>N+1 problem — solve with DataLoader (batch + cache per request)</li>
+  <li>Apollo Server or Mercurius (Fastify) for Node</li>
+  <li>Complexity limiting to prevent expensive queries</li>
+</ul>
+
+<h3>Rate limiting</h3>
+<ul>
+  <li><strong>Token bucket</strong> — tokens refill at fixed rate; burst allowed</li>
+  <li><strong>Sliding window</strong> — count requests in rolling time window</li>
+  <li>Implement at API gateway (Nginx, Kong) or app layer (express-rate-limit + Redis)</li>
+  <li>Return <code>429</code> with <code>Retry-After</code> header</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="grpc">gRPC vs REST</h2>
+
+<table class="ref">
+<tr><th>Aspect</th><th>REST</th><th>gRPC</th></tr>
+<tr><td>Protocol</td><td>HTTP/1.1 or HTTP/2, JSON</td><td>HTTP/2, Protocol Buffers (binary)</td></tr>
+<tr><td>Contract</td><td>OpenAPI/Swagger (optional)</td><td>.proto files (required, strict)</td></tr>
+<tr><td>Performance</td><td>Human-readable, larger payloads</td><td>Smaller payloads, faster serialization</td></tr>
+<tr><td>Streaming</td><td>SSE, WebSockets (separate)</td><td>Built-in bidirectional streaming</td></tr>
+<tr><td>Browser support</td><td>Native</td><td>Requires grpc-web proxy</td></tr>
+<tr><td>Tooling</td><td>Universal (curl, Postman)</td><td>grpcurl, specialized tools</td></tr>
+<tr><td>Best for</td><td>Public APIs, CRUD, broad clients</td><td>Internal microservices, low-latency, streaming</td></tr>
+</table>
+
+<h3>When to choose gRPC</h3>
+<ul>
+  <li>Service-to-service communication inside a cluster</li>
+  <li>High throughput, low latency requirements</li>
+  <li>Strong typing and code generation from .proto schemas</li>
+  <li>Bidirectional streaming (real-time feeds between services)</li>
+</ul>
+
+<h3>When to choose REST</h3>
+<ul>
+  <li>Public-facing APIs consumed by browsers and third parties</li>
+  <li>Simple CRUD with wide tooling support</li>
+  <li>Team familiarity and faster iteration without schema compilation</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="performance">Performance</h2>
+
+<ul>
+  <li><strong>Don't block the event loop</strong> — profile with clinic.js (doctor, bubbleprof, flame)</li>
+  <li><strong>Connection pooling</strong> — DB, Redis, HTTP keep-alive</li>
+  <li><strong>Streaming</strong> — never read entire files into memory</li>
+  <li><strong>Caching</strong> — Redis for hot data, CDN for static assets</li>
+  <li><strong>Compression</strong> — gzip/brotli middleware for responses</li>
+  <li><strong>Cluster/workers</strong> — utilize all CPU cores</li>
+  <li><strong>Lazy loading</strong> — dynamic imports for heavy modules</li>
+  <li><strong>Memory leaks</strong> — watch for growing closures, unremoved listeners, global caches without TTL</li>
+  <li><strong>JSON</strong> — consider flat buffers or protobuf for high-throughput internal APIs</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="docker">Docker / CI/CD / AWS</h2>
+
+<h3>Docker</h3>
+<pre class="code"># Multi-stage build
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+USER node
+EXPOSE 3000
+HEALTHCHECK CMD wget -qO- http://localhost:3000/health || exit 1
+CMD ["node", "dist/server.js"]</pre>
+
+<h3>CI/CD pipeline</h3>
+<ol>
+  <li>Lint + type check</li>
+  <li>Unit + integration tests</li>
+  <li>Build Docker image</li>
+  <li>Push to registry (ECR, GCR)</li>
+  <li>Deploy to staging → smoke tests → production</li>
+</ol>
+
+<h3>AWS common services</h3>
+<ul>
+  <li><strong>ECS/Fargate</strong> — container orchestration without managing servers</li>
+  <li><strong>RDS</strong> — managed PostgreSQL/MySQL</li>
+  <li><strong>ElastiCache</strong> — managed Redis</li>
+  <li><strong>ALB</strong> — load balancer with health checks, SSL termination</li>
+  <li><strong>SQS/SNS</strong> — messaging</li>
+  <li><strong>Secrets Manager</strong> — rotate credentials</li>
+  <li><strong>CloudWatch</strong> — logs, metrics, alarms</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="nginx">Nginx Reverse Proxy</h2>
+
+<p>Nginx sits in front of Node.js apps handling SSL, load balancing, static files, and rate limiting.</p>
+
+<pre class="code">upstream node_app {
+    least_conn;
+    server 127.0.0.1:3001;
+    server 127.0.0.1:3002;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.example.com;
+
+    ssl_certificate     /etc/ssl/cert.pem;
+    ssl_certificate_key /etc/ssl/key.pem;
+
+    location / {
+        proxy_pass http://node_app;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        alias /var/www/static/;
+        expires 30d;
+    }
+}</pre>
+
+<h3>Why use Nginx</h3>
+<ul>
+  <li>SSL/TLS termination — Node doesn't handle certs</li>
+  <li>Load balancing across cluster workers or multiple instances</li>
+  <li>Serve static assets efficiently (bypass Node entirely)</li>
+  <li>Rate limiting, request buffering, gzip compression</li>
+  <li>WebSocket proxy support</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="kubernetes">Kubernetes Basics</h2>
+
+<p>Kubernetes (K8s) orchestrates containers at scale — beyond what Docker Compose offers.</p>
+
+<h3>Core objects</h3>
+<ul>
+  <li><strong>Pod</strong> — smallest deployable unit; one or more containers sharing network/storage</li>
+  <li><strong>Deployment</strong> — declarative desired state for pods (replicas, rolling updates, rollbacks)</li>
+  <li><strong>Service</strong> — stable network endpoint (ClusterIP internal, LoadBalancer external)</li>
+  <li><strong>ConfigMap / Secret</strong> — inject config and credentials as env vars or files</li>
+  <li><strong>Ingress</strong> — HTTP routing rules (like Nginx config, often backed by Nginx/Traefik controller)</li>
+  <li><strong>HPA</strong> — Horizontal Pod Autoscaler scales replicas based on CPU/memory/custom metrics</li>
+</ul>
+
+<pre class="code">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-api
+  template:
+    metadata:
+      labels:
+        app: node-api
+    spec:
+      containers:
+      - name: api
+        image: myregistry/node-api:1.2.0
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"</pre>
+
+<h3>Docker vs Kubernetes</h3>
+<table class="ref">
+<tr><th>Docker Compose</th><th>Kubernetes</th></tr>
+<tr><td>Single host, dev/staging</td><td>Multi-node cluster, production scale</td></tr>
+<tr><td>Manual scaling</td><td>Auto-scaling (HPA), self-healing</td></tr>
+<tr><td>Simple networking</td><td>Service mesh, ingress, network policies</td></tr>
+<tr><td>No rolling updates</td><td>Zero-downtime deployments, rollbacks</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="openapi">OpenAPI / Swagger</h2>
+
+<p>OpenAPI Specification (OAS) defines REST API contracts in YAML/JSON. Swagger is the tooling ecosystem (UI, codegen, validator).</p>
+
+<pre class="code">openapi: 3.0.3
+info:
+  title: User API
+  version: 1.0.0
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'</pre>
+
+<h3>Benefits</h3>
+<ul>
+  <li><strong>Contract-first</strong> — design API before implementation</li>
+  <li><strong>Swagger UI</strong> — interactive docs at <code>/api-docs</code></li>
+  <li><strong>Code generation</strong> — client SDKs, server stubs</li>
+  <li><strong>Validation</strong> — express-openapi-validator middleware</li>
+  <li><strong>Testing</strong> — contract tests ensure implementation matches spec</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="twelve-factor">12-Factor App Principles</h2>
+
+<ol>
+  <li><strong>Codebase</strong> — one repo per app (monorepo ok if one deployable unit)</li>
+  <li><strong>Dependencies</strong> — explicitly declare (package.json); never rely on system packages</li>
+  <li><strong>Config</strong> — store in environment variables, not code</li>
+  <li><strong>Backing services</strong> — treat DB, Redis, queues as attached resources (swappable via URL)</li>
+  <li><strong>Build, release, run</strong> — strict separation; immutable releases</li>
+  <li><strong>Processes</strong> — stateless, share-nothing; state in backing services</li>
+  <li><strong>Port binding</strong> — self-contained HTTP server (Node exports port)</li>
+  <li><strong>Concurrency</strong> — scale via process model (cluster, K8s replicas)</li>
+  <li><strong>Disposability</strong> — fast startup, graceful shutdown (SIGTERM handler)</li>
+  <li><strong>Dev/prod parity</strong> — minimize gaps (Docker helps)</li>
+  <li><strong>Logs</strong> — treat as event streams (stdout), don't manage log files</li>
+  <li><strong>Admin processes</strong> — one-off tasks (migrations) as separate processes, not baked into server</li>
+</ol>
+
+<pre class="code">// Graceful shutdown (Factor 9)
+process.on('SIGTERM', async () => {
+  server.close(() => process.exit(0));
+  await prisma.$disconnect();
+  setTimeout(() => process.exit(1), 10000); // force exit after 10s
+});</pre>
+
+<!-- ============================================================ -->
+<h2 id="versioning">API Versioning Strategies</h2>
+
+<h3>URL path versioning</h3>
+<pre class="code">GET /api/v1/users
+GET /api/v2/users</pre>
+<p>Most common, explicit, easy to route. Downside: URL pollution, maintaining multiple code paths.</p>
+
+<h3>Header versioning</h3>
+<pre class="code">GET /api/users
+Accept: application/vnd.myapp.v2+json</pre>
+<p>Clean URLs. Harder to test in browser, less visible.</p>
+
+<h3>Query parameter</h3>
+<pre class="code">GET /api/users?version=2</pre>
+<p>Simple but often feels like an afterthought.</p>
+
+<h3>Best practices</h3>
+<ul>
+  <li>Version only when making breaking changes (remove field, change type, rename endpoint)</li>
+  <li>Adding optional fields is NOT breaking — no version bump needed</li>
+  <li>Support N-1 version during migration period; deprecate with Sunset header</li>
+  <li>Document changes in changelog; use OpenAPI diff tools</li>
+  <li>Consider feature flags for gradual rollout instead of full version fork</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="distributed">Distributed Systems</h2>
+
+<h3>Challenges</h3>
+<p>Network partitions, partial failures, clock skew, consistency vs availability (CAP). Design for failure — every remote call can fail.</p>
+
+<h3>Saga pattern</h3>
+<p>Manage distributed transactions as a sequence of local transactions with compensating actions.</p>
+<ul>
+  <li><strong>Choreography</strong> — services react to events (OrderCreated → PaymentProcessed → Shipped)</li>
+  <li><strong>Orchestration</strong> — central coordinator directs each step</li>
+  <li>Compensating transaction: if shipping fails, refund payment</li>
+</ul>
+
+<h3>Transactional Outbox</h3>
+<p>Write business data + outbox event in the same DB transaction. Separate relay process publishes events to Kafka/RabbitMQ. Guarantees at-least-once delivery without dual-write problem.</p>
+
+<pre class="code">await prisma.$transaction([
+  prisma.order.create({ data: order }),
+  prisma.outbox.create({ data: { event: 'OrderCreated', payload: order } }),
+]);
+// Relay worker polls outbox → publishes to queue → marks as sent</pre>
+
+<h3>CQRS (Command Query Responsibility Segregation)</h3>
+<ul>
+  <li><strong>Command side</strong> — handles writes, validates business rules</li>
+  <li><strong>Query side</strong> — optimized read models (denormalized, materialized views)</li>
+  <li>Eventual consistency between write and read models</li>
+  <li>Use when read/write patterns differ significantly (heavy reads, complex writes)</li>
+</ul>
+
+<h3>Event Sourcing</h3>
+<p>Store state changes as immutable event log instead of current state. Rebuild state by replaying events. Pairs naturally with CQRS and Kafka.</p>
+
+<h3>Idempotency keys</h3>
+<pre class="code">// Client sends: Idempotency-Key: uuid-v4
+// Server checks if key exists → return cached response
+// Prevents duplicate charges on retry</pre>
+
+<h3>Circuit breaker</h3>
+<p>Stop calling a failing service after threshold. States: closed (normal) → open (fail fast) → half-open (test recovery). Libraries: opossum.</p>
+
+<h3>Other patterns</h3>
+<ul>
+  <li><strong>API Gateway</strong> — single entry point, auth, routing, rate limiting</li>
+  <li><strong>Service mesh</strong> — Istio/Linkerd for mTLS, observability, retries between pods</li>
+  <li><strong>Strangler fig</strong> — gradually replace monolith by routing traffic to new services</li>
+  <li><strong>Bulkhead</strong> — isolate failures (separate thread pools / connection limits per dependency)</li>
+</ul>
+
+<p class="footer-note">Pair with <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a> before mock interviews.</p>
+
+</body>
+</html>

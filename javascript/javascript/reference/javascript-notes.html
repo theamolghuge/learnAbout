@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript Notes — Basic to Advanced</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>JavaScript Notes</h1>
+<p class="subtitle">Complete reference from basics to advanced — concepts explained clearly with runnable examples. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#basics">1. Fundamentals</a> · <a href="#functions">2. Functions</a> ·
+  <a href="#scope">3. Scope, Hoisting &amp; Execution Context</a> · <a href="#closures">4. Closures</a> ·
+  <a href="#this">5. this &amp; Prototypes</a> · <a href="#es6">6. ES6+</a> ·
+  <a href="#async">7. Async &amp; Event Loop ⭐</a> · <a href="#data">8. Arrays &amp; Objects</a> ·
+  <a href="#dom">9. DOM &amp; Browser APIs</a> · <a href="#errors">10. Error Handling</a> ·
+  <a href="#collections">11. Map/Set/Iterators/Generators</a> · <a href="#fp">12. Functional Programming</a> ·
+  <a href="#memory">13. Memory Management</a> · <a href="#perf">14. Performance &amp; Security</a> ·
+  <a href="#patterns">15. Interview Patterns</a> · <a href="#advanced">16. Advanced &amp; Senior</a> ·
+  <a href="#tricks">17. Output Tricks</a>
+</nav>
+
+<!-- ==================== STUDY GUIDE ==================== -->
+<h2 id="study-guide">Study Guide — Priority for Senior Full Stack Interviews</h2>
+
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Scope, Hoisting, Execution context, Call stack</td><td><a href="#scope">§3</a></td></tr>
+  <tr><td>Closures</td><td><a href="#closures">§4</a></td></tr>
+  <tr><td>this, call/apply/bind</td><td><a href="#this">§5</a></td></tr>
+  <tr><td>Objects, Prototypes, Prototype chain</td><td><a href="#this">§5</a>, <a href="#data">§8</a></td></tr>
+  <tr><td>Event loop, Microtasks vs macrotasks</td><td><a href="#async">§7</a></td></tr>
+  <tr><td>Promises, async/await, Promise.all</td><td><a href="#async">§7</a></td></tr>
+  <tr><td>map/filter/reduce, Destructuring, Spread/rest</td><td><a href="#data">§8</a>, <a href="#es6">§6</a></td></tr>
+  <tr><td>ES modules, Error handling</td><td><a href="#es6">§6</a>, <a href="#errors">§10</a></td></tr>
+  <tr><td>DOM/events, Bubbling/capturing/delegation</td><td><a href="#dom">§9</a></td></tr>
+  <tr><td>Deep vs shallow copy, Memory management</td><td><a href="#data">§8</a>, <a href="#memory">§13</a></td></tr>
+</table>
+
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Generators, Iterators, Symbols</td><td><a href="#collections">§11</a></td></tr>
+  <tr><td>Map/Set/WeakMap/WeakSet, Proxy/Reflect</td><td><a href="#collections">§11</a>, <a href="#advanced">§16</a></td></tr>
+  <tr><td>Property descriptors, Currying, Memoization</td><td><a href="#advanced">§16</a>, <a href="#fp">§12</a></td></tr>
+  <tr><td>Debounce/throttle, Web Workers, AbortController</td><td><a href="#patterns">§15</a>, <a href="#dom">§9</a></td></tr>
+  <tr><td>Streams, Performance, Security</td><td><a href="#perf">§14</a>, <a href="#advanced">§16</a></td></tr>
+</table>
+
+<h3>Tier 3 — Senior/Expert</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>V8 internals, JIT, Hidden classes, Inline caching, GC</td><td><a href="#advanced">§16</a>, <a href="#memory">§13</a></td></tr>
+  <tr><td>SharedArrayBuffer/Atomics, Design patterns</td><td><a href="#advanced">§16</a></td></tr>
+  <tr><td>Bundlers, Module resolution, Performance profiling</td><td><a href="#advanced">§16</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Fundamentals → Functions → Scope + Hoisting → Execution Context
+  → Closures → this + call/apply/bind → Objects + Arrays → Prototypes
+  → ES6+ → Async (Promises → async/await → Event Loop ⭐)
+  → DOM + Browser APIs → Modules → Error Handling
+  → Map/Set + Iterators + Generators → Functional Programming
+  → Memory → Performance → Security → Design Patterns
+  → Node.js internals (see Node.js Notes) → V8 / Engine (§16)</code></pre>
+
+<!-- ==================== 1. FUNDAMENTALS ==================== -->
+<h2 id="basics">1. Fundamentals — Types, Variables, Operators &amp; Control Flow</h2>
+
+<h3>Primitive vs reference types</h3>
+<p>JavaScript has <strong>7 primitive types</strong> and <strong>objects</strong> for everything else. Primitives are immutable and compared by value. Objects (including arrays and functions) are compared by reference — two variables can point to the same object in memory.</p>
+
+<pre class="code"><code>let a = { x: 1 };
+let b = a;
+b.x = 2;
+console.log(a.x); // 2 — same object
+
+let c = 5;
+let d = c;
+d = 10;
+console.log(c);   // 5 — copy of value</code></pre>
+
+<h3>typeof — and its traps</h3>
+<table class="ref">
+  <tr><th>Expression</th><th>typeof</th><th>Remember</th></tr>
+  <tr><td><code>undefined</code></td><td><code>"undefined"</code></td><td>Unassigned variables, missing properties</td></tr>
+  <tr><td><code>true / false</code></td><td><code>"boolean"</code></td><td>—</td></tr>
+  <tr><td><code>42, NaN</code></td><td><code>"number"</code></td><td><code>NaN</code> is still type number</td></tr>
+  <tr><td><code>42n</code></td><td><code>"bigint"</code></td><td>Cannot mix with number without conversion</td></tr>
+  <tr><td><code>"hello"</code></td><td><code>"string"</code></td><td>Strings are immutable</td></tr>
+  <tr><td><code>Symbol()</code></td><td><code>"symbol"</code></td><td>Always unique</td></tr>
+  <tr><td><code>null</code></td><td><code>"object"</code></td><td>Historical bug — use <code>val === null</code></td></tr>
+  <tr><td><code>[] / {}</code></td><td><code>"object"</code></td><td>Arrays are objects</td></tr>
+  <tr><td><code>function(){}</code></td><td><code>"function"</code></td><td>Only type that returns "function"</td></tr>
+</table>
+
+<h3>var, let, const</h3>
+<table class="ref">
+  <tr><th></th><th>Scope</th><th>Hoisting</th><th>Reassign?</th></tr>
+  <tr><td><code>var</code></td><td>Function</td><td>Yes → <code>undefined</code></td><td>Yes</td></tr>
+  <tr><td><code>let</code></td><td>Block</td><td>Yes → TDZ (ReferenceError)</td><td>Yes</td></tr>
+  <tr><td><code>const</code></td><td>Block</td><td>Yes → TDZ</td><td>No (but object props can change)</td></tr>
+</table>
+
+<pre class="code"><code>// Temporal Dead Zone — let/const exist but can't be read yet
+console.log(x); // ReferenceError
+let x = 10;
+
+// const object — reference locked, contents mutable
+const user = { name: "Ada" };
+user.name = "Bob";   // OK
+user = {};           // TypeError</code></pre>
+<p><strong>Rule:</strong> default to <code>const</code>, use <code>let</code> when you need reassignment, avoid <code>var</code> in new code.</p>
+
+<h3>Equality: === vs ==</h3>
+<p><code>===</code> (strict) compares value and type with no conversion. <code>==</code> (loose) coerces types first — know it for interviews, avoid it in production.</p>
+
+<pre class="code"><code>// Loose equality coercion rules (interview favorites)
+null == undefined;   // true  (special case)
+null == 0;           // false
+"5" == 5;            // true  (string → number)
+"" == 0;             // true
+[] == false;         // true  (both → 0)
+[] == ![];           // true  (both → 0)
+
+// Strict — use these
+0 === false;         // false
+NaN === NaN;         // false
+Object.is(NaN, NaN); // true
+Object.is(+0, -0);  // false (+0 === -0 is true)</code></pre>
+
+<h3>Truthy and falsy</h3>
+<p>Only <strong>8 values</strong> are falsy. Everything else — including <code>[]</code>, <code>{}</code>, <code>"0"</code>, <code>"false"</code> — is truthy.</p>
+<pre class="code"><code>// Falsy: false, 0, -0, 0n, "", null, undefined, NaN
+
+if ([]) console.log("runs");     // truthy
+if ("0") console.log("runs");    // truthy</code></pre>
+
+<h3>Important operators</h3>
+<pre class="code"><code>// Nullish coalescing — only null/undefined
+const port = config.port ?? 3000;
+0 ?? 3000;    // 0
+null ?? 3000; // 3000
+
+// Logical OR — any falsy value
+0 || 3000;    // 3000
+
+// Optional chaining
+user?.profile?.email ?? "none@example.com";
+arr?.[0];
+callback?.();
+
+// Logical assignment
+count ||= 1;   // count = count || 1
+count &&= 2;   // count = count && 2
+count ??= 1;   // count = count ?? 1</code></pre>
+
+<h3>Numbers and strings</h3>
+<pre class="code"><code>0.1 + 0.2 === 0.3;              // false (floating point)
+Number.isInteger(3.0);          // true
+Number.isSafeInteger(n);        // within ±(2^53 - 1)
+
+parseInt("08", 10);             // always pass radix 10
+Number("42");                   // 42
+String(42);                     // "42"
+
+`Hello ${name}`;                // template literal
+"a".repeat(3);                  // "aaa"</code></pre>
+
+<h3>Control flow</h3>
+<pre class="code"><code>// if / else if / else
+if (score >= 90) grade = "A";
+else if (score >= 80) grade = "B";
+else grade = "C";
+
+// switch — strict equality (===)
+switch (role) {
+  case "admin": break;
+  case "user": break;
+  default: break;
+}
+
+// Loops
+for (let i = 0; i &lt; n; i++) { }
+for (const item of arr) { }      // values (iterables)
+for (const key in obj) { }       // keys (objects) — avoid on arrays
+while (condition) { }
+do { } while (condition);
+
+// break / continue — exit loop or skip iteration</code></pre>
+
+<!-- ==================== 2. FUNCTIONS ==================== -->
+<h2 id="functions">2. Functions</h2>
+
+<h3>Three ways to write a function</h3>
+<table class="ref">
+  <tr><th>Form</th><th>Hoisted?</th><th>this</th><th>arguments</th><th>Constructor?</th></tr>
+  <tr><td>Declaration</td><td>Full body</td><td>Dynamic</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>Expression</td><td>Name only (named expr)</td><td>Dynamic</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>Arrow</td><td>No</td><td>Lexical</td><td>No (use rest)</td><td>No</td></tr>
+</table>
+
+<pre class="code"><code>// Hoisting difference
+sayHi(); // works
+function sayHi() { return "hi"; }
+
+sayBye(); // TypeError — not a function yet
+var sayBye = function() { return "bye"; };</code></pre>
+
+<h3>Lexical scope</h3>
+<p>Where a function is <em>written</em> determines which variables it can access — not where it is called. Inner functions see outer variables; lookup walks up the chain until global scope.</p>
+
+<!-- ==================== 3. SCOPE, HOISTING & EXECUTION CONTEXT ==================== -->
+<h2 id="scope">3. Scope, Hoisting &amp; Execution Context</h2>
+
+<h3>Scope types</h3>
+<table class="ref">
+  <tr><th>Type</th><th>Boundary</th><th>Example</th></tr>
+  <tr><td>Global</td><td>Entire script</td><td><code>var</code> at top level, <code>window.x</code></td></tr>
+  <tr><td>Function</td><td>Function body</td><td><code>var</code>, parameters</td></tr>
+  <tr><td>Block</td><td><code>{ }</code></td><td><code>let</code>, <code>const</code></td></tr>
+  <tr><td>Module</td><td>ES module file</td><td>Top-level bindings not global</td></tr>
+</table>
+
+<h3>Hoisting</h3>
+<p>Before execution, the engine registers declarations. <strong>var</strong> is hoisted and initialized to <code>undefined</code>. <strong>Function declarations</strong> are hoisted with full body. <strong>let/const</strong> are hoisted but sit in the Temporal Dead Zone until their line runs.</p>
+
+<pre class="code"><code>console.log(a); // undefined — var hoisted
+var a = 1;
+
+console.log(b); // ReferenceError — TDZ
+let b = 2;
+
+foo();            // works — function declaration hoisted
+function foo() { return "hi"; }
+
+bar();            // TypeError — var bar hoisted as undefined
+var bar = function () { return "bye"; };</code></pre>
+
+<h3>Execution context &amp; call stack</h3>
+<p>Each time code runs, an <strong>execution context</strong> is created containing:</p>
+<ul>
+  <li><strong>Variable environment</strong> — <code>let</code>/<code>const</code>/<code>var</code>, function declarations, arguments</li>
+  <li><strong>Lexical environment</strong> — outer reference for scope chain (closures)</li>
+  <li><strong>this</strong> binding — determined by how function is called</li>
+</ul>
+<p>The <strong>call stack</strong> holds active execution contexts (LIFO). Synchronous calls push/pop frames. Too many nested calls → "Maximum call stack exceeded". Async callbacks run later via the event loop — not on the current stack frame.</p>
+
+<pre class="code"><code>function outer() {
+  const x = 10;
+  function inner() {
+    console.log(x); // closure — outer lexical env
+  }
+  inner();
+}
+outer(); // outer EC → inner EC → pop inner → pop outer</code></pre>
+
+<!-- ==================== 4. CLOSURES ==================== -->
+<h2 id="closures">4. Closures</h2>
+<blockquote>A closure is a function bundled with its lexical environment — it remembers outer variables even after the outer function has finished executing.</blockquote>
+
+<pre class="code"><code>function createWallet(initial) {
+  let balance = initial;           // private — not accessible outside
+  return {
+    deposit(n)  { balance += n; return balance; },
+    withdraw(n) { balance -= n; return balance; },
+    getBalance(){ return balance; }
+  };
+}
+const wallet = createWallet(100);
+wallet.deposit(50);   // 150
+// wallet.balance — undefined (closure keeps it private)</code></pre>
+
+<h3>The var + loop trap (must know)</h3>
+<pre class="code"><code>// BUG: one shared i
+for (var i = 0; i &lt; 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}
+// 3, 3, 3
+
+// FIX: let creates new binding per iteration
+for (let i = 0; i &lt; 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}
+// 0, 1, 2</code></pre>
+
+<h3>IIFE — Immediately Invoked Function Expression</h3>
+<pre class="code"><code>(function () {
+  const secret = "hidden";
+  // secret not in global scope
+})();</code></pre>
+<p>Used before block scope and modules existed. Still seen in legacy codebases.</p>
+
+<h3>Parameters: default, rest, spread</h3>
+<pre class="code"><code>function greet(name = "Guest", greeting = "Hello") {
+  return `${greeting}, ${name}`;
+}
+
+function sum(first, ...rest) {
+  return rest.reduce((a, b) => a + b, first);
+}
+sum(1, 2, 3, 4); // 10</code></pre>
+
+<h3>Higher-order functions</h3>
+<p>Functions that take or return other functions. Built-ins: <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>sort</code>, <code>forEach</code>.</p>
+
+<pre class="code"><code>const nums = [1, 2, 3, 4];
+
+nums.map(n => n * 2);              // [2, 4, 6, 8]
+nums.filter(n => n % 2 === 0);     // [2, 4]
+nums.reduce((acc, n) => acc + n, 0); // 10
+nums.find(n => n > 2);             // 3
+nums.some(n => n > 3);             // true
+nums.every(n => n > 0);            // true</code></pre>
+
+<!-- ==================== 5. THIS & PROTOTYPES ==================== -->
+<h2 id="this">5. this, Prototypes &amp; Inheritance</h2>
+
+<h3>How this is bound (priority order)</h3>
+<ol>
+  <li><strong>new</strong> binding — <code>new Fn()</code> → new object</li>
+  <li><strong>Explicit</strong> — <code>call</code> / <code>apply</code> / <code>bind</code></li>
+  <li><strong>Implicit</strong> — <code>obj.method()</code> → obj</li>
+  <li><strong>Default</strong> — plain call → <code>undefined</code> (strict) or <code>globalThis</code></li>
+</ol>
+<p>Arrow functions skip all four — they inherit <code>this</code> from the enclosing scope at write time.</p>
+
+<pre class="code"><code>const user = {
+  name: "Ada",
+  greet() { return this.name; },
+  greetArrow: () => this?.name  // lexical — NOT user
+};
+
+user.greet();       // "Ada"
+const fn = user.greet;
+fn();               // undefined (strict) — lost binding
+
+// Fix lost binding
+const bound = user.greet.bind(user);
+bound();            // "Ada"</code></pre>
+
+<h3>call, apply, bind</h3>
+<pre class="code"><code>function introduce(city, country) {
+  return `${this.name} from ${city}, ${country}`;
+}
+
+introduce.call({ name: "Ada" }, "London", "UK");
+introduce.apply({ name: "Ada" }, ["London", "UK"]);
+
+const introFromLondon = introduce.bind({ name: "Ada" }, "London");
+introFromLondon("UK"); // "Ada from London, UK"</code></pre>
+
+<h3>Prototype chain</h3>
+<p>Property lookup: own properties first → walk <code>[[Prototype]]</code> chain → <code>null</code>. Methods on <code>Constructor.prototype</code> are shared by all instances — memory efficient.</p>
+
+<pre class="code"><code>const arr = [1, 2];
+arr.push(3); // not own property — found on Array.prototype
+Object.getPrototypeOf(arr) === Array.prototype; // true
+Array.prototype.__proto__ === Object.prototype; // true</code></pre>
+
+<h3>Prototypal inheritance</h3>
+<p>Every object has an internal <code>[[Prototype]]</code> link (access via <code>Object.getPrototypeOf(obj)</code>). When you read a property, JS checks the object, then walks up the chain until it finds it or hits <code>null</code>.</p>
+
+<pre class="code"><code>function Animal(name) {
+  this.name = name;
+}
+Animal.prototype.speak = function () {
+  return `${this.name} makes a sound`;
+};
+
+const dog = new Animal("Rex");
+dog.speak();  // "Hi, Rex" via prototype
+
+dog.hasOwnProperty("name");   // true  — own property
+dog.hasOwnProperty("speak");  // false — on prototype
+"name" in dog;                // true  — includes prototype chain</code></pre>
+
+<h3>What new does (4 steps)</h3>
+<pre class="code"><code>function myNew(Constructor, ...args) {
+  const obj = Object.create(Constructor.prototype);
+  const result = Constructor.apply(obj, args);
+  return (result !== null && typeof result === "object") ? result : obj;
+}</code></pre>
+
+<h3>ES6 classes</h3>
+<p>Syntactic sugar — methods still live on <code>ClassName.prototype</code>. <code>extends</code> sets up the prototype chain; you must call <code>super()</code> in a subclass before using <code>this</code>.</p>
+
+<pre class="code"><code>class Animal {
+  constructor(name) { this.name = name; }
+  speak() { return `${this.name} makes a sound`; }
+  static create(name) { return new Animal(name); }
+}
+
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+  speak() { return `${this.name} barks`; }
+}
+
+const d = new Dog("Rex", "Lab");
+d instanceof Dog;    // true
+d instanceof Animal; // true</code></pre>
+
+<h3>Object.create</h3>
+<pre class="code"><code>const proto = { greet() { return "hi"; } };
+const obj = Object.create(proto);
+obj.greet(); // "hi" — no constructor ran</code></pre>
+
+<!-- ==================== 6. ES6+ ==================== -->
+<h2 id="es6">6. ES6+ Modern JavaScript</h2>
+
+<h3>Destructuring</h3>
+<pre class="code"><code>// Array
+const [first, , third, ...rest] = [1, 2, 3, 4, 5];
+const [x = 0, y = 0] = [1];
+
+// Object
+const { name, age: years, city = "N/A" } = user;
+const { street, ...addressRest } = user.address;
+
+// Function params
+function createUser({ name, role = "user" }) {
+  return { name, role };
+}</code></pre>
+
+<h3>Spread and rest</h3>
+<pre class="code"><code>const merged = { ...defaults, ...overrides };
+const copy = [...arr];
+Math.max(...numbers);
+
+function logAll(level, ...messages) {
+  messages.forEach(m => console.log(`[${level}]`, m));
+}</code></pre>
+
+<h3>Modules</h3>
+<pre class="code"><code>// math.js
+export const PI = 3.14159;
+export default function add(a, b) { return a + b; }
+
+// app.js
+import add, { PI } from "./math.js";
+
+// Dynamic import (returns Promise)
+const mod = await import("./heavy.js");</code></pre>
+<p><strong>ESM vs CommonJS:</strong> ESM uses static <code>import</code>/<code>export</code> (tree-shakeable, strict mode). CommonJS uses synchronous <code>require()</code> / <code>module.exports</code> (Node legacy).</p>
+
+<h3>Module resolution (interview)</h3>
+<ul>
+  <li><strong>Relative</strong> — <code>./utils.js</code>, <code>../config.js</code></li>
+  <li><strong>Bare specifier</strong> — <code>react</code> resolved by bundler or Node <code>node_modules</code></li>
+  <li><strong>Package exports</strong> — <code>package.json</code> <code>"exports"</code> field controls public entry points</li>
+  <li><strong>Extension</strong> — ESM requires full extensions in Node (<code>.js</code>); bundlers often omit</li>
+</ul>
+
+<h3>Symbol, iterators, generators</h3>
+<p>See <a href="#collections">§11 Map, Set, Iterators &amp; Generators</a> for full coverage.</p>
+
+<h3>Private fields &amp; static blocks</h3>
+<pre class="code"><code>class BankAccount {
+  #balance = 0;
+  static #instances = 0;
+
+  static { BankAccount.#instances++; }
+
+  deposit(amount) {
+    if (amount > 0) this.#balance += amount;
+  }
+  get balance() { return this.#balance; }
+}</code></pre>
+
+<!-- ==================== 7. ASYNC ==================== -->
+<h2 id="async">7. Async JavaScript &amp; Event Loop ⭐</h2>
+
+<h3>JavaScript is single-threaded</h3>
+<p>One call stack runs synchronously. Async work (timers, fetch, file I/O) is handled by the browser/Node; callbacks go into queues. The <strong>event loop</strong> moves them onto the stack when it's free.</p>
+
+<h3>Call stack + event loop together</h3>
+<p>Sync code runs on the call stack until empty. Then the event loop drains microtasks, runs one macrotask, repeats. Async callbacks don't run until the stack is clear — this is why <code>setTimeout(fn, 0)</code> still waits for sync code to finish.</p>
+
+<table class="ref">
+  <tr><th>Queue</th><th>Examples</th></tr>
+  <tr><td>Microtasks</td><td><code>Promise.then/catch/finally</code>, <code>queueMicrotask</code>, <code>MutationObserver</code>, <code>await</code> continuation</td></tr>
+  <tr><td>Macrotasks</td><td><code>setTimeout</code>, <code>setInterval</code>, I/O, UI events, <code>requestAnimationFrame</code></td></tr>
+</table>
+
+<h3>Event loop order</h3>
+<ol>
+  <li>Run all synchronous code on the call stack</li>
+  <li>Drain the entire <strong>microtask</strong> queue (Promises, <code>queueMicrotask</code>)</li>
+  <li>Run one <strong>macrotask</strong> (<code>setTimeout</code>, I/O, UI events)</li>
+  <li>Repeat from step 2</li>
+</ol>
+
+<pre class="code"><code>console.log("1");
+
+setTimeout(() => console.log("2"), 0);
+
+Promise.resolve().then(() => console.log("3"));
+
+console.log("4");
+
+// Output: 1, 4, 3, 2
+// Sync → microtask → macrotask</code></pre>
+
+<pre class="code"><code>// async/await adds microtasks
+async function demo() {
+  console.log("A");
+  await null;
+  console.log("B");
+}
+console.log("C");
+demo();
+console.log("D");
+// C, A, D, B</code></pre>
+
+<h3>Promises</h3>
+<p>States: <code>pending</code> → <code>fulfilled</code> or <code>rejected</code>. Once settled, state never changes.</p>
+
+<pre class="code"><code>const p = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("done"), 1000);
+});
+
+p.then(value => console.log(value))
+ .catch(err => console.error(err))
+ .finally(() => console.log("cleanup"));
+
+// Combinators
+Promise.all([p1, p2]);         // all succeed or first reject
+Promise.allSettled([p1, p2]);  // wait for all, never rejects
+Promise.race([p1, p2]);        // first settle (fulfill or reject)
+Promise.any([p1, p2]);         // first fulfill, else AggregateError</code></pre>
+
+<h3>async / await</h3>
+<pre class="code"><code>async function fetchUser(id) {
+  try {
+    const res = await fetch(`/api/users/${id}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error("Failed:", err.message);
+    throw err;
+  }
+}
+
+// Parallel (faster)
+const [users, posts] = await Promise.all([
+  fetchUsers(),
+  fetchPosts()
+]);
+
+// Sequential (slower — each waits for previous)
+const u = await fetchUsers();
+const p = await fetchPosts();</code></pre>
+
+<h3>Common async patterns</h3>
+<pre class="code"><code>const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function retry(fn, attempts = 3, delay = 500) {
+  for (let i = 0; i &lt; attempts; i++) {
+    try { return await fn(); }
+    catch (e) {
+      if (i === attempts - 1) throw e;
+      await sleep(delay * 2 ** i);
+    }
+  }
+}</code></pre>
+
+<h3>AbortController — cancel fetch &amp; async work</h3>
+<pre class="code"><code>const controller = new AbortController();
+const { signal } = controller;
+
+fetch("/api/data", { signal })
+  .then(r => r.json())
+  .catch(err => {
+    if (err.name === "AbortError") console.log("Cancelled");
+  });
+
+// Cancel from elsewhere
+controller.abort();
+
+// Pass signal to multiple operations
+const timeout = setTimeout(() => controller.abort(), 5000);</code></pre>
+
+<!-- ==================== 8. DATA ==================== -->
+<h2 id="data">8. Arrays, Objects &amp; Collections</h2>
+
+<h3>Array methods cheat sheet</h3>
+<table class="ref">
+  <tr><th>Method</th><th>Mutates?</th><th>Returns</th><th>Use for</th></tr>
+  <tr><td><code>map</code></td><td>No</td><td>New array (same length)</td><td>Transform each element</td></tr>
+  <tr><td><code>filter</code></td><td>No</td><td>New array (subset)</td><td>Keep matching elements</td></tr>
+  <tr><td><code>reduce</code></td><td>No</td><td>Single value</td><td>Sum, group, flatten</td></tr>
+  <tr><td><code>find / findIndex</code></td><td>No</td><td>Element / index</td><td>First match</td></tr>
+  <tr><td><code>some / every</code></td><td>No</td><td>Boolean</td><td>Any / all match</td></tr>
+  <tr><td><code>slice</code></td><td>No</td><td>Shallow copy portion</td><td>Non-destructive extract</td></tr>
+  <tr><td><code>concat / flat</code></td><td>No</td><td>New array</td><td>Merge / flatten</td></tr>
+  <tr><td><code>push / pop / shift</code></td><td>Yes</td><td>Length / element</td><td>Add/remove ends</td></tr>
+  <tr><td><code>splice</code></td><td>Yes</td><td>Removed items</td><td>Insert/delete anywhere</td></tr>
+  <tr><td><code>sort / reverse</code></td><td>Yes</td><td>Same array</td><td>Reorder in place</td></tr>
+</table>
+
+<pre class="code"><code>// sort trap
+[10, 2, 1].sort();                    // [1, 10, 2] — string comparison!
+[10, 2, 1].sort((a, b) => a - b);     // [1, 2, 10]
+
+// reduce — group by
+const items = [
+  { type: "fruit", name: "apple" },
+  { type: "veg", name: "carrot" },
+  { type: "fruit", name: "banana" }
+];
+const grouped = items.reduce((acc, item) => {
+  (acc[item.type] ??= []).push(item);
+  return acc;
+}, {});</code></pre>
+
+<h3>Objects</h3>
+<pre class="code"><code>Object.keys(obj);      // own enumerable string keys
+Object.values(obj);
+Object.entries(obj);     // [["key", val], ...]
+Object.fromEntries([["a", 1]]);
+
+Object.hasOwn(obj, "key");  // own property only (preferred)
+"key" in obj;               // includes prototype chain
+
+Object.freeze(obj);    // no add/delete/change
+Object.seal(obj);      // no add/delete, can change values</code></pre>
+
+<h3>Copying objects — shallow vs deep</h3>
+<pre class="code"><code>// Shallow — nested objects still shared
+const shallow = { ...obj };
+const shallow2 = Object.assign({}, obj);
+
+// Deep — modern browsers
+const deep = structuredClone(obj);
+
+// JSON — loses Date, undefined, functions, Symbol; no circular refs
+JSON.parse(JSON.stringify(obj));</code></pre>
+
+<!-- ==================== 9. DOM & BROWSER ==================== -->
+<h2 id="dom">9. DOM &amp; Browser APIs</h2>
+
+<h3>DOM basics</h3>
+<p>The DOM is a tree of nodes representing HTML. JavaScript can query, create, modify, and remove nodes. React abstracts most direct DOM work — but interviews still test event mechanics and browser APIs.</p>
+
+<pre class="code"><code>document.getElementById("app");
+document.querySelector(".btn");
+document.querySelectorAll("li");
+
+const el = document.createElement("div");
+el.textContent = "Hello";
+el.classList.add("active");
+parent.appendChild(el);
+el.remove();</code></pre>
+
+<h3>Event bubbling, capturing &amp; delegation</h3>
+<p>Events propagate in three phases: <strong>capturing</strong> (window → target), <strong>target</strong>, <strong>bubbling</strong> (target → window). Default handlers run in bubbling phase.</p>
+
+<pre class="code"><code>// third arg true = capture phase
+parent.addEventListener("click", handler, true);
+
+// Stop propagation
+event.stopPropagation();
+event.preventDefault(); // don't run default (e.g. link navigation)
+
+// Event delegation — one listener on parent
+list.addEventListener("click", (e) => {
+  const li = e.target.closest("li");
+  if (!li || !list.contains(li)) return;
+  console.log(li.dataset.id);
+});</code></pre>
+
+<table class="ref">
+  <tr><th>Phase</th><th>Direction</th><th>Default listener?</th></tr>
+  <tr><td>Capture</td><td>Root → target</td><td>Only if <code>capture: true</code></td></tr>
+  <tr><td>Target</td><td>On element</td><td>Both phases hit target</td></tr>
+  <tr><td>Bubble</td><td>Target → root</td><td>Yes (default)</td></tr>
+</table>
+
+<h3>Web Workers</h3>
+<p>Run JS on a separate thread — no shared DOM or <code>this</code>. Communication via <code>postMessage</code>. Use for CPU-heavy work without blocking the main thread.</p>
+
+<pre class="code"><code>// main.js
+const worker = new Worker("worker.js");
+worker.postMessage({ data: largeArray });
+worker.onmessage = (e) => console.log(e.data);
+
+// worker.js
+self.onmessage = (e) => {
+  const result = heavyCompute(e.data);
+  self.postMessage(result);
+};</code></pre>
+
+<h3>Fetch &amp; browser storage (brief)</h3>
+<pre class="code"><code>localStorage.setItem("key", JSON.stringify(obj));  // persists
+sessionStorage.setItem("key", val);                // tab session
+// cookies — sent with requests, httpOnly for security</code></pre>
+
+<!-- ==================== 10. ERROR HANDLING ==================== -->
+<h2 id="errors">10. Error Handling</h2>
+
+<pre class="code"><code>try {
+  riskyOperation();
+} catch (err) {
+  if (err instanceof TypeError) { /* handle */ }
+  else throw err;  // re-throw unexpected errors
+} finally {
+  cleanup();       // always runs
+}
+
+// Custom errors
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = "ValidationError";
+    this.field = field;
+  }
+}
+
+// Async errors
+async function load() {
+  try {
+    return await fetchData();
+  } catch (err) {
+    console.error(err.message);
+    throw err;
+  }
+}</code></pre>
+
+<p><strong>Patterns:</strong> fail fast with clear messages; don't swallow errors silently; use typed errors for domain logic; global handlers: <code>window.onerror</code>, <code>unhandledrejection</code>.</p>
+
+<!-- ==================== 11. COLLECTIONS ==================== -->
+<h2 id="collections">11. Map, Set, Iterators &amp; Generators</h2>
+
+<h3>Map, Set, WeakMap, WeakSet</h3>
+<table class="ref">
+  <tr><th></th><th>Object</th><th>Map</th><th>Set</th><th>WeakMap</th><th>WeakSet</th></tr>
+  <tr><td>Keys</td><td>Strings/Symbols</td><td>Any type</td><td>N/A</td><td>Objects only</td><td>Objects only</td></tr>
+  <tr><td>Iteration</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+  <tr><td>GC</td><td>Normal</td><td>Normal</td><td>Normal</td><td>Weak keys</td><td>Weak values</td></tr>
+  <tr><td>.size</td><td>Manual</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+</table>
+
+<pre class="code"><code>const map = new Map([["a", 1], ["b", 2]]);
+map.set({ id: 1 }, "metadata");
+
+const unique = [...new Set([1, 2, 2, 3])]; // [1, 2, 3]
+
+const wm = new WeakMap();
+wm.set(domNode, { clicks: 0 }); // GC-friendly metadata
+
+const ws = new WeakSet();
+ws.add(obj); // track object presence without preventing GC</code></pre>
+
+<h3>Iterators &amp; generators (advanced)</h3>
+<pre class="code"><code>// Iterable protocol — [Symbol.iterator]() returns iterator
+const range = {
+  *[Symbol.iterator]() {
+    yield 1; yield 2; yield 3;
+  }
+};
+[...range]; // [1, 2, 3]
+
+function* fibonacci() {
+  let a = 0, b = 1;
+  while (true) { yield a; [a, b] = [b, a + b]; }
+}
+const gen = fibonacci();
+gen.next(); // { value: 0, done: false }
+
+// Symbol — always unique, good for private-ish keys
+const id = Symbol("id");
+const obj = { [id]: 123, name: "test" };
+Object.keys(obj); // ["name"]</code></pre>
+
+<!-- ==================== 12. FUNCTIONAL PROGRAMMING ==================== -->
+<h2 id="fp">12. Functional Programming</h2>
+
+<p>Core ideas: pure functions (same input → same output, no side effects), immutability, higher-order functions, composition.</p>
+
+<pre class="code"><code>// Pure — predictable
+const double = n => n * 2;
+
+// Impure — depends on external state
+let count = 0;
+const increment = () => ++count;
+
+// Compose
+const compose = (f, g) => x => f(g(x));
+const pipe = (...fns) => x => fns.reduce((v, fn) => fn(v), x);</code></pre>
+
+<p>See <a href="#patterns">§15 Interview Patterns</a> for curry, memoize, debounce, throttle implementations.</p>
+
+<!-- ==================== 13. MEMORY ==================== -->
+<h2 id="memory">13. Memory Management</h2>
+
+<h3>Shallow vs deep copy (recap)</h3>
+<p>Shallow copy duplicates top level — nested objects shared. Deep copy duplicates entire tree — use <code>structuredClone</code> or recursive clone with WeakMap for circular refs.</p>
+
+<h3>Memory leaks — common causes</h3>
+<ul>
+  <li>Event listeners not removed</li>
+  <li>Closures holding references to large objects</li>
+  <li>Global variables accumulating data</li>
+  <li>Detached DOM nodes still referenced in JS</li>
+  <li><code>setInterval</code> never cleared</li>
+  <li>Unbounded caches (use WeakMap for object keys)</li>
+</ul>
+
+<h3>Garbage collection</h3>
+<p><strong>Mark-and-sweep:</strong> engine marks reachable objects from roots (global, call stack, closures), frees unreachable ones. You cannot manually free memory — drop references when done.</p>
+
+<p><strong>Generational GC (V8):</strong> new objects in "nursery" (young gen); survivors promoted to old gen. Frequent minor GC, occasional major GC.</p>
+
+<!-- ==================== 14. PERFORMANCE & SECURITY ==================== -->
+<h2 id="perf">14. Performance &amp; Security</h2>
+
+<h3>Performance optimization</h3>
+<ul>
+  <li>Minimize DOM reads/writes — batch, use DocumentFragment</li>
+  <li>Debounce/throttle expensive handlers</li>
+  <li>Lazy load routes and heavy components</li>
+  <li>Avoid layout thrashing (read then write, not interleaved)</li>
+  <li>Use <code>requestAnimationFrame</code> for animations</li>
+  <li>Profile with Chrome DevTools Performance tab — measure before optimizing</li>
+</ul>
+
+<h3>Security basics</h3>
+<ul>
+  <li><strong>XSS</strong> — never insert untrusted HTML; sanitize, use textContent, CSP headers</li>
+  <li><strong>CSRF</strong> — tokens, SameSite cookies</li>
+  <li><strong>Prototype pollution</strong> — validate object keys from user input</li>
+  <li>Don't expose secrets in client-side JS</li>
+  <li>Validate and sanitize all user input server-side too</li>
+</ul>
+
+<h3>Streams (Web Streams API)</h3>
+<pre class="code"><code>const response = await fetch("/large-file");
+const reader = response.body.getReader();
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  processChunk(value); // Uint8Array chunk
+}</code></pre>
+
+<!-- ==================== 15. PATTERNS ==================== -->
+<h2 id="patterns">15. Interview Patterns — Code from Memory</h2>
+
+<p>These appear constantly in live coding rounds. Practice writing each blind in 10–15 minutes.</p>
+
+<h3>Debounce — wait until user stops</h3>
+<pre class="code"><code>function debounce(fn, delay) {
+  let timerId;
+  return function (...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+// Use: search input, window resize</code></pre>
+
+<h3>Throttle — max once per interval</h3>
+<pre class="code"><code>function throttle(fn, limit) {
+  let inThrottle = false;
+  return function (...args) {
+    if (inThrottle) return;
+    fn.apply(this, args);
+    inThrottle = true;
+    setTimeout(() => { inThrottle = false; }, limit);
+  };
+}
+// Use: scroll, mousemove</code></pre>
+
+<h3>Curry</h3>
+<pre class="code"><code>function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    }
+    return (...next) => curried(...args, ...next);
+  };
+}
+const add = (a, b, c) => a + b + c;
+curry(add)(1)(2)(3); // 6</code></pre>
+
+<h3>bind polyfill</h3>
+<pre class="code"><code>Function.prototype.myBind = function (context, ...boundArgs) {
+  const fn = this;
+  return function (...args) {
+    return fn.apply(context, [...boundArgs, ...args]);
+  };
+};</code></pre>
+
+<h3>Promise.all polyfill</h3>
+<pre class="code"><code>function promiseAll(promises) {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    let remaining = promises.length;
+    if (remaining === 0) return resolve([]);
+    promises.forEach((p, i) => {
+      Promise.resolve(p).then(
+        val => {
+          results[i] = val;
+          if (--remaining === 0) resolve(results);
+        },
+        reject
+      );
+    });
+  });
+}</code></pre>
+
+<h3>Flatten array</h3>
+<pre class="code"><code>function flatten(arr, depth = Infinity) {
+  if (depth === 0) return arr.slice();
+  return arr.reduce((acc, val) =>
+    acc.concat(Array.isArray(val) ? flatten(val, depth - 1) : val),
+  []);
+}</code></pre>
+
+<h3>Deep clone (with circular references)</h3>
+<pre class="code"><code>function deepClone(value, seen = new WeakMap()) {
+  if (value === null || typeof value !== "object") return value;
+  if (seen.has(value)) return seen.get(value);
+
+  if (value instanceof Date) return new Date(value);
+  if (value instanceof RegExp) return new RegExp(value);
+
+  const copy = Array.isArray(value) ? [] : {};
+  seen.set(value, copy);
+  for (const key of Reflect.ownKeys(value)) {
+    copy[key] = deepClone(value[key], seen);
+  }
+  return copy;
+}</code></pre>
+
+<h3>Memoization</h3>
+<pre class="code"><code>function memoize(fn) {
+  const cache = new Map();
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const result = fn.apply(this, args);
+    cache.set(key, result);
+    return result;
+  };
+}</code></pre>
+
+<!-- ==================== 17. OUTPUT TRICKS ==================== -->
+<h2 id="tricks">17. Common Output Tricks</h2>
+<p>When predicting output: identify types → apply coercion rules → check operator precedence → consider hoisting and closure timing.</p>
+
+<table class="ref">
+  <tr><th>Code</th><th>Output</th><th>Why</th></tr>
+  <tr><td><code>[] + []</code></td><td><code>""</code></td><td>Arrays → "" then string concat</td></tr>
+  <tr><td><code>[] + {}</code></td><td><code>"[object Object]"</code></td><td>Both toString</td></tr>
+  <tr><td><code>[] == ![]</code></td><td><code>true</code></td><td>Both coerce to 0</td></tr>
+  <tr><td><code>typeof typeof 1</code></td><td><code>"string"</code></td><td>typeof 1 → "number" → typeof → "string"</td></tr>
+  <tr><td><code>typeof null</code></td><td><code>"object"</code></td><td>Historical bug</td></tr>
+  <tr><td><code>NaN === NaN</code></td><td><code>false</code></td><td>IEEE 754 spec</td></tr>
+  <tr><td><code>console.log(x); var x=5;</code></td><td><code>undefined</code></td><td>var hoisted</td></tr>
+</table>
+
+<pre class="code"><code>// Prototype reassignment trap
+function Person() {}
+Person.prototype.name = "default";
+const a = new Person();
+Person.prototype = { name: "changed" };
+const b = new Person();
+console.log(a.name); // "default" — old proto unchanged
+console.log(b.name); // "changed"</code></pre>
+
+<!-- ==================== 16. ADVANCED & SENIOR ==================== -->
+<h2 id="advanced">16. Advanced &amp; Senior Topics</h2>
+
+<h3>Proxy &amp; Reflect</h3>
+<pre class="code"><code>const handler = {
+  get(target, prop) {
+    console.log(`Getting ${prop}`);
+    return Reflect.get(target, prop);
+  },
+  set(target, prop, value) {
+    if (prop === "age" && value &lt; 0) throw new Error("Invalid");
+    return Reflect.set(target, prop, value);
+  }
+};
+const user = new Proxy({ name: "Ada" }, handler);
+user.name;    // logs "Getting name"
+user.age = -1; // throws</code></pre>
+<p>Use cases: validation, logging, reactive systems (Vue 3 reactivity), default values.</p>
+
+<h3>Property descriptors</h3>
+<pre class="code"><code>const obj = {};
+Object.defineProperty(obj, "id", {
+  value: 42,
+  writable: false,      // can't reassign
+  enumerable: false,      // skipped by Object.keys
+  configurable: false     // can't delete or reconfigure
+});
+
+Object.getOwnPropertyDescriptor(obj, "id");
+Object.getOwnPropertyNames(obj);  // includes non-enumerable
+Object.getOwnPropertySymbols(obj);</code></pre>
+
+<h3>Strict mode</h3>
+<pre class="code"><code>"use strict";
+x = 10;        // ReferenceError — no implicit globals
+function f() { console.log(this); }
+f();           // undefined (not window)</code></pre>
+
+<h3>for...in vs for...of</h3>
+<pre class="code"><code>const arr = ["a", "b"];
+for (const i in arr)  console.log(i);    // "0", "1" (keys as strings!)
+for (const v of arr)  console.log(v);    // "a", "b" (values)
+
+for (const [k, v] of Object.entries(obj)) { /* key-value pairs */ }</code></pre>
+
+<h3>null vs undefined</h3>
+<table class="ref">
+  <tr><th></th><th>undefined</th><th>null</th></tr>
+  <tr><td>Meaning</td><td>Not assigned / missing</td><td>Intentional empty value</td></tr>
+  <tr><td>typeof</td><td><code>"undefined"</code></td><td><code>"object"</code></td></tr>
+  <tr><td>Default param</td><td>Triggers default</td><td>Does NOT trigger default</td></tr>
+</table>
+
+<h3>V8 &amp; JavaScript engine internals</h3>
+<table class="ref">
+  <tr><th>Concept</th><th>What it means</th></tr>
+  <tr><td><strong>JIT compilation</strong></td><td>Bytecode interpreted first; hot functions compiled to optimized machine code at runtime</td></tr>
+  <tr><td><strong>Hidden classes</strong></td><td>V8 assigns internal "shapes" to objects with same property layout — faster property access when shape is stable</td></tr>
+  <tr><td><strong>Inline caching</strong></td><td>Caches where a property was found (own vs prototype) — deoptimizes if shape changes</td></tr>
+  <tr><td><strong>Deoptimization</strong></td><td>Adding properties out of order, changing types — forces fallback to slower path</td></tr>
+</table>
+<pre class="code"><code>// Good — consistent shape
+function Point(x, y) { this.x = x; this.y = y; }
+
+// Bad for V8 — properties added in different order per instance
+function Bad() { this.a = 1; }
+const b1 = new Bad(); b1.b = 2;
+const b2 = new Bad(); b2.c = 3; b2.b = 2; // different hidden class</code></pre>
+
+<h3>SharedArrayBuffer &amp; Atomics</h3>
+<p>Share memory between main thread and Workers. <code>Atomics</code> provides thread-safe operations (wait, notify, add). Requires cross-origin isolation headers in browsers. Used for high-performance parallel compute — rare in typical full-stack interviews but good senior signal.</p>
+
+<h3>Design patterns (JavaScript)</h3>
+<table class="ref">
+  <tr><th>Pattern</th><th>Use in JS</th></tr>
+  <tr><td>Module</td><td>ES modules, IIFE — encapsulation</td></tr>
+  <tr><td>Observer</td><td>EventEmitter, pub/sub, RxJS</td></tr>
+  <tr><td>Factory</td><td>Functions returning configured objects</td></tr>
+  <tr><td>Singleton</td><td>One shared instance (module cache, connection pool)</td></tr>
+  <tr><td>Decorator</td><td>HOC in React, wrapper functions</td></tr>
+  <tr><td>Strategy</td><td>Swap algorithms via function/object strategy</td></tr>
+</table>
+
+<h3>Bundlers &amp; build tools</h3>
+<table class="ref">
+  <tr><th>Tool</th><th>Role</th></tr>
+  <tr><td>Webpack</td><td>Full-featured bundler — loaders, plugins, code splitting</td></tr>
+  <tr><td>Vite</td><td>Dev: native ESM; prod: Rollup — fast HMR</td></tr>
+  <tr><td>esbuild / SWC</td><td>Fast transpile/minify</td></tr>
+  <tr><td>Rollup</td><td>Tree-shaking focused — library builds</td></tr>
+</table>
+<p><strong>Tree shaking:</strong> dead code elimination — only works with ESM static imports. <strong>Code splitting:</strong> dynamic <code>import()</code> creates separate chunks loaded on demand.</p>
+
+<h3>Performance profiling</h3>
+<ul>
+  <li>Chrome DevTools → Performance — flame chart, long tasks</li>
+  <li>Memory tab — heap snapshots, detached nodes</li>
+  <li><code>console.time</code> / <code>performance.now()</code> for micro-benchmarks</li>
+  <li>React DevTools Profiler — component render times</li>
+  <li>Lighthouse — overall page metrics</li>
+</ul>
+
+<h3>ECMAScript spec concepts (brief)</h3>
+<ul>
+  <li><strong>Abstract operations</strong> — spec algorithms like Get, Set, OrdinaryHasInstance</li>
+  <li><strong>Realm</strong> — separate global environments (iframes)</li>
+  <li><strong>Job queues</strong> — spec term for microtasks (Promise jobs)</li>
+  <li><strong>Completion records</strong> — normal, throw, return, break — how control flow is modeled</li>
+</ul>
+
+<h3>JSON gotchas</h3>
+<pre class="code"><code>JSON.stringify({ a: 1, b: undefined, c: () => {} });
+// '{"a":1}' — undefined, functions, symbols omitted
+
+JSON.parse('{"date":"2024-01-01"}').date; // string, not Date object</code></pre>
+
+<p class="footer-note">Node.js event-loop internals, Worker Threads → see <a href="../../nodejs/reference/nodejs-notes.html">Node.js Notes</a></p>
+
+<p class="footer-note"><a href="quick-revision.html">Quick Revision</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

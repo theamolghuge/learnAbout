@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Node.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="nodejs-notes.html">Node.js Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#basics">Basics</a> ·
+  <a href="#eventloop">Event Loop</a> ·
+  <a href="#core">Core</a> ·
+  <a href="#express">Express</a> ·
+  <a href="#data">Database</a> ·
+  <a href="#redis">Redis</a> ·
+  <a href="#auth">Auth</a> ·
+  <a href="#async">Async</a> ·
+  <a href="#production">Production</a> ·
+  <a href="#distributed">Distributed</a>
+</nav>
+
+<h2 id="basics">Basics &amp; Architecture</h2>
+
+<div class="qa">
+  <p class="qa-q">What is Node.js?</p>
+  <p class="qa-a">A JavaScript runtime built on V8 that runs JS outside the browser. It adds APIs for file system, networking, and OS interaction. Designed for event-driven, non-blocking I/O — ideal for APIs, realtime apps, and streaming.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Is Node.js single-threaded or multi-threaded?</p>
+  <p class="qa-a">JavaScript execution is single-threaded (one call stack). But Node uses libuv's thread pool for some I/O (file system, DNS) and supports Worker Threads and cluster for parallelism. The event loop itself runs on one thread.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When should you NOT use Node.js?</p>
+  <p class="qa-a">CPU-intensive tasks that block the event loop — heavy computation, image processing, complex ML on the main thread. Use Worker Threads, offload to a separate service, or pick a language better suited for CPU-bound work.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between Node.js and Express?</p>
+  <p class="qa-a">Node.js is the runtime. Express is a minimal web framework built on Node's <code>http</code> module — it adds routing, middleware, and convenience APIs. You can build servers with raw Node; Express simplifies HTTP APIs.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is libuv?</p>
+  <p class="qa-a">A C library that provides Node's event loop, thread pool, and async I/O. It abstracts platform-specific async operations (epoll on Linux, kqueue on macOS, IOCP on Windows) so Node works cross-platform.</p>
+</div>
+
+<h2 id="modules">Modules &amp; npm</h2>
+
+<div class="qa">
+  <p class="qa-q">CommonJS vs ES Modules in Node?</p>
+  <p class="qa-a">CommonJS uses <code>require</code>/<code>module.exports</code>, loads synchronously at runtime. ESM uses <code>import</code>/<code>export</code>, supports static analysis and top-level await. Enable ESM with <code>"type":"module"</code> in package.json or <code>.mjs</code> files.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you get __dirname in ESM?</p>
+  <p class="qa-a"><code>import { fileURLToPath } from "url"; import { dirname } from "path"; const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename);</code></p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between dependencies and devDependencies?</p>
+  <p class="qa-a"><code>dependencies</code> are required at runtime in production. <code>devDependencies</code> are only for development — testing, linting, build tools. <code>npm install --production</code> skips devDependencies.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is package-lock.json for?</p>
+  <p class="qa-a">Locks exact versions of every installed package (including nested dependencies) so installs are reproducible across machines and CI. Commit it to version control.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is npx?</p>
+  <p class="qa-a">Runs packages without globally installing them — downloads temporarily and executes. Example: <code>npx create-react-app my-app</code>. Also runs locally installed binaries from <code>node_modules/.bin</code>.</p>
+</div>
+
+<h2 id="eventloop">Event Loop</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the Node.js event loop phases.</p>
+  <p class="qa-a">Timers (setTimeout/setInterval) → Pending callbacks → Idle/Prepare → Poll (I/O) → Check (setImmediate) → Close callbacks. Between phases, microtasks (Promises) and nextTick callbacks run.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between process.nextTick and setImmediate?</p>
+  <p class="qa-a"><code>process.nextTick</code> runs before the event loop continues — highest priority async, can starve I/O if overused. <code>setImmediate</code> runs in the Check phase after Poll — designed to run after current I/O callbacks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What happens if you block the event loop?</p>
+  <p class="qa-a">All other requests and callbacks wait — the server becomes unresponsive. Long synchronous operations (big JSON.parse, sync fs, tight loops) block everything. Fix with async APIs, Worker Threads, or breaking work into chunks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">setImmediate vs setTimeout(fn, 0) in Node?</p>
+  <p class="qa-a">Inside I/O callbacks, <code>setImmediate</code> runs before <code>setTimeout(0)</code>. At top level, order can vary. <code>setImmediate</code> is Node-specific; <code>setTimeout</code> is cross-platform.</p>
+</div>
+
+<h2 id="core">Core Modules</h2>
+
+<div class="qa">
+  <p class="qa-q">Difference between fs.readFile and fs.createReadStream?</p>
+  <p class="qa-a"><code>readFile</code> loads the entire file into memory — fine for small files. <code>createReadStream</code> reads in chunks — memory-efficient for large files. Streams are preferred for big data or piping.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a Buffer?</p>
+  <p class="qa-a">A fixed-size chunk of raw binary data in Node. Used for file I/O, network protocols, and crypto. Created with <code>Buffer.from()</code>, <code>Buffer.alloc()</code>. Convert with <code>.toString('utf-8')</code> or <code>.toString('base64')</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is EventEmitter?</p>
+  <p class="qa-a">Node's pub/sub pattern. Objects emit named events; listeners register with <code>.on()</code>. Many Node APIs inherit from EventEmitter (streams, HTTP server). Use <code>.once()</code> for one-time listeners, <code>.removeListener()</code> to clean up.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you read environment variables?</p>
+  <p class="qa-a"><code>process.env.VARIABLE_NAME</code>. Load from <code>.env</code> files with the <code>dotenv</code> package in development. In production, set env vars through your host (Docker, Kubernetes, cloud platform) — never commit secrets.</p>
+</div>
+
+<h2 id="express">Express &amp; HTTP</h2>
+
+<div class="qa">
+  <p class="qa-q">What is middleware in Express?</p>
+  <p class="qa-a">Functions with signature <code>(req, res, next)</code> that run in order. They can read/modify req/res, end the response, or call <code>next()</code> to pass to the next middleware. Used for parsing, auth, logging, error handling.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does Express error handling work?</p>
+  <p class="qa-a">Error-handling middleware has 4 parameters: <code>(err, req, res, next)</code>. Pass errors with <code>next(err)</code> from route handlers. Express skips normal middleware and jumps to the first error handler. Always put it last.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between app.use and app.get?</p>
+  <p class="qa-a"><code>app.use</code> matches all HTTP methods and all paths (or a path prefix) — typically for middleware. <code>app.get</code> only matches GET requests to a specific route — for route handlers.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you parse JSON request bodies?</p>
+  <p class="qa-a"><code>app.use(express.json())</code> — built-in middleware that parses JSON bodies and sets <code>req.body</code>. For URL-encoded forms: <code>express.urlencoded({ extended: true })</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is CORS and how do you handle it in Express?</p>
+  <p class="qa-a">Cross-Origin Resource Sharing — browsers block requests from one origin to another unless the server allows it. Use the <code>cors</code> middleware or set headers manually: <code>Access-Control-Allow-Origin</code>, methods, headers.</p>
+</div>
+
+<h2 id="async">Async Patterns</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you convert callback-based APIs to Promises?</p>
+  <p class="qa-a"><code>const { promisify } = require('util'); const readFile = promisify(fs.readFile);</code> Or use built-in promise versions: <code>require('fs/promises')</code> in modern Node.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is an error-first callback?</p>
+  <p class="qa-a">Node convention: callback signature is <code>(err, result)</code>. If <code>err</code> is truthy, something failed — handle it first. If null, operation succeeded and <code>result</code> has data. Legacy pattern before Promises/async-await.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you handle unhandled promise rejections?</p>
+  <p class="qa-a">Listen on <code>process.on('unhandledRejection', (reason) => {...})</code>. Log and exit gracefully in production — unhandled rejections can leave the app in a bad state. Always use try/catch with async route handlers.</p>
+</div>
+
+<h2 id="streams">Streams</h2>
+
+<div class="qa">
+  <p class="qa-q">What are the four types of streams?</p>
+  <p class="qa-a">Readable (read data — fs.createReadStream), Writable (write data — fs.createWriteStream), Duplex (both — TCP socket), Transform (modify while passing through — zlib gzip).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does .pipe() do?</p>
+  <p class="qa-a">Connects a readable stream to a writable stream — data flows automatically, handles backpressure. Example: <code>readStream.pipe(writeStream)</code>. Preferred over manually listening to 'data' events for piping.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is backpressure?</p>
+  <p class="qa-a">When a writable stream can't keep up with readable data, it signals to slow down. Streams handle this internally with <code>.pipe()</code>. Without it, memory can grow unbounded if you keep writing faster than consuming.</p>
+</div>
+
+<h2 id="production">Security &amp; Production</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you implement graceful shutdown?</p>
+  <p class="qa-a">Listen for SIGTERM/SIGINT, stop accepting new connections with <code>server.close()</code>, finish in-flight requests, close DB connections, then <code>process.exit(0)</code>. Kubernetes sends SIGTERM before killing pods.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What security practices for Node APIs?</p>
+  <p class="qa-a">Validate/sanitize input, use Helmet for headers, rate limiting, parameterized queries (no SQL injection), env vars for secrets, keep dependencies updated, HTTPS in production, principle of least privilege.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the purpose of NODE_ENV?</p>
+  <p class="qa-a">Convention: <code>development</code> vs <code>production</code>. Frameworks and libraries change behavior — e.g. Express disables verbose errors in production, React enables optimizations. Set it in production deployments.</p>
+</div>
+
+<h2 id="advanced">Advanced</h2>
+
+<div class="qa">
+  <p class="qa-q">Cluster vs Worker Threads?</p>
+  <p class="qa-a">Cluster forks separate Node processes — each has its own memory, shares nothing by default. Good for scaling HTTP across CPU cores. Worker Threads share memory (SharedArrayBuffer), lighter — good for CPU-heavy tasks without full process overhead.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does Node handle concurrent connections?</p>
+  <p class="qa-a">Non-blocking I/O — when waiting for DB/network, the event loop handles other requests. One thread can serve thousands of concurrent connections if work is I/O-bound. Not true parallelism for CPU work on one thread.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between spawn and exec?</p>
+  <p class="qa-a"><code>child_process.spawn</code> streams output — good for long-running processes. <code>exec</code> buffers entire stdout/stderr into memory — fine for short commands. Both run shell commands from Node.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How would you debug a memory leak in Node?</p>
+  <p class="qa-a">Monitor heap with <code>process.memoryUsage()</code>, take heap snapshots with Chrome DevTools (<code>node --inspect</code>), look for growing listeners (EventEmitter leaks), unclosed connections, or global caches that never clear.</p>
+</div>
+
+<!-- ===== DATABASE ===== -->
+<h2 id="data">SQL, Transactions &amp; ORM</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you prevent SQL injection?</p>
+  <p class="qa-a">Always use parameterized queries / prepared statements — pass user input as parameters, never concatenate into SQL strings. ORMs like Prisma parameterize by default. Also validate input types at API boundary.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain database transactions and ACID.</p>
+  <p class="qa-a">Transaction groups operations atomically — all succeed (COMMIT) or all roll back (ROLLBACK). ACID: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent txs don't interfere), Durability (committed data survives crashes).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the N+1 query problem?</p>
+  <p class="qa-a">Loading a list then firing one query per item (1 + N queries). Fix with JOIN, eager loading (<code>include</code> in Prisma), or batch loading (DataLoader). Kills performance at scale.</p>
+</div>
+
+<!-- ===== REDIS ===== -->
+<h2 id="redis">Redis &amp; Caching</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the cache-aside pattern.</p>
+  <p class="qa-a">App checks cache first. On miss, read from DB, write to cache with TTL, return data. On write/update, invalidate or update cache key. Simple, works with any cache. Watch for cache stampede on expiry.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When to use Redis vs in-memory cache?</p>
+  <p class="qa-a">In-memory (Map/LRU): single process, fast, lost on restart. Redis: shared across multiple Node instances, persistence options, pub/sub, rate limiting — required for horizontal scaling.</p>
+</div>
+
+<!-- ===== AUTH ===== -->
+<h2 id="auth">Authentication &amp; Authorization</h2>
+
+<div class="qa">
+  <p class="qa-q">Authentication vs authorization?</p>
+  <p class="qa-a">Authentication: verify who the user is (login, JWT) — 401 Unauthorized. Authorization: verify what they're allowed to do (roles, permissions) — 403 Forbidden. Auth first, then authz on protected routes.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">JWT best practices in Node APIs?</p>
+  <p class="qa-a">Short-lived access tokens (15min), refresh token in httpOnly secure cookie, validate signature and expiry on every request, store minimal claims, rotate secrets, never put secrets in JWT payload.</p>
+</div>
+
+<!-- ===== DISTRIBUTED ===== -->
+<h2 id="distributed">Distributed Systems</h2>
+
+<div class="qa">
+  <p class="qa-q">What is the Saga pattern?</p>
+  <p class="qa-a">Manages distributed transactions across microservices without 2PC. Each step has a compensating action if a later step fails — e.g. cancel payment if shipping fails. Choreography (events) or orchestration (coordinator).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is idempotency and why does it matter?</p>
+  <p class="qa-a">Same request processed multiple times produces same result. Critical for retries, network failures, webhooks. Implement with idempotency keys stored in DB/Redis — reject or return cached result for duplicate keys.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain the Outbox pattern.</p>
+  <p class="qa-a">Write business data and an outbox event row in the same DB transaction. Separate poller reads outbox and publishes to message broker. Guarantees at-least-once delivery without dual-write inconsistency.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a circuit breaker?</p>
+  <p class="qa-a">Stops calling a failing downstream service after threshold — fail fast instead of cascading timeouts. States: closed (normal), open (reject), half-open (test recovery). Libraries: opossum, resilience4j patterns.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">CAP theorem in practice?</p>
+  <p class="qa-a">During network partition, choose Consistency (CP — reject writes until synced) or Availability (AP — accept writes, reconcile later). Most production systems tune per operation — not purely CP or AP.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Kafka vs RabbitMQ?</p>
+  <p class="qa-a">Kafka: durable log, replay, high throughput, event streaming, consumer groups. RabbitMQ: traditional message broker, routing patterns, task queues, messages deleted after ack. Kafka for event sourcing/analytics; Rabbit for job queues.</p>
+</div>
+
+<p class="footer-note"><a href="nodejs-notes.html">Node.js Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

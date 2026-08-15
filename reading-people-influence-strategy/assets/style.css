@@ -1,0 +1,285 @@
+/*
+  Shared stylesheet for the "Reading People, Influence & Strategy" workspace.
+  Tufte-ish: generous margins, serif reading column, sidenotes, print-friendly.
+  Every lesson and reference doc should link this file rather than inlining styles.
+*/
+
+:root {
+  --ink: #1a1a17;
+  --ink-soft: #4a4a44;
+  --paper: #fdfcf9;
+  --paper-raised: #f4f1ea;
+  --rule: #ddd6c8;
+  --accent: #8a3324;   /* muted brick red — used sparingly */
+  --accent-soft: #b8593f;
+  --link: #5c5346;
+  --good: #3a6b4a;
+  --bad: #a8402f;
+  --max-w: 42rem;
+  --font-serif: "Palatino Linotype", Palatino, "Iowan Old Style", "Book Antiqua", Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e4d9;
+    --ink-soft: #b5afa0;
+    --paper: #1c1b18;
+    --paper-raised: #262420;
+    --rule: #3a372f;
+    --accent: #e08a70;
+    --accent-soft: #c96a4e;
+    --link: #d8cdb8;
+    --good: #7fbf95;
+    --bad: #e0796a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: light dark; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.55;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 6rem;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.35rem;
+  margin: 2.5rem 0 0.75rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+h2:first-of-type { border-top: none; padding-top: 0; }
+
+h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+p { margin: 0 0 1.1rem; }
+
+a { color: var(--link); text-decoration-color: var(--rule); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+
+ul, ol { padding-left: 1.4rem; margin: 0 0 1.1rem; }
+li { margin-bottom: 0.4rem; }
+
+strong { color: var(--ink); }
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: var(--paper-raised);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.88em;
+}
+
+/* -- Sidenotes / margin notes -- */
+.sidenote {
+  float: right;
+  clear: right;
+  margin-right: -15rem;
+  width: 12.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--rule);
+  padding-left: 0.75rem;
+}
+@media (max-width: 1100px) {
+  .sidenote {
+    float: none;
+    margin: 0.5rem 0 1.2rem;
+    width: auto;
+    border-left: 2px solid var(--rule);
+    padding-left: 0.75rem;
+  }
+}
+
+/* -- Callout boxes -- */
+.box {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  margin: 1.5rem 0;
+}
+
+.box.practice {
+  border-left: 4px solid var(--accent);
+}
+
+.box.practice .kicker { color: var(--accent-soft); }
+
+/* -- Quiz component (see quiz.js) -- */
+.quiz {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  margin: 1.5rem 0;
+}
+
+.quiz-q {
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-options {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.quiz-options button {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.quiz-options button:hover:not(:disabled) {
+  border-color: var(--ink-soft);
+}
+
+.quiz-options button:disabled { cursor: default; opacity: 0.85; }
+
+.quiz-options button.correct {
+  border-color: var(--good);
+  color: var(--good);
+  font-weight: 600;
+}
+
+.quiz-options button.incorrect {
+  border-color: var(--bad);
+  color: var(--bad);
+}
+
+.quiz-feedback {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* -- Journal component (see journal.js) -- */
+.journal textarea {
+  width: 100%;
+  min-height: 6rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.7rem;
+  resize: vertical;
+}
+
+.journal button {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 4px;
+  border: 1px solid var(--ink-soft);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.journal-log {
+  margin-top: 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.journal-entry {
+  border-top: 1px solid var(--rule);
+  padding: 0.6rem 0;
+}
+
+.journal-entry time {
+  color: var(--ink-soft);
+  display: block;
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.journal-note {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+}
+
+/* -- Nav / footer -- */
+.lesson-nav {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  margin-top: 3.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.ask-your-teacher {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  background: var(--paper-raised);
+  border-radius: 6px;
+  padding: 0.9rem 1.2rem;
+  margin: 2rem 0;
+}
+
+@media print {
+  body { padding: 0; max-width: 100%; font-size: 12pt; }
+  .quiz-options button, .journal button { display: none; }
+  .ask-your-teacher { display: none; }
+  a { color: var(--ink); text-decoration: none; }
+}

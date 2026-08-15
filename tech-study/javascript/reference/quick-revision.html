@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — JavaScript</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a senior Full Stack interview. Full tiers &amp; learning order in <a href="javascript-notes.html#study-guide">JavaScript Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Scope</td><td>Global, function, block, module — lexical lookup chain</td></tr>
+  <tr><td>Hoisting</td><td><code>var</code> → undefined · fn decl → full body · <code>let/const</code> → TDZ</td></tr>
+  <tr><td>Execution context</td><td>Var env + lexical env + <code>this</code> — one frame per call on stack</td></tr>
+  <tr><td>Call stack</td><td>LIFO sync frames · overflow = too many nested calls</td></tr>
+  <tr><td>Closure</td><td>Function + remembered outer variables after outer returns</td></tr>
+  <tr><td>this</td><td>new &gt; call/apply/bind &gt; obj.method &gt; plain call. Arrows = lexical</td></tr>
+  <tr><td>call/apply/bind</td><td>call/apply run now · bind returns new function</td></tr>
+  <tr><td>Prototype chain</td><td>Own props → walk <code>[[Prototype]]</code> → null</td></tr>
+  <tr><td>Event loop ⭐</td><td>Sync → all microtasks → one macrotask → repeat</td></tr>
+  <tr><td>Microtasks</td><td>Promise.then, queueMicrotask, await continuation</td></tr>
+  <tr><td>Macrotasks</td><td>setTimeout, setInterval, I/O, UI events</td></tr>
+  <tr><td>Promises</td><td>pending → fulfilled/rejected · settled = immutable</td></tr>
+  <tr><td>async/await</td><td>Sugar over Promises · always returns a Promise</td></tr>
+  <tr><td>Promise.all</td><td>All fulfill or first reject · parallel await</td></tr>
+  <tr><td>map/filter/reduce</td><td>Transform · keep · fold — none mutate original</td></tr>
+  <tr><td>Destructuring / spread</td><td>Unpack arrays/objects · merge/copy with <code>...</code></td></tr>
+  <tr><td>ES modules</td><td>Static import/export · tree-shakeable</td></tr>
+  <tr><td>Error handling</td><td>try/catch/finally · re-throw unexpected · custom Error</td></tr>
+  <tr><td>DOM events</td><td>Capture → target → bubble · delegation on parent</td></tr>
+  <tr><td>Shallow vs deep</td><td>Spread = shallow · <code>structuredClone</code> = deep</td></tr>
+  <tr><td>Memory leaks</td><td>Listeners, closures, globals, detached DOM, intervals</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Generators</td><td><code>function*</code> + <code>yield</code> · pausable functions</td></tr>
+  <tr><td>Symbol</td><td>Unique keys · skipped by <code>Object.keys</code></td></tr>
+  <tr><td>WeakMap/WeakSet</td><td>Weak object refs · no iteration · GC-friendly</td></tr>
+  <tr><td>Proxy/Reflect</td><td>Intercept get/set · validation, reactivity</td></tr>
+  <tr><td>Property descriptors</td><td>writable, enumerable, configurable</td></tr>
+  <tr><td>Curry / memoize</td><td>Partial apply · cache by args</td></tr>
+  <tr><td>Debounce / throttle</td><td>Pause until stop · max once per window</td></tr>
+  <tr><td>Web Workers</td><td>Separate thread · postMessage · no DOM</td></tr>
+  <tr><td>AbortController</td><td>Cancel fetch and async operations</td></tr>
+  <tr><td>Streams</td><td>Read chunks · memory-efficient I/O</td></tr>
+  <tr><td>Security</td><td>XSS sanitize · CSRF tokens · no secrets in client</td></tr>
+</table>
+
+<h2>Tier 3 — Senior (skim)</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>V8 JIT</td><td>Hot code compiled to optimized machine code</td></tr>
+  <tr><td>Hidden classes</td><td>Stable property order = faster access</td></tr>
+  <tr><td>Inline caching</td><td>Caches property lookup site · deopts on shape change</td></tr>
+  <tr><td>Design patterns</td><td>Module, Observer, Factory, Singleton, HOC</td></tr>
+  <tr><td>Bundlers</td><td>Webpack/Vite · tree shaking · code splitting</td></tr>
+  <tr><td>Module resolution</td><td>Relative paths · node_modules · package exports</td></tr>
+  <tr><td>Profiling</td><td>DevTools Performance + Memory · React Profiler</td></tr>
+</table>
+
+<h2>Promise combinators</h2>
+<table class="ref">
+  <tr><th>Method</th><th>Resolves when</th><th>Rejects when</th></tr>
+  <tr><td><code>Promise.all</code></td><td>All fulfill</td><td>First rejection</td></tr>
+  <tr><td><code>Promise.allSettled</code></td><td>All settle</td><td>Never</td></tr>
+  <tr><td><code>Promise.race</code></td><td>First settle (any)</td><td>First rejection</td></tr>
+  <tr><td><code>Promise.any</code></td><td>First fulfillment</td><td>All reject</td></tr>
+</table>
+
+<h2>Event loop output</h2>
+<pre class="code"><code>console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+// → 1, 4, 3, 2</code></pre>
+
+<h2>30-second answers</h2>
+
+<p><strong>Execution context vs call stack?</strong><br>
+Each function call creates an execution context (variables, outer env, this). The call stack holds active contexts — last in, first out.</p>
+
+<p><strong>Event bubbling vs capturing?</strong><br>
+Capture: root → target. Bubble: target → root (default). Delegation: listen on parent, use <code>event.target</code>.</p>
+
+<p><strong>What is a closure?</strong><br>
+A function that retains access to outer scope variables after the outer function returns.</p>
+
+<p><strong>Debounce vs throttle?</strong><br>
+Debounce fires after triggers stop (search). Throttle fires at most once per window (scroll).</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>debounce &amp; throttle</li>
+  <li>curry · memoize · bind · Promise.all</li>
+  <li>flatten array · deep clone (WeakMap)</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="javascript-notes.html#scope">Scope + Hoisting + Execution Context</a></li>
+  <li><a href="javascript-notes.html#closures">Closures</a> + <a href="javascript-notes.html#this">this &amp; Prototypes</a></li>
+  <li><a href="javascript-notes.html#async">Async &amp; Event Loop ⭐</a></li>
+  <li><a href="javascript-notes.html#dom">DOM &amp; Events</a></li>
+  <li><a href="javascript-notes.html#patterns">Interview Patterns</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="javascript-notes.html">JavaScript Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

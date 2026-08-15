@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React.js Notes — Senior Interview Guide</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">← Interview Prep</a></p>
+<h1>React.js Notes</h1>
+<p class="subtitle">Senior-level guide for 7+ years — architecture, internals, and production patterns.</p>
+
+<nav class="toc">
+<strong>Contents</strong><br>
+<a href="#study-guide">Study Guide (Tier 1/2/3)</a> ·
+<a href="#jsx">JSX</a> ·
+<a href="#components">Components</a> ·
+<a href="#state">State &amp; Immutability</a> ·
+<a href="#events">Events, Lists &amp; Keys</a> ·
+<a href="#hooks">Hooks</a> ·
+<a href="#custom-hooks">Custom Hooks</a> ·
+<a href="#communication">Communication &amp; Forms</a> ·
+<a href="#rhf-zod">React Hook Form + Zod</a> ·
+<a href="#data">API, React Query &amp; Redux</a> ·
+<a href="#rendering">Rendering &amp; Reconciliation</a> ·
+<a href="#performance">Performance</a> ·
+<a href="#concurrent">Concurrent React</a> ·
+<a href="#ssr">SSR, Hydration &amp; RSC</a> ·
+<a href="#router">Router &amp; Auth</a> ·
+<a href="#security">Security, Testing &amp; A11y</a> ·
+<a href="#fiber">Fiber &amp; Internals</a> ·
+<a href="#nextjs">Next.js</a> ·
+<a href="#mfe">MFE &amp; Enterprise</a> ·
+<a href="#production">Production &amp; Web Vitals</a> ·
+<a href="#react-native">React Native</a> ·
+<a href="#react19">React 19</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — 7+ Years Profile</h2>
+<p>Prioritize depth over breadth. Interviewers at senior/staff level expect you to connect user-facing behavior to reconciliation, data flow, and operational concerns.</p>
+
+<h3>Tier 1 — Must know cold</h3>
+<ul>
+  <li><strong>JSX</strong> — expressions, fragments, conditional rendering, <code>className</code> vs <code>class</code></li>
+  <li><strong>Components</strong> — function vs class (legacy), composition, children, render props (historical), HOCs (historical)</li>
+  <li><strong>State &amp; immutability</strong> — <code>useState</code>, batching, stale closures, immutable updates for objects/arrays</li>
+  <li><strong>Events, lists, keys</strong> — synthetic events, controlled vs uncontrolled, stable keys, list reconciliation pitfalls</li>
+  <li><strong>Hooks core</strong> — rules of hooks; <code>useState</code>, <code>useReducer</code>, <code>useRef</code>, <code>useContext</code></li>
+  <li><strong>useEffect ⭐</strong> — dependency array semantics, cleanup, race conditions, when <em>not</em> to use it (derived state, event handlers)</li>
+  <li><strong>Custom hooks</strong> — extract logic, share stateful behavior, testing in isolation</li>
+  <li><strong>Props drilling vs Context</strong> — when each is appropriate; performance caveats of Context</li>
+  <li><strong>Forms</strong> — controlled inputs, validation basics, React Hook Form + Zod pattern</li>
+  <li><strong>Data fetching</strong> — <code>useEffect</code> pitfalls; React Query for server state; loading/error/empty states</li>
+  <li><strong>Rendering</strong> — virtual DOM, reconciliation, diffing by type and key</li>
+  <li><strong>Performance basics</strong> — unnecessary re-renders, <code>React.memo</code>, <code>useMemo</code>/<code>useCallback</code> (when they help vs hurt)</li>
+  <li><strong>React Router</strong> — nested routes, loaders (v6.4+), protected routes concept</li>
+  <li><strong>Testing</strong> — React Testing Library philosophy (user-centric), mocking fetch</li>
+</ul>
+
+<h3>Tier 2 — Senior differentiators</h3>
+<ul>
+  <li><strong>Concurrent React</strong> — <code>useTransition</code>, <code>useDeferredValue</code>, Suspense boundaries, interruptible rendering</li>
+  <li><strong>SSR / Hydration / RSC</strong> — CSR vs SSR vs SSG; hydration mismatch causes; Server Components mental model</li>
+  <li><strong>Redux Toolkit</strong> — when global client state beats React Query; slices, thunks, selectors with Reselect</li>
+  <li><strong>Advanced hooks</strong> — <code>useLayoutEffect</code>, <code>useImperativeHandle</code>, <code>useSyncExternalStore</code>, <code>useId</code></li>
+  <li><strong>Error boundaries</strong> — class-only; fallback UI; what they cannot catch (async, events)</li>
+  <li><strong>Code splitting</strong> — <code>React.lazy</code>, dynamic import, route-based splitting</li>
+  <li><strong>Auth patterns</strong> — token storage trade-offs, refresh flows, route guards, SSR cookie sessions</li>
+  <li><strong>Security</strong> — XSS via <code>dangerouslySetInnerHTML</code>, CSP, CSRF with cookies</li>
+  <li><strong>A11y</strong> — semantic HTML, focus management, ARIA when necessary, keyboard traps in modals</li>
+  <li><strong>Fiber (high level)</strong> — work units, lanes, priority; why React can pause/resume</li>
+  <li><strong>Next.js App Router</strong> — layouts, loading/error files, Server Actions, caching semantics</li>
+  <li><strong>Web Vitals</strong> — LCP, INP, CLS; measuring and fixing in SPAs</li>
+  <li><strong>React 19</strong> — <code>use</code> hook, Actions, <code>useActionState</code>, ref as prop</li>
+</ul>
+
+<h3>Tier 3 — Staff / architect depth</h3>
+<ul>
+  <li><strong>Micro-frontends</strong> — Module Federation, single-spa, shared dependency/version strategy</li>
+  <li><strong>Enterprise patterns</strong> — design systems, monorepo (Nx/Turborepo), feature flags, observability</li>
+  <li><strong>Production ops</strong> — source maps, error tracking (Sentry), RUM, bundle analysis, CDN caching</li>
+  <li><strong>Advanced reconciliation</strong> — bail-out conditions, <code>memo</code> comparator, context propagation</li>
+  <li><strong>State machines</strong> — XState or explicit reducers for complex UI flows</li>
+  <li><strong>React Compiler</strong> — automatic memoization direction; reducing manual <code>useMemo</code></li>
+  <li><strong>React Native bridge</strong> — when to choose RN vs web; native module boundaries</li>
+  <li><strong>Migration strategy</strong> — class → hooks, Pages → App Router, Redux → Query for server state</li>
+</ul>
+
+<h2 id="jsx">JSX</h2>
+<p>JSX is syntactic sugar for <code>React.createElement(type, props, ...children)</code>. It is <em>not</em> HTML — attribute names and behavior differ.</p>
+<ul>
+  <li><strong>Expressions only</strong> — use <code>{ }</code> for JS; statements (if/for) belong outside or in IIFEs.</li>
+  <li><strong>One root</strong> — use fragments <code>&lt;&gt;...&lt;/&gt;</code> to avoid extra DOM nodes.</li>
+  <li><strong><code>className</code>, <code>htmlFor</code>, <code>tabIndex</code></strong> — camelCase DOM properties.</li>
+  <li><strong>Style objects</strong> — <code>style={{ marginTop: 8 }}</code> (px auto-appended for numbers).</li>
+  <li><strong>Boolean attributes</strong> — <code>disabled</code> omits attribute when false; string <code>"false"</code> is truthy in HTML.</li>
+  <li><strong>Children</strong> — text, elements, arrays, render functions (via props, not JSX children syntax).</li>
+</ul>
+<pre class="code"><code>{condition &amp;&amp; &lt;Alert /&gt;}
+{items.map(item =&gt; &lt;Row key={item.id} {...item} /&gt;)}</code></pre>
+
+<h2 id="components">Components</h2>
+<p>Function components are the standard. They are plain functions that return React elements and may call hooks.</p>
+<ul>
+  <li><strong>Composition over inheritance</strong> — pass UI via <code>children</code> or slot props (<code>header={<Header />}</code>).</li>
+  <li><strong>Presentational vs container</strong> — separate data/logic from markup; hooks often replace container classes.</li>
+  <li><strong>Pure components</strong> — same props → same output; no side effects during render.</li>
+  <li><strong>Legacy patterns</strong> — HOCs (<code>withAuth(Component)</code>), render props — know for maintenance/interviews, prefer hooks.</li>
+  <li><strong>Refs to DOM</strong> — <code>forwardRef</code> for reusable inputs; React 19 allows <code>ref</code> as regular prop on function components.</li>
+</ul>
+
+<h2 id="state">State &amp; Immutability</h2>
+<p>React re-renders when state or props change. Updates must be immutable — mutate nothing React owns.</p>
+<ul>
+  <li><strong><code>useState</code></strong> — lazy init: <code>useState(() =&gt; expensive())</code>; functional updates: <code>setCount(c =&gt; c + 1)</code>.</li>
+  <li><strong><code>useReducer</code></strong> — complex transitions, explicit actions, easier to test; pairs well with Context for localized "stores".</li>
+  <li><strong>Batching</strong> — React 18 batches all updates (including promises, timeouts, native handlers) in one render.</li>
+  <li><strong>Stale closures</strong> — effects and callbacks capture values from render; fix with deps, refs, or functional updates.</li>
+  <li><strong>Immutable patterns</strong> — spread for objects; <code>map</code>/<code>filter</code> for arrays; Immer for deep trees.</li>
+  <li><strong>State colocation</strong> — lift state only as high as needed; avoid global state for local UI.</li>
+</ul>
+
+<h2 id="events">Events, Lists &amp; Keys</h2>
+<h3>Synthetic events</h3>
+<p>React wraps native events for cross-browser consistency. Events delegate at the root (React 17+: container from render tree). Call <code>e.persist()</code> only in legacy code — pooling removed in React 17+.</p>
+<h3>Lists &amp; keys</h3>
+<ul>
+  <li>Keys must be <strong>stable, unique among siblings</strong> — prefer IDs, not array index (except static lists).</li>
+  <li>Wrong keys cause state bugs (input values "jumping") and poor performance.</li>
+  <li>Do not generate keys with <code>Math.random()</code> on every render.</li>
+</ul>
+<h3>Controlled vs uncontrolled</h3>
+<ul>
+  <li><strong>Controlled</strong> — React state is source of truth: <code>value={x} onChange={...}</code>.</li>
+  <li><strong>Uncontrolled</strong> — DOM holds value; read via ref. File inputs are typically uncontrolled.</li>
+</ul>
+
+<h2 id="hooks">Hooks</h2>
+<p>Hooks let function components use state, lifecycle, and context. Rules: only call at top level; only from React functions or custom hooks.</p>
+
+<h3>useState / useReducer</h3>
+<p>Local component state. Reducer for multi-field updates and explicit action types.</p>
+
+<h3>useRef</h3>
+<p>Mutable box persisting across renders. DOM refs, timers, previous values, avoiding stale closure in callbacks.</p>
+
+<h3>useContext</h3>
+<p>Subscribe to nearest Provider. All consumers re-render when value changes — split contexts or memoize value object to optimize.</p>
+
+<h3>useEffect ⭐</h3>
+<p>Synchronizes component with <em>external systems</em> (DOM APIs, subscriptions, logging, non-React widgets). Not for transforming data for render (derive during render) or user events (use handlers).</p>
+<ul>
+  <li><strong>Dependency array</strong> — omit = every render; <code>[]</code> = mount/unmount only; include all reactive values used inside.</li>
+  <li><strong>Cleanup</strong> — return function runs before next effect and on unmount; prevents leaks and race conditions.</li>
+  <li><strong>Race pattern</strong> — abort flag or <code>AbortController</code> when fetch identity changes.</li>
+  <li><strong>Strict Mode (dev)</strong> — double mount simulates remount; effects must be idempotent.</li>
+  <li><strong>eslint-plugin-react-hooks</strong> — treat exhaustive-deps warnings seriously; document intentional omissions.</li>
+</ul>
+<pre class="code"><code>useEffect(() =&gt; {
+  const ctrl = new AbortController();
+  fetch(url, { signal: ctrl.signal })
+    .then(r =&gt; r.json())
+    .then(setData)
+    .catch(e =&gt; { if (e.name !== 'AbortError') setError(e); });
+  return () =&gt; ctrl.abort();
+}, [url]);</code></pre>
+
+<h3>useLayoutEffect</h3>
+<p>Runs synchronously after DOM mutations, before paint. Use for measuring layout, focus, scroll sync — avoid for data fetching (blocks paint).</p>
+
+<h3>useMemo / useCallback</h3>
+<p>Cache expensive computations and stable function references. Use when profiling shows benefit or when referential equality matters (memoized children, effect deps). Overuse adds memory and comparison cost.</p>
+
+<h3>useId</h3>
+<p>Stable IDs for accessibility (<code>htmlFor</code> / <code>aria-labelledby</code>). Unique per component instance; safe for SSR.</p>
+
+<h3>useSyncExternalStore</h3>
+<p>Subscribe to external stores (Redux, Zustand internals). Ensures tearing-safe reads during concurrent rendering.</p>
+
+<h3>useTransition / useDeferredValue</h3>
+<p>Mark updates non-urgent (<code>startTransition</code>) or defer a value — keep UI responsive during heavy renders. Part of Concurrent React.</p>
+
+<h3>useImperativeHandle</h3>
+<p>Customize ref handle exposed to parent when using <code>forwardRef</code>.</p>
+
+<h2 id="custom-hooks">Custom Hooks</h2>
+<p>Extract stateful logic into reusable functions named <code>useSomething</code>. They compose built-in hooks.</p>
+<ul>
+  <li><strong>Examples</strong> — <code>useDebounce</code>, <code>useLocalStorage</code>, <code>useMediaQuery</code>, <code>useFetch</code> (prefer React Query in production).</li>
+  <li><strong>Testing</strong> — test with <code>renderHook</code> from Testing Library.</li>
+  <li><strong>Contracts</strong> — return stable API; document whether callbacks must be memoized.</li>
+</ul>
+<pre class="code"><code>function useDebounce&lt;T&gt;(value: T, ms: number) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() =&gt; {
+    const id = setTimeout(() =&gt; setDebounced(value), ms);
+    return () =&gt; clearTimeout(id);
+  }, [value, ms]);
+  return debounced;
+}</code></pre>
+
+<h2 id="communication">Communication &amp; Forms</h2>
+<ul>
+  <li><strong>Parent → child</strong> — props.</li>
+  <li><strong>Child → parent</strong> — callback props.</li>
+  <li><strong>Sibling</strong> — lift state to common ancestor or shared store.</li>
+  <li><strong>Context</strong> — theme, locale, auth snapshot — avoid high-frequency updates.</li>
+  <li><strong>Controlled forms</strong> — single state object or per-field; validate on blur/submit.</li>
+  <li><strong>Lifting validation</strong> — schema-driven (Zod/Yup) beats ad-hoc checks at scale.</li>
+</ul>
+
+<h2 id="rhf-zod">React Hook Form + Zod</h2>
+<p>Industry standard for performant forms: uncontrolled inputs by default (via refs), minimal re-renders, schema validation with Zod.</p>
+<ul>
+  <li><strong>Why RHF</strong> — avoids re-render per keystroke; good DX with TypeScript inference from Zod schema.</li>
+  <li><strong><code>zodResolver</code></strong> — bridges Zod to RHF's validation pipeline.</li>
+  <li><strong><code>register</code> vs <code>Controller</code></strong> — native inputs use <code>register</code>; MUI/controlled third-party widgets use <code>Controller</code>.</li>
+  <li><strong>Server errors</strong> — <code>setError('root', { message })</code> or field-level from API.</li>
+  <li><strong>Default values</strong> — from props/async load via <code>reset()</code> when data arrives.</li>
+</ul>
+<pre class="code"><code>import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email(),
+  age: z.coerce.number().min(18),
+});
+
+type FormData = z.infer&lt;typeof schema&gt;;
+
+function SignupForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm&lt;FormData&gt;({
+    resolver: zodResolver(schema),
+  });
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register('email')} /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email.message}&lt;/span&gt;}
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+<h2 id="data">API, React Query &amp; Redux</h2>
+<h3>Server state vs client state</h3>
+<ul>
+  <li><strong>Server state</strong> — async, shared, cacheable, can stale — React Query / SWR / RTK Query.</li>
+  <li><strong>Client state</strong> — UI toggles, wizard step, selections — useState, Context, Zustand, Redux.</li>
+</ul>
+<h3>React Query (TanStack Query)</h3>
+<ul>
+  <li><code>useQuery</code> — fetch, cache, background refetch, stale-while-revalidate.</li>
+  <li><code>useMutation</code> — POST/PUT with optimistic updates and rollback.</li>
+  <li><code>queryKey</code> — hierarchical cache identity; invalidate on mutations.</li>
+  <li><strong>Prefetching</strong> — <code>queryClient.prefetchQuery</code> on hover/route load.</li>
+</ul>
+<h3>Redux Toolkit</h3>
+<ul>
+  <li>Single store, time-travel debugging, middleware — still valid for complex client workflows.</li>
+  <li><strong>RTK Query</strong> — overlaps React Query; pick one per app for server cache.</li>
+  <li><strong>Selectors</strong> — memoized derived data with <code>createSelector</code>.</li>
+</ul>
+<h3>Anti-patterns</h3>
+<ul>
+  <li>Duplicating server data in Redux and React Query.</li>
+  <li>Fetching in <code>useEffect</code> without cancellation, deduplication, or cache.</li>
+</ul>
+
+<h2 id="rendering">Rendering &amp; Reconciliation</h2>
+<ul>
+  <li><strong>Render phase</strong> — pure; builds new element tree; can be interrupted (Concurrent).</li>
+  <li><strong>Commit phase</strong> — applies DOM changes; runs layout effects and passive effects.</li>
+  <li><strong>Reconciliation</strong> — diff old vs new tree; same type → update props; different type → unmount/remount.</li>
+  <li><strong>Keys</strong> — identify list items across moves; without keys React matches by index.</li>
+  <li><strong>Bail out</strong> — <code>memo</code>, <code>PureComponent</code>, class <code>shouldComponentUpdate</code>.</li>
+</ul>
+
+<h2 id="performance">Performance</h2>
+<ul>
+  <li><strong>Profile first</strong> — React DevTools Profiler, why-did-you-render (dev).</li>
+  <li><strong>Split contexts</strong> — separate fast-changing from stable values.</li>
+  <li><strong>Virtualize lists</strong> — react-window / TanStack Virtual for long lists.</li>
+  <li><strong>Defer non-critical UI</strong> — <code>lazy</code>, <code>Suspense</code>, route-based code splitting.</li>
+  <li><strong>Avoid inline object/function props</strong> to memoized children unless negligible.</li>
+  <li><strong>Web Workers</strong> — heavy computation off main thread.</li>
+  <li><strong>React Compiler</strong> — future: auto-memo; today manual optimization where measured.</li>
+</ul>
+
+<h2 id="concurrent">Concurrent React</h2>
+<p>React 18+ can interrupt rendering, prioritize updates, and resume later.</p>
+<ul>
+  <li><strong><code>createRoot</code></strong> — enables concurrent features (vs legacy <code>ReactDOM.render</code>).</li>
+  <li><strong>Suspense</strong> — declarative loading boundaries; data frameworks integrate via throwing promises.</li>
+  <li><strong><code>useTransition</code></strong> — mark state updates as transitions (low priority).</li>
+  <li><strong><code>useDeferredValue</code></strong> — lag behind fast-updating input for expensive derived UI.</li>
+  <li><strong>Selective hydration</strong> — prioritize interactive regions (framework-level, e.g. Next.js).</li>
+</ul>
+
+<h2 id="ssr">SSR, Hydration &amp; RSC</h2>
+<table class="ref">
+<tr><th>Mode</th><th>Where HTML is built</th><th>Typical use</th></tr>
+<tr><td>CSR</td><td>Browser</td><td>Dashboards, heavy client interactivity</td></tr>
+<tr><td>SSR</td><td>Server per request</td><td>SEO, fast FCP, personalized pages</td></tr>
+<tr><td>SSG</td><td>Build time</td><td>Marketing, docs, blogs</td></tr>
+<tr><td>ISR</td><td>Build + revalidate</td><td>Large catalogs, semi-static content</td></tr>
+<tr><td>RSC</td><td>Server (components)</td><td>Zero-bundle server logic, data colocation</td></tr>
+</table>
+<h3>Hydration</h3>
+<p>Client attaches event listeners and reconciles against server HTML. Mismatch (Date.now, random IDs, browser-only APIs during SSR) causes warnings and full client re-render.</p>
+<h3>Server Components</h3>
+<ul>
+  <li>Run only on server; can async/await DB directly; no hooks or browser APIs.</li>
+  <li>Pass serializable props to Client Components (<code>'use client'</code>).</li>
+  <li>Reduce JS sent to browser; keep interactivity in client islands.</li>
+</ul>
+
+<h2 id="router">Router &amp; Auth</h2>
+<h3>React Router v6+</h3>
+<ul>
+  <li>Nested routes, layout routes, relative links.</li>
+  <li>Data APIs: <code>loader</code>, <code>action</code>, <code>useLoaderData</code>, error boundaries per route.</li>
+  <li><code>Navigate</code> for redirects; <code>Outlet</code> for child rendering.</li>
+</ul>
+<h3>Auth patterns</h3>
+<ul>
+  <li><strong>Protected routes</strong> — wrapper checking auth context; redirect to login with return URL.</li>
+  <li><strong>Token in memory</strong> — safest from XSS theft vs localStorage; refresh via httpOnly cookie.</li>
+  <li><strong>SSR auth</strong> — read session cookie on server; pass user into RSC/layout.</li>
+  <li><strong>OIDC/OAuth</strong> — PKCE for SPAs; BFF pattern for token handling.</li>
+</ul>
+
+<h2 id="security">Security, Testing &amp; A11y</h2>
+<h3>Security</h3>
+<ul>
+  <li>React escapes JSX text — XSS mainly via <code>dangerouslySetInnerHTML</code> or injecting URLs (<code>javascript:</code>).</li>
+  <li>Sanitize HTML (DOMPurify) if rich text required.</li>
+  <li>CSRF — SameSite cookies, CSRF tokens for cookie-based auth.</li>
+  <li>Dependencies — supply chain audits; avoid exposing secrets in client bundles (<code>NEXT_PUBLIC_*</code> is public).</li>
+</ul>
+<h3>Testing</h3>
+<ul>
+  <li><strong>RTL</strong> — query by role/label; fire events; assert outcomes, not implementation.</li>
+  <li><strong>MSW</strong> — mock network at HTTP layer for integration tests.</li>
+  <li><strong>Avoid</strong> — testing internal state, shallow render-only snapshots without behavior.</li>
+</ul>
+<h3>Accessibility</h3>
+<ul>
+  <li>Prefer native elements (<code>button</code>, <code>input</code>) over div click handlers.</li>
+  <li>Focus trap and restore focus in modals; <code>aria-modal</code>, labelled dialogs.</li>
+  <li>Live regions for dynamic announcements (<code>role="status"</code>).</li>
+  <li>Keyboard: all interactive paths reachable; visible focus styles.</li>
+</ul>
+
+<h2 id="fiber">Fiber &amp; Internals</h2>
+<p>Fiber is React's unit of work — a linked tree of nodes with alternate (current vs work-in-progress) pairs.</p>
+<ul>
+  <li><strong>Scheduler</strong> — prioritizes updates (user input &gt; transition &gt; idle).</li>
+  <li><strong>Lanes</strong> — bitmask priority model for batching related updates.</li>
+  <li><strong>Double buffering</strong> — build new tree, swap on commit.</li>
+  <li><strong>Effect list</strong> — fibers with side effects linked for flush after commit.</li>
+  <li><strong>Why it matters</strong> — explains Strict Mode remount, interruptible render, Suspense architecture.</li>
+</ul>
+
+<h2 id="nextjs">Next.js</h2>
+<p>Full guide: <a href="../../nextjs/reference/nextjs-notes.html">Next.js Notes</a> — App Router, RSC, caching, Server Actions, middleware, auth, deployment.</p>
+<ul>
+  <li><strong>App Router</strong> — see dedicated Next.js topic for depth</li>
+  <li><strong>RSC default</strong> — <code>'use client'</code> for interactivity</li>
+  <li><strong>React Query</strong> — Client Components for client-side server state</li>
+</ul>
+
+<h2 id="mfe">MFE &amp; Enterprise</h2>
+<ul>
+  <li><strong>Module Federation</strong> — Webpack 5 runtime sharing of remotes/exposes; version negotiation.</li>
+  <li><strong>single-spa</strong> — orchestration layer; route-to-app mapping.</li>
+  <li><strong>Design systems</strong> — Storybook, tokens, semver for component libraries.</li>
+  <li><strong>Monorepos</strong> — shared packages, affected builds, consistent tooling.</li>
+  <li><strong>Feature flags</strong> — LaunchDarkly / Unleash; decouple deploy from release.</li>
+  <li><strong>Observability</strong> — structured logging, traces, session replay, Core Web Vitals dashboards.</li>
+  <li><strong>CI/CD</strong> — preview deployments, visual regression, bundle size budgets.</li>
+</ul>
+
+<h2 id="production">Production &amp; Web Vitals</h2>
+<h3>Core Web Vitals</h3>
+<ul>
+  <li><strong>LCP</strong> — largest contentful paint &lt; 2.5s — optimize images, fonts, SSR critical path.</li>
+  <li><strong>INP</strong> — interaction to next paint — reduce main-thread blocking, split long tasks.</li>
+  <li><strong>CLS</strong> — layout shift — reserve space for images/ads, avoid injecting above content.</li>
+</ul>
+<h3>Production checklist</h3>
+<ul>
+  <li>Production build, tree shaking, minification.</li>
+  <li>Error boundaries + global error handler (Sentry).</li>
+  <li>Source maps uploaded privately, not served publicly.</li>
+  <li>CDN cache headers for static assets (content hash filenames).</li>
+  <li>Environment-specific config; no secrets in client.</li>
+  <li>Health checks, graceful degradation when API fails.</li>
+</ul>
+
+<h2 id="react-native">React Native (Brief)</h2>
+<p>React paradigm for iOS/Android using native views instead of DOM. Share logic (hooks, business rules); platform-specific UI via <code>Platform.OS</code> or separate files (<code>.ios.tsx</code> / <code>.android.tsx</code>).</p>
+<h3>Core components</h3>
+<ul>
+  <li><code>View</code>, <code>Text</code>, <code>ScrollView</code>, <code>FlatList</code>, <code>Pressable</code>, <code>Image</code> — map to native widgets.</li>
+  <li><code>FlatList</code> — virtualized lists; prefer over mapping huge arrays in <code>ScrollView</code>.</li>
+  <li>StyleSheet — flexbox layout (defaults differ: <code>flexDirection: 'column'</code>).</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><strong>React Navigation</strong> — stack, tab, drawer navigators; deep linking; screen params.</li>
+  <li>Native stack uses platform transitions; JS stack more customizable.</li>
+</ul>
+<h3>Bridge / New Architecture</h3>
+<ul>
+  <li><strong>Legacy bridge</strong> — async JSON batch between JS thread and native modules — serialization bottleneck.</li>
+  <li><strong>JSI (New Architecture)</strong> — direct C++ interface; synchronous native calls possible; Fabric renderer, TurboModules.</li>
+  <li>Know trade-offs: RN for shared team velocity vs fully native for peak performance / platform APIs.</li>
+</ul>
+
+<h2 id="react19">React 19</h2>
+<ul>
+  <li><strong><code>use</code> hook</strong> — read promise or Context in render; integrates with Suspense; can be called conditionally (unlike other hooks in some cases — follow docs).</li>
+  <li><strong>Actions</strong> — async functions passed to forms (<code>action</code> / <code>formAction</code>); automatic pending state.</li>
+  <li><strong><code>useActionState</code></strong> — <code>[state, dispatch, isPending] = useActionState(action, initialState)</code> — replaces <code>useFormState</code> naming.</li>
+  <li><strong><code>useOptimistic</code></strong> — optimistic UI while async action completes.</li>
+  <li><strong>Ref as prop</strong> — no <code>forwardRef</code> required on function components.</li>
+  <li><strong>Document metadata</strong> — native support for <code>&lt;title&gt;</code>, <code>&lt;meta&gt;</code> in components.</li>
+  <li><strong>Improved Suspense</strong> — pre-warming, better streaming SSR behavior.</li>
+  <li><strong>React Compiler (stable trajectory)</strong> — compile-time memoization reducing manual hooks.</li>
+</ul>
+<pre class="code"><code>// React 19 — use() with Suspense
+function Comments({ commentsPromise }) {
+  const comments = use(commentsPromise);
+  return comments.map(c =&gt; &lt;p key={c.id}&gt;{c.text}&lt;/p&gt;);
+}
+
+// useActionState
+async function updateName(prevState, formData) {
+  const name = formData.get('name');
+  const err = await saveName(name);
+  if (err) return { error: err };
+  return { success: true };
+}</code></pre>
+
+<p class="footer-note">Pair with <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a> before mocks.</p>
+
+</body>
+</html>

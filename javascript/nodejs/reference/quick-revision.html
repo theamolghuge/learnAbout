@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Node.js Quick Revision</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">← Interview Prep</a></p>
+<h1>Node.js Quick Revision</h1>
+<p class="subtitle">Last-minute cheat sheet — tiers, one-liners, and comparison tables.</p>
+
+<nav class="toc">
+<strong>On this page</strong><br>
+<a href="#tier-1">Tier 1</a> ·
+<a href="#tier-2">Tier 2</a> ·
+<a href="#tier-3">Tier 3</a> ·
+<a href="#comparisons">Comparison Tables</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="tier-1">Tier 1 — Must Know</h2>
+
+<table class="ref">
+<tr><th>Topic</th><th>Key points</th></tr>
+<tr><td>Event Loop</td><td>6 phases: timers → pending → idle → poll → check → close. Microtasks (Promises) between phases. nextTick before microtasks.</td></tr>
+<tr><td>Modules</td><td>CJS: require/module.exports (sync, cached). ESM: import/export ("type":"module"). Dynamic import is async.</td></tr>
+<tr><td>Async/Await</td><td>async always returns Promise. try/catch around await. unhandledRejection crashes in prod.</td></tr>
+<tr><td>Streams</td><td>Readable, Writable, Duplex, Transform. Backpressure: pause on write() false, resume on drain. Use pipeline().</td></tr>
+<tr><td>Express</td><td>Middleware chain (req, res, next). Error middleware: 4 args, last. Order: security → parser → auth → routes → 404 → errors.</td></tr>
+<tr><td>REST</td><td>Nouns not verbs. 200/201/204/400/401/403/404/409/422/429/500. GET/PUT/DELETE idempotent. POST is not.</td></tr>
+<tr><td>Auth</td><td>bcrypt cost 10-12. JWT: short access + refresh rotation. httpOnly secure cookies. Never store secrets in JWT payload.</td></tr>
+<tr><td>SQL</td><td>Indexes speed reads, slow writes. Transactions for multi-step writes. N+1 → JOIN or eager load. Pool connections.</td></tr>
+<tr><td>Redis</td><td>Cache-aside: check cache → miss → DB → set cache. TTL + invalidation on write. Shared across instances.</td></tr>
+<tr><td>Security</td><td>Helmet, CORS whitelist, rate limit, validate input (Zod), parameterized queries, npm audit, no secrets in code.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="tier-2">Tier 2 — Senior Level</h2>
+
+<table class="ref">
+<tr><th>Topic</th><th>Key points</th></tr>
+<tr><td>Cluster vs Workers</td><td>Cluster: fork processes, I/O-bound HTTP. Workers: threads, CPU-bound tasks. Cluster = isolation; Workers = shared memory.</td></tr>
+<tr><td>Prisma</td><td>$transaction for atomic ops. include for eager loading. Migrations for schema changes. Connection pool limits.</td></tr>
+<tr><td>MongoDB</td><td>Documents, flexible schema, $lookup joins, aggregation pipeline. Embed one-to-few, reference one-to-many.</td></tr>
+<tr><td>Queues</td><td>Bull/BullMQ (Redis), SQS (managed). At-least-once + idempotent consumers. Dead-letter queues for failures.</td></tr>
+<tr><td>WebSockets</td><td>Full-duplex persistent connection. Use ws library. SSE for server→client only (simpler).</td></tr>
+<tr><td>GraphQL</td><td>Single endpoint, client picks fields. N+1 → DataLoader. Complexity limits prevent expensive queries.</td></tr>
+<tr><td>gRPC</td><td>HTTP/2 + Protobuf. Internal microservices. 4 call types including bidi streaming. grpc-web for browsers.</td></tr>
+<tr><td>Docker</td><td>Multi-stage builds. Non-root user. HEALTHCHECK. .dockerignore. Immutable images per release.</td></tr>
+<tr><td>Nginx</td><td>Reverse proxy, SSL termination, load balance, static files, rate limit. proxy_set_header X-Forwarded-*.</td></tr>
+<tr><td>OpenAPI</td><td>Contract-first API spec. Swagger UI for docs. Codegen for clients. Validate requests against schema.</td></tr>
+<tr><td>12-Factor</td><td>Config in env. Stateless processes. Logs to stdout. Graceful shutdown on SIGTERM. Dev/prod parity.</td></tr>
+<tr><td>Versioning</td><td>URL path (/v1/) most common. Only version breaking changes. Sunset header for deprecation.</td></tr>
+<tr><td>Saga</td><td>Distributed txns with compensating actions. Orchestration (central) vs choreography (events).</td></tr>
+<tr><td>Outbox</td><td>Write event + business data in same DB txn. Relay publishes to queue. Avoids dual-write problem.</td></tr>
+<tr><td>CQRS</td><td>Separate write model (commands) from read model (queries). Eventual consistency. Event sync between sides.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="tier-3">Tier 3 — Staff / Deep</h2>
+
+<table class="ref">
+<tr><th>Topic</th><th>Key points</th></tr>
+<tr><td>Kubernetes</td><td>Pod → Deployment (replicas, rolling update) → Service (stable IP). ConfigMap/Secret for config. HPA for auto-scale.</td></tr>
+<tr><td>Kafka</td><td>Topics partitioned. Consumer groups: 1 consumer per partition. Offsets track progress. Idempotent producers.</td></tr>
+<tr><td>Performance</td><td>clinic.js profiling. Don't block event loop. Stream large data. Connection pooling. Watch memory leaks.</td></tr>
+<tr><td>AWS</td><td>ECS/Fargate, RDS, ElastiCache, ALB, SQS, Secrets Manager, CloudWatch. IAM roles for tasks, not keys.</td></tr>
+<tr><td>Observability</td><td>Structured JSON logs (pino). Correlation/request IDs. OpenTelemetry traces. Metrics: latency, error rate, throughput.</td></tr>
+<tr><td>CAP</td><td>Pick 2 of Consistency, Availability, Partition tolerance. CP (banking) vs AP (social feeds). Eventual consistency.</td></tr>
+<tr><td>Rate Limiting</td><td>Token bucket (burst ok). Sliding window (precise). Redis-backed for distributed. 429 + Retry-After.</td></tr>
+<tr><td>Circuit Breaker</td><td>Closed → Open (fail fast) → Half-Open (test). opossum library. + retries with backoff/jitter.</td></tr>
+<tr><td>Event Sourcing</td><td>Store events not state. Replay to rebuild. Pairs with CQRS. Kafka as event store.</td></tr>
+<tr><td>Service Mesh</td><td>Istio/Linkerd: mTLS, retries, observability between pods. Sidecar proxy pattern.</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="comparisons">Comparison Tables</h2>
+
+<h3>REST vs GraphQL vs gRPC</h3>
+<table class="ref">
+<tr><th></th><th>REST</th><th>GraphQL</th><th>gRPC</th></tr>
+<tr><td>Protocol</td><td>HTTP/1.1 or HTTP/2</td><td>HTTP POST (usually)</td><td>HTTP/2</td></tr>
+<tr><td>Payload</td><td>JSON</td><td>JSON</td><td>Protocol Buffers (binary)</td></tr>
+<tr><td>Endpoints</td><td>Multiple URLs</td><td>Single endpoint</td><td>Service methods</td></tr>
+<tr><td>Data fetching</td><td>Fixed response shape</td><td>Client selects fields</td><td>Defined in .proto</td></tr>
+<tr><td>Over-fetching</td><td>Common</td><td>Eliminated</td><td>Minimal</td></tr>
+<tr><td>Under-fetching</td><td>Multiple requests</td><td>Single request</td><td>Single call</td></tr>
+<tr><td>Streaming</td><td>SSE / WebSockets</td><td>Subscriptions</td><td>Built-in bidi streaming</td></tr>
+<tr><td>Browser support</td><td>Native</td><td>Native</td><td>Needs grpc-web proxy</td></tr>
+<tr><td>Tooling</td><td>curl, Postman, universal</td><td>GraphiQL, Apollo Studio</td><td>grpcurl, specialized</td></tr>
+<tr><td>Caching</td><td>HTTP cache (GET)</td><td>Harder (POST only)</td><td>Not HTTP-cacheable</td></tr>
+<tr><td>Best for</td><td>Public CRUD APIs</td><td>Complex UIs, mobile apps</td><td>Internal microservices</td></tr>
+<tr><td>Learning curve</td><td>Low</td><td>Medium</td><td>Medium-High</td></tr>
+</table>
+
+<h3>Redis vs In-Memory Cache</h3>
+<table class="ref">
+<tr><th></th><th>Redis</th><th>In-Memory (Map/LRU)</th></tr>
+<tr><td>Scope</td><td>Shared across all instances</td><td>Per-process only</td></tr>
+<tr><td>Speed</td><td>~1ms (network hop)</td><td>Microseconds (no network)</td></tr>
+<tr><td>Persistence</td><td>RDB snapshots, AOF log</td><td>Lost on restart</td></tr>
+<tr><td>Data structures</td><td>Strings, hashes, sets, sorted sets, streams</td><td>Any JS object</td></tr>
+<tr><td>TTL</td><td>Built-in per key</td><td>Manual implementation</td></tr>
+<tr><td>Memory limit</td><td>Configurable maxmemory + eviction</td><td>Node heap limit</td></tr>
+<tr><td>Pub/Sub</td><td>Yes (fire-and-forget)</td><td>No (use EventEmitter locally)</td></tr>
+<tr><td>Cluster workers</td><td>All workers share same cache</td><td>Each worker has separate cache</td></tr>
+<tr><td>Ops complexity</td><td>Requires Redis server/Cluster</td><td>Zero infrastructure</td></tr>
+<tr><td>Best for</td><td>Multi-instance apps, sessions, rate limits</td><td>Single-process hot data, computed values</td></tr>
+</table>
+
+<h3>Cluster vs Worker Threads</h3>
+<table class="ref">
+<tr><th></th><th>Cluster Module</th><th>Worker Threads</th></tr>
+<tr><td>Unit of isolation</td><td>OS process</td><td>Thread (same process)</td></tr>
+<tr><td>Memory</td><td>Separate heap per worker</td><td>Shared heap possible (SharedArrayBuffer)</td></tr>
+<tr><td>Communication</td><td>IPC (JSON messages)</td><td>postMessage / MessageChannel</td></tr>
+<tr><td>Best for</td><td>I/O-bound HTTP servers</td><td>CPU-bound computation</td></tr>
+<tr><td>Startup cost</td><td>High (fork process)</td><td>Low (spawn thread)</td></tr>
+<tr><td>Crash impact</td><td>One worker dies, others continue</td><td>Unhandled error can crash entire process</td></tr>
+<tr><td>Port sharing</td><td>Yes (OS distributes connections)</td><td>No (not for HTTP serving)</td></tr>
+<tr><td>Scaling model</td><td>1 worker per CPU core</td><td>Pool of workers for task queue</td></tr>
+<tr><td>Typical use</td><td>app.listen() in each fork</td><td>Hashing, PDF gen, image resize</td></tr>
+<tr><td>Module reloading</td><td>Full module reload per process</td><td>Load worker script once</td></tr>
+</table>
+
+<h3>MongoDB vs SQL (Quick)</h3>
+<table class="ref">
+<tr><th></th><th>SQL (PostgreSQL)</th><th>MongoDB</th></tr>
+<tr><td>Schema</td><td>Strict, migrations</td><td>Flexible, schema-on-read</td></tr>
+<tr><td>Relations</td><td>JOINs (native, fast)</td><td>Embedding or $lookup</td></tr>
+<tr><td>Transactions</td><td>ACID default</td><td>Multi-doc ACID (4.0+)</td></tr>
+<tr><td>Scaling</td><td>Vertical + read replicas</td><td>Horizontal sharding built-in</td></tr>
+<tr><td>Queries</td><td>SQL (ad-hoc, complex)</td><td>Aggregation pipeline</td></tr>
+<tr><td>Best for</td><td>Relational data, reporting</td><td>Documents, rapid iteration</td></tr>
+</table>
+
+<h3>Session Auth vs JWT (Quick)</h3>
+<table class="ref">
+<tr><th></th><th>Session (Cookie)</th><th>JWT</th></tr>
+<tr><td>State</td><td>Server-side (Redis/DB)</td><td>Stateless (client holds token)</td></tr>
+<tr><td>Revocation</td><td>Instant (delete session)</td><td>Hard (need blocklist or short TTL)</td></tr>
+<tr><td>Scaling</td><td>Needs shared session store</td><td>No shared store needed</td></tr>
+<tr><td>Size</td><td>Small cookie (session ID)</td><td>Larger (full payload in token)</td></tr>
+<tr><td>Best for</td><td>Traditional web apps</td><td>SPAs, microservices, mobile</td></tr>
+</table>
+
+<h3>Event Loop: nextTick vs setImmediate vs setTimeout(0)</h3>
+<table class="ref">
+<tr><th></th><th>process.nextTick</th><th>Promise (.then/await)</th><th>setImmediate</th><th>setTimeout(0)</th></tr>
+<tr><td>Queue</td><td>nextTick queue</td><td>Microtask queue</td><td>Check phase</td><td>Timers phase</td></tr>
+<tr><td>Priority</td><td>Highest</td><td>High (after nextTick)</td><td>Medium</td><td>Medium-Low</td></tr>
+<tr><td>Can starve I/O?</td><td>Yes (if recursive)</td><td>Yes (if recursive)</td><td>No</td><td>No</td></tr>
+<tr><td>Typical use</td><td>Defer before I/O continues</td><td>Async logic</td><td>Run after I/O callbacks</td><td>Delay execution</td></tr>
+</table>
+
+<h3>Docker Compose vs Kubernetes (Quick)</h3>
+<table class="ref">
+<tr><th></th><th>Docker Compose</th><th>Kubernetes</th></tr>
+<tr><td>Scope</td><td>Single host</td><td>Multi-node cluster</td></tr>
+<tr><td>Scaling</td><td>Manual (replicas in yaml)</td><td>HPA auto-scaling</td></tr>
+<tr><td>Self-healing</td><td>restart: always</td><td>Deployment recreates failed pods</td></tr>
+<tr><td>Updates</td><td>docker compose up --force-recreate</td><td>Rolling updates, instant rollback</td></tr>
+<tr><td>Networking</td><td>Simple bridge network</td><td>Services, Ingress, NetworkPolicy</td></tr>
+<tr><td>Best for</td><td>Dev, staging, small deploys</td><td>Production HA at scale</td></tr>
+</table>
+
+<h3>One-Liner Reminders</h3>
+<ul>
+  <li><strong>Event loop blocked?</strong> → worker_threads or separate service</li>
+  <li><strong>Large file?</strong> → streams, never readFile entire file</li>
+  <li><strong>Duplicate webhook?</strong> → idempotency key</li>
+  <li><strong>DB + queue write?</strong> → transactional outbox</li>
+  <li><strong>Multi-service txn?</strong> → saga with compensation</li>
+  <li><strong>Cache stale?</strong> → invalidate on write, not just TTL</li>
+  <li><strong>Deploy?</strong> → SIGTERM handler, drain connections, then exit</li>
+  <li><strong>Secret leaked?</strong> → rotate immediately, never commit .env</li>
+</ul>
+
+<p class="footer-note">Go deeper in <a href="nodejs-notes.html">Node.js Notes</a> · Practice answers in <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

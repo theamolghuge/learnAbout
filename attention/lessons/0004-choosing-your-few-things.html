@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 4 · Choosing Your Few Things</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="../reference/quick-reference.html">Quick reference</a>
+    <span>·</span>
+    <a href="./0003-time-blocking-and-shutdown.html">← Lesson 3</a>
+  </nav>
+
+  <div class="kicker">Lesson 4 of 5 · ~10 min · The vital few</div>
+  <h1>Choosing Your Few Things</h1>
+  <p class="subtitle">Lessons 1–3 taught you how to focus once you've sat down. This lesson is about a different, higher-stakes kind of focus: deciding what's even allowed to compete for your attention in the first place.</p>
+  <div class="meta">This is the lesson closest to what you actually asked for: getting your attention back from too many things, so a few of them can become great instead of all of them staying mediocre.</div>
+
+  <h2>Why spreading out costs more than it looks like</h2>
+
+  <p>You already know from <a href="./0001-why-attention-fragments.html">Lesson 1</a> that switching between tasks within a single session is expensive — attention residue, ~23 minutes to recover focus. The same mechanism operates at a larger scale, over weeks and years, for a reason that's less obvious: goals don't just compete for your time, they compete for the same limited pool of attention and willpower even when you're not actively working on either of them.</p>
+
+  <p>A peer-reviewed meta-analysis on goal conflict found that when two goals draw on the same finite resources — time, energy, attention — progress on one measurably comes at the expense of the other, and the psychological toll (rumination, stress) is real, not just a productivity footnote. "Get better at my craft" and "chase five different side projects" aren't neutral toward each other. They're actively competing, all the time, even when you're only consciously thinking about one of them.</p>
+
+  <h2>Depth compounds. Breadth doesn't.</h2>
+
+  <p>Cal Newport's <em>career capital theory</em> (from <em>So Good They Can't Ignore You</em>) makes the positive case for the same idea: rare, valuable skill comes from deliberate practice concentrated in one domain over a long stretch of time. Skill in one area accumulates — each hour builds on the last. Skill spread across five areas doesn't accumulate the same way; you're perpetually a beginner in four of them while barely intermediate in the fifth. "Jumping around and not doing any," in your words, isn't just a focus problem — it's a compounding problem. Time spent switching domains is time where nothing is accumulating.</p>
+
+  <p>Greg McKeown's <em>Essentialism</em> gives this a name: "the disciplined pursuit of less but better." Not doing more things faster — deliberately doing fewer things, chosen well, so each one can actually reach the bar you're capable of. His test for whether something belongs on your list: if it's not a clear yes, it's a no. Not "maybe," not "if I have time" — those are how a list of a few things quietly becomes a list of fifteen.</p>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. According to career capital theory, why does depth beat breadth?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice" data-correct="true">Skill in one area compounds over time</button>
+      <button class="quiz-choice">Breadth is simply more boring</button>
+      <button class="quiz-choice">Depth requires far less effort</button>
+      <button class="quiz-choice">Employers only value one skill</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>The exercise: force the ranking</h2>
+
+  <p>Knowing "I should focus on fewer things" doesn't tell you which ones. The tool below is a popular prioritization exercise, often (probably wrongly) attributed to Warren Buffett — the origin story about his pilot has been <a href="https://www.inc.com/marcel-schwantes/warren-buffett-25-5-rule-career-goals.html">debunked as most likely fabricated</a>. Whether or not Buffett ever said it, the mechanism is sound on its own merits, so it's used here for what it does, not for who supposedly said it.</p>
+
+  <p>The mechanism: list everything currently pulling at your attention — projects, skills, ambitions, commitments. Then force yourself to pick only five as your real priorities. The uncomfortable part, and the actual point of the exercise, is what happens to everything you <em>didn't</em> pick: it doesn't become "someday." It becomes an explicit avoid-at-all-costs list — because a half-abandoned pursuit sitting in the background is exactly the kind of open loop that produces attention residue (Lesson 1) and goal conflict (above), even while you're not touching it.</p>
+
+  <div class="callout callout-exercise">
+    <span class="callout-label">Exercise — 10 minutes, be honest</span>
+    List everything currently competing for your attention below, one per line — be exhaustive, include the things you feel guilty about not doing as much as the things you're actively doing. Then select up to 5 as your real vital few. This saves in your browser.
+    <div style="margin-top:1em;">
+      <textarea id="goals-input" class="quiz-input" rows="6" style="width:100%;resize:vertical;" placeholder="One thing per line — e.g.&#10;Learning the guitar&#10;The side project I keep restarting&#10;Getting fit&#10;Reading more&#10;The client work that actually pays"></textarea>
+      <button class="quiz-btn" id="goals-build">Build my list</button>
+      <button class="quiz-btn" id="goals-clear" style="background:transparent;color:var(--ink-soft);border-color:var(--rule);">Clear</button>
+    </div>
+    <div id="pick-area"></div>
+    <div class="pick-columns" id="pick-result" style="display:none;">
+      <div class="pick-col vital">
+        <h4>Your vital few</h4>
+        <ul id="vital-list"></ul>
+      </div>
+      <div class="pick-col avoid">
+        <h4>Avoid at all costs</h4>
+        <ul id="avoid-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What should happen to items you don't select as your vital few?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Work on them evenings only</button>
+      <button class="quiz-choice" data-correct="true">Treat them as actively off-limits</button>
+      <button class="quiz-choice">Keep them all as backup</button>
+      <button class="quiz-choice">Revisit the full list weekly</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>What this changes day to day</h2>
+  <p>The other three lessons now have a filter. Before a time block (Lesson 3) goes on your schedule, it should serve something on your vital-few list — if it doesn't, that's worth noticing, not just accepting. Before you say yes to a new opportunity, project, or course, check it against the avoid list you just wrote, not just against how interesting it sounds in the moment. Interesting is not the same test as essential.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Primary sources: Cal Newport, <a href="https://www.calnewport.com/books/so-good-they-cant-ignore-you/">So Good They Can't Ignore You</a> (career capital, in full) and Greg McKeown, <a href="https://gregmckeown.com/books/essentialism/">Essentialism</a> (the philosophy and the "clear yes or no" test, in full).
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, skeptical, or curious?</span>
+    If narrowing to 5 felt impossible, or everything felt equally essential, that's worth telling me — it usually means the list needs to go up a level of abstraction (not "five separate side projects" but "the one skill three of them are secretly practicing"), and I can help you work through that instead of you guessing alone.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0003-time-blocking-and-shutdown.html">← Lesson 3</a>
+    <a href="./0005-recovery-and-flow.html">Lesson 5: Recovery and Flow →</a>
+  </p>
+
+</div>
+
+<script>
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var buttons = quiz.querySelectorAll('.quiz-choice');
+    var feedback = quiz.querySelector('.quiz-feedback');
+    var answered = false;
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (answered) return;
+        answered = true;
+        var correct = btn.getAttribute('data-correct') === 'true';
+        buttons.forEach(function(b) {
+          if (b.getAttribute('data-correct') === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        feedback.textContent = correct
+          ? 'Correct.'
+          : 'Not quite — the correct answer is highlighted above.';
+        feedback.classList.add('show', correct ? 'correct' : 'incorrect');
+      });
+    });
+  });
+
+  (function() {
+    var input = document.getElementById('goals-input');
+    var buildBtn = document.getElementById('goals-build');
+    var clearBtn = document.getElementById('goals-clear');
+    var pickArea = document.getElementById('pick-area');
+    var resultBox = document.getElementById('pick-result');
+    var vitalList = document.getElementById('vital-list');
+    var avoidList = document.getElementById('avoid-list');
+    var MAX = 5;
+    var TEXT_KEY = 'attn-vital-few-text';
+    var SEL_KEY = 'attn-vital-few-selected';
+
+    var savedText = localStorage.getItem(TEXT_KEY);
+    if (savedText) input.value = savedText;
+
+    function getSelected() {
+      try { return JSON.parse(localStorage.getItem(SEL_KEY)) || []; }
+      catch (e) { return []; }
+    }
+    function setSelected(arr) {
+      localStorage.setItem(SEL_KEY, JSON.stringify(arr));
+    }
+
+    function renderPicker() {
+      var lines = input.value.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+      localStorage.setItem(TEXT_KEY, input.value);
+      var selected = getSelected().filter(function(s) { return lines.indexOf(s) !== -1; });
+
+      pickArea.innerHTML = '';
+      if (lines.length === 0) {
+        resultBox.style.display = 'none';
+        return;
+      }
+
+      var wrap = document.createElement('div');
+      wrap.className = 'pick-list';
+      wrap.style.marginTop = '1em';
+
+      var counter = document.createElement('div');
+      counter.style.fontFamily = 'var(--sans)';
+      counter.style.fontSize = '0.82rem';
+      counter.style.color = 'var(--ink-faint)';
+      counter.textContent = selected.length + ' of ' + MAX + ' selected — click up to ' + MAX + ' as your vital few.';
+      pickArea.appendChild(counter);
+
+      lines.forEach(function(line) {
+        var btn = document.createElement('button');
+        btn.className = 'pick-item' + (selected.indexOf(line) !== -1 ? ' selected' : '');
+        btn.type = 'button';
+        var label = document.createElement('span');
+        label.textContent = line;
+        var badge = document.createElement('span');
+        badge.className = 'pick-badge';
+        badge.textContent = selected.indexOf(line) !== -1 ? 'VITAL FEW' : '';
+        btn.appendChild(label);
+        btn.appendChild(badge);
+        btn.addEventListener('click', function() {
+          var sel = getSelected();
+          var idx = sel.indexOf(line);
+          if (idx !== -1) {
+            sel.splice(idx, 1);
+          } else {
+            if (sel.length >= MAX) return;
+            sel.push(line);
+          }
+          setSelected(sel);
+          renderPicker();
+        });
+        wrap.appendChild(btn);
+      });
+
+      pickArea.appendChild(wrap);
+
+      vitalList.innerHTML = '';
+      avoidList.innerHTML = '';
+      lines.forEach(function(line) {
+        var li = document.createElement('li');
+        li.textContent = line;
+        if (selected.indexOf(line) !== -1) vitalList.appendChild(li);
+        else avoidList.appendChild(li);
+      });
+      resultBox.style.display = lines.length ? 'grid' : 'none';
+    }
+
+    buildBtn.addEventListener('click', renderPicker);
+    clearBtn.addEventListener('click', function() {
+      input.value = '';
+      localStorage.removeItem(TEXT_KEY);
+      localStorage.removeItem(SEL_KEY);
+      pickArea.innerHTML = '';
+      resultBox.style.display = 'none';
+    });
+
+    if (savedText) renderPicker();
+  })();
+</script>
+</body>
+</html>

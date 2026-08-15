@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React.js Quick Revision</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">← Interview Prep</a></p>
+<h1>React.js Quick Revision</h1>
+<p class="subtitle">Tier checklists and comparison tables — scan before interview day.</p>
+
+<h2 id="study-guide">Tier 1 / 2 / 3 Checklist</h2>
+
+<h3>Tier 1 — Foundation (must recall instantly)</h3>
+<table class="ref">
+<tr><th>Topic</th><th>Remember</th></tr>
+<tr><td>JSX</td><td>Expressions in <code>{ }</code>; <code>className</code>; fragments; not HTML</td></tr>
+<tr><td>Components</td><td>Function components + hooks; composition via children/props</td></tr>
+<tr><td>State</td><td>Immutable updates; functional <code>setState</code>; batching (React 18+)</td></tr>
+<tr><td>Lists</td><td>Stable unique <code>key</code> — never random or index on dynamic lists</td></tr>
+<tr><td>Events</td><td>Synthetic; pass functions not invocations: <code>onClick={fn}</code></td></tr>
+<tr><td>useEffect ⭐</td><td>External sync only; deps; cleanup; abort races</td></tr>
+<tr><td>useState / useReducer</td><td>Local state; reducer for complex transitions</td></tr>
+<tr><td>useRef</td><td>DOM access; mutable box; no re-render on .current change</td></tr>
+<tr><td>useContext</td><td>Provider value change → all consumers re-render</td></tr>
+<tr><td>Forms</td><td>Controlled vs uncontrolled; RHF + Zod at scale</td></tr>
+<tr><td>Data fetching</td><td>React Query &gt; raw useEffect for server state</td></tr>
+<tr><td>Reconciliation</td><td>Diff by type + key; same type updates props</td></tr>
+<tr><td>Performance</td><td>Profile first; memo only when measured</td></tr>
+<tr><td>Router</td><td>Nested routes; protected route wrapper</td></tr>
+<tr><td>Testing</td><td>RTL: query by role; user-centric assertions</td></tr>
+</table>
+
+<h3>Tier 2 — Senior (connect dots to production)</h3>
+<table class="ref">
+<tr><th>Topic</th><th>Remember</th></tr>
+<tr><td>Concurrent React</td><td><code>useTransition</code>, <code>useDeferredValue</code>, Suspense, <code>createRoot</code></td></tr>
+<tr><td>SSR / Hydration</td><td>Server HTML + client attach; mismatch = warning/re-render</td></tr>
+<tr><td>RSC</td><td>Server-only components; no hooks; <code>'use client'</code> boundary</td></tr>
+<tr><td>Redux Toolkit</td><td>Client state + middleware; RTK Query overlaps Query</td></tr>
+<tr><td>useLayoutEffect</td><td>Before paint; measure/focus; not for fetch</td></tr>
+<tr><td>useSyncExternalStore</td><td>External stores without tearing</td></tr>
+<tr><td>Error boundaries</td><td>Class-only; render errors in children; not events/async</td></tr>
+<tr><td>Code splitting</td><td><code>lazy</code> + <code>Suspense</code>; route-level bundles</td></tr>
+<tr><td>Auth</td><td>httpOnly cookies vs localStorage XSS; refresh flow</td></tr>
+<tr><td>Security</td><td>Escape JSX; sanitize dangerouslySetInnerHTML; CSP</td></tr>
+<tr><td>A11y</td><td>Semantic HTML; focus trap; keyboard paths</td></tr>
+<tr><td>Fiber</td><td>Work units; priorities; interruptible render</td></tr>
+<tr><td>Next.js App Router</td><td>layouts, loading/error, Server Actions, caching</td></tr>
+<tr><td>Web Vitals</td><td>LCP, INP, CLS — measure and fix</td></tr>
+<tr><td>React 19</td><td><code>use</code>, Actions, <code>useActionState</code>, <code>useOptimistic</code></td></tr>
+</table>
+
+<h3>Tier 3 — Staff / Architect</h3>
+<table class="ref">
+<tr><th>Topic</th><th>Remember</th></tr>
+<tr><td>MFE</td><td>Module Federation; shared React version; routing orchestration</td></tr>
+<tr><td>Enterprise</td><td>Design systems, monorepos, feature flags, observability</td></tr>
+<tr><td>Production</td><td>Sentry, source maps private, bundle budgets, CDN caching</td></tr>
+<tr><td>State machines</td><td>XState / explicit reducers for complex flows</td></tr>
+<tr><td>React Compiler</td><td>Auto-memo direction; less manual useMemo</td></tr>
+<tr><td>React Native</td><td>Bridge → JSI; FlatList; React Navigation</td></tr>
+<tr><td>Migrations</td><td>Class→hooks incremental; Pages→App Router phased</td></tr>
+</table>
+
+<h2>React Query vs Redux vs Context</h2>
+<table class="ref">
+<tr>
+  <th></th>
+  <th>React Query (TanStack Query)</th>
+  <th>Redux (RTK)</th>
+  <th>Context</th>
+</tr>
+<tr>
+  <td><strong>Primary purpose</strong></td>
+  <td>Server/async state — fetch, cache, sync</td>
+  <td>Global client state — predictable updates, middleware</td>
+  <td>Pass data through tree without prop drilling</td>
+</tr>
+<tr>
+  <td><strong>Best for</strong></td>
+  <td>API data, pagination, mutations, background refetch</td>
+  <td>Complex UI state, cross-feature workflows, devtools time-travel</td>
+  <td>Theme, locale, auth snapshot, rarely changing config</td>
+</tr>
+<tr>
+  <td><strong>Caching</strong></td>
+  <td>Built-in stale-while-revalidate, dedupe, garbage collection</td>
+  <td>Manual (RTK Query adds server cache layer)</td>
+  <td>None — value held in Provider state</td>
+</tr>
+<tr>
+  <td><strong>Re-render behavior</strong></td>
+  <td>Only components using specific query/mutation</td>
+  <td>Selector-based subscriptions with memoization</td>
+  <td>All consumers re-render when value reference changes</td>
+</tr>
+<tr>
+  <td><strong>Async handling</strong></td>
+  <td>First-class: loading, error, retry, optimistic updates</td>
+  <td>Thunks / RTK Query / sagas (extra setup)</td>
+  <td>Manual — fetch in Provider effect (anti-pattern at scale)</td>
+</tr>
+<tr>
+  <td><strong>Boilerplate</strong></td>
+  <td>Low — <code>useQuery</code>, <code>useMutation</code>, keys</td>
+  <td>Medium — slices, actions, store (RTK reduces pain)</td>
+  <td>Low — Provider + hook</td>
+</tr>
+<tr>
+  <td><strong>DevTools</strong></td>
+  <td>Query inspector — cache, refetch, timing</td>
+  <td>Redux DevTools — action history</td>
+  <td>React DevTools only</td>
+</tr>
+<tr>
+  <td><strong>Anti-pattern</strong></td>
+  <td>Storing purely local UI toggles in Query cache</td>
+  <td>Duplicating server cache already in React Query</td>
+  <td>High-frequency updates (performance death)</td>
+</tr>
+<tr>
+  <td><strong>Rule of thumb</strong></td>
+  <td>Default for anything from an API</td>
+  <td>When client state is complex and shared widely</td>
+  <td>When few consumers and low update frequency</td>
+</tr>
+</table>
+
+<h2>SSR vs CSR vs SSG vs RSC</h2>
+<table class="ref">
+<tr>
+  <th></th>
+  <th>CSR</th>
+  <th>SSR</th>
+  <th>SSG</th>
+  <th>RSC</th>
+</tr>
+<tr>
+  <td><strong>HTML produced</strong></td>
+  <td>Minimal shell; JS builds UI in browser</td>
+  <td>Full HTML per request on server</td>
+  <td>Full HTML at build time</td>
+  <td>Server renders components; stream to client</td>
+</tr>
+<tr>
+  <td><strong>When HTML is built</strong></td>
+  <td>Runtime (client)</td>
+  <td>Runtime (server, per request)</td>
+  <td>Build time</td>
+  <td>Runtime (server, per request or cached)</td>
+</tr>
+<tr>
+  <td><strong>JS to browser</strong></td>
+  <td>Full app bundle</td>
+  <td>Hydration bundle + app code</td>
+  <td>Hydration bundle (static pages may be minimal)</td>
+  <td>Only Client Components' JS shipped</td>
+</tr>
+<tr>
+  <td><strong>SEO</strong></td>
+  <td>Poor without pre-render/SSR</td>
+  <td>Excellent</td>
+  <td>Excellent</td>
+  <td>Excellent (server HTML includes RSC output)</td>
+</tr>
+<tr>
+  <td><strong>First paint</strong></td>
+  <td>Slower (wait for JS)</td>
+  <td>Faster (HTML immediate)</td>
+  <td>Fastest (CDN-served static)</td>
+  <td>Fast — less JS to parse</td>
+</tr>
+<tr>
+  <td><strong>Data freshness</strong></td>
+  <td>Client fetches after load</td>
+  <td>Fresh per request</td>
+  <td>Stale until rebuild (ISR mitigates)</td>
+  <td>Fresh — direct DB/API on server</td>
+</tr>
+<tr>
+  <td><strong>Server cost</strong></td>
+  <td>Low (static hosting)</td>
+  <td>High (compute per request)</td>
+  <td>Low after build</td>
+  <td>Medium — server component execution</td>
+</tr>
+<tr>
+  <td><strong>Interactivity</strong></td>
+  <td>Full client</td>
+  <td>After hydration</td>
+  <td>After hydration</td>
+  <td>Client islands hydrate selectively</td>
+</tr>
+<tr>
+  <td><strong>Typical tools</strong></td>
+  <td>Vite SPA, CRA</td>
+  <td>Next.js <code>getServerSideProps</code>, Remix loaders</td>
+  <td>Next.js SSG, Astro static</td>
+  <td>Next.js App Router (default Server Components)</td>
+</tr>
+<tr>
+  <td><strong>Watch out for</strong></td>
+  <td>Blank shell, SEO, slow FCP</td>
+  <td>TTFB, hydration mismatch, server load</td>
+  <td>Rebuild latency for dynamic data</td>
+  <td>Serializable props only; client boundary discipline</td>
+</tr>
+</table>
+
+<h2>useMemo vs useCallback vs React.memo</h2>
+<table class="ref">
+<tr>
+  <th></th>
+  <th>useMemo</th>
+  <th>useCallback</th>
+  <th>React.memo</th>
+</tr>
+<tr>
+  <td><strong>What it does</strong></td>
+  <td>Caches a <em>computed value</em> between renders</td>
+  <td>Caches a <em>function reference</em> between renders</td>
+  <td>Skips re-render of component if props shallow-equal</td>
+</tr>
+<tr>
+  <td><strong>Returns</strong></td>
+  <td>Any memoized value (object, array, number, JSX)</td>
+  <td>Stable function reference</td>
+  <td>HOC wrapping a component</td>
+</tr>
+<tr>
+  <td><strong>Deps array</strong></td>
+  <td>Yes — recompute when deps change</td>
+  <td>Yes — new function when deps change</td>
+  <td>Optional custom compare function</td>
+</tr>
+<tr>
+  <td><strong>Primary use case</strong></td>
+  <td>Expensive calculation; stable object/array for child deps</td>
+  <td>Stable handler passed to memoized child or effect dep</td>
+  <td>Prevent re-render when parent re-renders but props same</td>
+</tr>
+<tr>
+  <td><strong>Helps when</strong></td>
+  <td>Compute is costly OR referential equality matters downstream</td>
+  <td>Child is wrapped in <code>memo</code> or listed in effect deps</td>
+  <td>Component is pure and renders often with identical props</td>
+</tr>
+<tr>
+  <td><strong>Does NOT help when</strong></td>
+  <td>Cheap compute; deps change every render anyway</td>
+  <td>Child not memoized and doesn't care about reference</td>
+  <td>Props are new objects/functions every parent render</td>
+</tr>
+<tr>
+  <td><strong>Common pairing</strong></td>
+  <td>Pass memoized value to <code>memo</code> child</td>
+  <td>Pass memoized callback to <code>memo</code> child</td>
+  <td>Wrap child; parent uses useCallback/useMemo for props</td>
+</tr>
+<tr>
+  <td><strong>Cost</strong></td>
+  <td>Memory + dep comparison each render</td>
+  <td>Memory + dep comparison each render</td>
+  <td>Shallow prop compare each parent render</td>
+</tr>
+<tr>
+  <td><strong>Interview one-liner</strong></td>
+  <td>"Memoize the result"</td>
+  <td>"Memoize the function identity"</td>
+  <td>"Memoize the component render"</td>
+</tr>
+</table>
+
+<blockquote>
+<strong>Before the interview:</strong> Tier 1 = explain out loud without notes. Tier 2 = tie each item to a production story. Tier 3 = one MFE or migration war story ready.
+</blockquote>
+
+<h2>Hooks at a Glance</h2>
+<table class="ref">
+<tr><th>Hook</th><th>One line</th></tr>
+<tr><td><code>useState</code></td><td>Local state; triggers re-render on update</td></tr>
+<tr><td><code>useReducer</code></td><td><code>dispatch(action)</code> → reducer → new state</td></tr>
+<tr><td><code>useEffect</code></td><td>Sync with external world after render; cleanup on unmount/re-run</td></tr>
+<tr><td><code>useLayoutEffect</code></td><td>Same as effect but before paint — layout-sensitive</td></tr>
+<tr><td><code>useRef</code></td><td>Mutable container; DOM ref; no re-render</td></tr>
+<tr><td><code>useContext</code></td><td>Read nearest Provider value</td></tr>
+<tr><td><code>useMemo</code></td><td>Cache expensive derived value</td></tr>
+<tr><td><code>useCallback</code></td><td>Cache function reference</td></tr>
+<tr><td><code>useTransition</code></td><td>Mark updates non-urgent; <code>isPending</code> flag</td></tr>
+<tr><td><code>useDeferredValue</code></td><td>Defer a value to keep input responsive</td></tr>
+<tr><td><code>useId</code></td><td>Stable SSR-safe IDs for a11y</td></tr>
+<tr><td><code>useSyncExternalStore</code></td><td>Subscribe to external store safely</td></tr>
+<tr><td><code>use</code> (React 19)</td><td>Read promise/Context in render with Suspense</td></tr>
+<tr><td><code>useActionState</code> (React 19)</td><td>Form action state + pending flag</td></tr>
+<tr><td><code>useOptimistic</code> (React 19)</td><td>Optimistic UI during async action</td></tr>
+</table>
+
+<h2>React 19 Cheat Sheet</h2>
+<table class="ref">
+<tr><th>Feature</th><th>What to say</th></tr>
+<tr><td><code>use(promise)</code></td><td>unwrap async in render; requires Suspense boundary</td></tr>
+<tr><td>Actions</td><td>async functions on forms; automatic pending handling</td></tr>
+<tr><td><code>useActionState</code></td><td>replaces useFormState; [state, action, isPending]</td></tr>
+<tr><td><code>useOptimistic</code></td><td>show expected result before server confirms</td></tr>
+<tr><td>ref as prop</td><td>no forwardRef wrapper needed</td></tr>
+<tr><td>Document metadata</td><td><code>&lt;title&gt;</code> / <code>&lt;meta&gt;</code> in any component tree</td></tr>
+</table>
+
+<p class="footer-note">Deep dives: <a href="reactjs-notes.html">React.js Notes</a> · Practice: <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

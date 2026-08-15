@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision — Next.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision — Next.js</h1>
+<p class="subtitle">Tiers in <a href="nextjs-notes.html#study-guide">Next.js Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>App Router</td><td><code>app/page.tsx</code> = route · layout persists · loading/error files</td></tr>
+  <tr><td>Server Component</td><td>Default — async, DB access, zero client JS</td></tr>
+  <tr><td>Client Component</td><td><code>"use client"</code> — hooks, events, browser APIs</td></tr>
+  <tr><td>Static fetch</td><td><code>cache: 'force-cache'</code> — default, build time</td></tr>
+  <tr><td>Dynamic fetch</td><td><code>cache: 'no-store'</code> — every request</td></tr>
+  <tr><td>ISR</td><td><code>next: { revalidate: N }</code></td></tr>
+  <tr><td>Server Actions</td><td><code>"use server"</code> — mutations + revalidatePath</td></tr>
+  <tr><td>Route Handler</td><td><code>app/api/x/route.ts</code> — GET/POST exports</td></tr>
+  <tr><td>Middleware</td><td>Edge auth/redirect before route · matcher config</td></tr>
+  <tr><td>Metadata</td><td><code>export const metadata</code> — SEO</td></tr>
+  <tr><td>next/image</td><td>Optimized lazy images — width/height required</td></tr>
+  <tr><td>NEXT_PUBLIC_</td><td>Browser env — never secrets</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Streaming</td><td>Suspense + loading.tsx — HTML as ready</td></tr>
+  <tr><td>revalidateTag</td><td>Invalidate tagged fetches across routes</td></tr>
+  <tr><td>dynamic = 'force-dynamic'</td><td>Entire route dynamic</td></tr>
+  <tr><td>Edge runtime</td><td>Middleware — fast, limited APIs</td></tr>
+  <tr><td>standalone output</td><td>Docker deploy — <code>node server.js</code></td></tr>
+  <tr><td>Auth.js</td><td>Session cookie + auth() in RSC + middleware</td></tr>
+</table>
+
+<h2>Comparison tables</h2>
+
+<h3>Server vs Client Component</h3>
+<table class="ref">
+  <tr><th></th><th>Server</th><th>Client</th></tr>
+  <tr><td>Hooks</td><td>No</td><td>Yes</td></tr>
+  <tr><td>DB direct</td><td>Yes</td><td>No</td></tr>
+  <tr><td>Bundle JS</td><td>No</td><td>Yes</td></tr>
+</table>
+
+<h3>SSR vs SSG vs ISR</h3>
+<table class="ref">
+  <tr><th>Mode</th><th>When</th><th>Config</th></tr>
+  <tr><td>SSG</td><td>Build</td><td>Default static fetch</td></tr>
+  <tr><td>ISR</td><td>Build + refresh</td><td><code>revalidate: N</code></td></tr>
+  <tr><td>SSR</td><td>Each request</td><td><code>no-store</code> / force-dynamic</td></tr>
+</table>
+
+<h3>Server Actions vs Route Handlers</h3>
+<table class="ref">
+  <tr><th></th><th>Server Actions</th><th>Route Handlers</th></tr>
+  <tr><td>Use</td><td>Form mutations</td><td>REST/webhooks</td></tr>
+  <tr><td>Public HTTP</td><td>No</td><td>Yes</td></tr>
+  <tr><td>Revalidation</td><td>Built-in</td><td>Manual</td></tr>
+</table>
+
+<h3>Pages Router vs App Router</h3>
+<table class="ref">
+  <tr><th>Pages</th><th>App Router</th></tr>
+  <tr><td>getStaticProps</td><td>static Server Component fetch</td></tr>
+  <tr><td>getServerSideProps</td><td>no-store / force-dynamic</td></tr>
+  <tr><td>pages/api</td><td>app/api/route.ts</td></tr>
+</table>
+
+<h3>Caching opt-out cheat sheet</h3>
+<pre class="code"><code>fetch(url, { cache: 'no-store' });           // dynamic data
+fetch(url, { next: { revalidate: 60 } });    // ISR
+export const dynamic = 'force-dynamic';       // whole route dynamic
+revalidatePath('/posts');                     // after mutation
+revalidateTag('products');                    // tagged cache bust</code></pre>
+
+<h2>30-second answers</h2>
+
+<p><strong>Why Next.js over Vite SPA?</strong><br>
+SSR/SSG for SEO and fast FCP, Server Components reduce client JS, file routing, API colocation, built-in optimizations, production deployment story.</p>
+
+<p><strong>Where to put "use client"?</strong><br>
+As deep as possible — only components that need interactivity. Pages and layouts stay Server Components; import Client leaves for buttons, forms with local state.</p>
+
+<p><strong>How does caching work?</strong><br>
+fetch cached by default (Data cache). revalidate for ISR. no-store for dynamic. revalidatePath/Tag after mutations. Router cache on client for prefetched nav.</p>
+
+<h2>Revision order</h2>
+<ol>
+  <li><a href="nextjs-notes.html#rsc">RSC vs Client</a></li>
+  <li><a href="nextjs-notes.html#caching">Caching ⭐</a></li>
+  <li><a href="nextjs-notes.html#actions">Server Actions</a></li>
+  <li><a href="nextjs-notes.html#middleware">Middleware + Auth</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="nextjs-notes.html">Next.js Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

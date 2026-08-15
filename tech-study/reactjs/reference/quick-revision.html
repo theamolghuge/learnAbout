@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — React.js</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Senior Full Stack scan. Full tiers in <a href="reactjs-notes.html#study-guide">React.js Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>JSX</td><td><code>createElement</code> sugar · className · Fragment</td></tr>
+  <tr><td>Props</td><td>Read-only from parent — never mutate</td></tr>
+  <tr><td>State</td><td>Internal via setter — triggers re-render</td></tr>
+  <tr><td>Immutability</td><td>New refs: spread, filter, map — never mutate in place</td></tr>
+  <tr><td>Events</td><td>Synthetic events · preventDefault · pass id via closure</td></tr>
+  <tr><td>Keys</td><td>Stable unique ID — not index on reorderable lists</td></tr>
+  <tr><td>useState</td><td><code>[val, setVal]</code> · functional update when prev matters</td></tr>
+  <tr><td>useEffect ⭐</td><td>Side effects after render · deps · cleanup on unmount</td></tr>
+  <tr><td>useRef</td><td>DOM ref or mutable value — no re-render</td></tr>
+  <tr><td>useMemo</td><td>Cache computed value</td></tr>
+  <tr><td>useCallback</td><td>Cache function for memo children</td></tr>
+  <tr><td>useContext</td><td>Read context — all consumers re-render on change</td></tr>
+  <tr><td>Custom hooks</td><td><code>use*</code> — share logic, not state</td></tr>
+  <tr><td>Controlled input</td><td>value + onChange — React owns state</td></tr>
+  <tr><td>React Query</td><td>Server state — queryKey, staleTime, invalidate</td></tr>
+  <tr><td>Redux Toolkit</td><td>Client global state — slices, createAsyncThunk</td></tr>
+  <tr><td>Reconciliation</td><td>Diff VDOM · keys · same type updates props</td></tr>
+  <tr><td>Virtual DOM</td><td>JS tree · diff · minimal DOM patches</td></tr>
+  <tr><td>React.memo</td><td>Skip render if props shallow-equal</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>useReducer</td><td>Complex state + actions — local Redux</td></tr>
+  <tr><td>useLayoutEffect</td><td>Sync after DOM · before paint — measure DOM</td></tr>
+  <tr><td>Suspense + lazy</td><td>Code split · fallback while loading</td></tr>
+  <tr><td>Error boundary</td><td>Class only — catch render errors in children</td></tr>
+  <tr><td>Context split</td><td>Separate contexts · memoize provider value</td></tr>
+  <tr><td>useTransition</td><td>Mark state updates low priority</td></tr>
+  <tr><td>useDeferredValue</td><td>Defer heavy render input</td></tr>
+  <tr><td>SSR / Hydration</td><td>Server HTML → client attach listeners · match required</td></tr>
+  <tr><td>RSC</td><td>Server Components — no client JS · "use client" for hooks</td></tr>
+  <tr><td>React Router</td><td>Routes, useParams, useNavigate, protected routes</td></tr>
+  <tr><td>Security</td><td>No dangerouslySetInnerHTML unsanitized · httpOnly tokens</td></tr>
+  <tr><td>Testing</td><td>RTL — query by role/label · userEvent · MSW</td></tr>
+  <tr><td>A11y</td><td>Semantic HTML · labels · keyboard · ARIA</td></tr>
+</table>
+
+<h2>Tier 3 — Senior (skim)</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Fiber</td><td>Incremental render · pause/resume · prioritize updates</td></tr>
+  <tr><td>Render phase</td><td>Call components · diff — interruptible</td></tr>
+  <tr><td>Commit phase</td><td>DOM updates · layout effects — atomic</td></tr>
+  <tr><td>Module Federation</td><td>Runtime share modules between MFE apps</td></tr>
+  <tr><td>Design system</td><td>Tokens + component lib + Storybook</td></tr>
+  <tr><td>Web Vitals</td><td>LCP &lt;2.5s · INP &lt;200ms · CLS &lt;0.1</td></tr>
+  <tr><td>Next.js App Router</td><td>RSC default · layouts · streaming · revalidate</td></tr>
+</table>
+
+<h2>useEffect cheat sheet ⭐</h2>
+<pre class="code"><code>useEffect(() =&gt; { ... }, []);      // mount / unmount
+useEffect(() =&gt; { ... }, [id]);    // when id changes
+useEffect(() =&gt; {
+  const ctrl = new AbortController();
+  fetch(url, { signal: ctrl.signal });
+  return () =&gt; ctrl.abort();       // cleanup
+}, [url]);</code></pre>
+
+<h2>React Query vs Redux</h2>
+<table class="ref">
+  <tr><th>React Query</th><th>Redux Toolkit</th></tr>
+  <tr><td>Server/API cache</td><td>Client UI state</td></tr>
+  <tr><td>staleTime, invalidate</td><td>slices, middleware</td></tr>
+  <tr><td>use together</td><td>Not either/or</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+
+<p><strong>useEffect — when and why?</strong><br>
+Sync React with external systems — fetch, subscriptions, DOM, timers. Runs after paint. Cleanup prevents leaks. Deps control re-runs.</p>
+
+<p><strong>Why immutable state?</strong><br>
+React detects changes by reference. Mutation skips re-render or causes stale UI. Spread/filter for updates.</p>
+
+<p><strong>React Query vs useEffect fetch?</strong><br>
+Query handles cache, dedupe, background refetch, loading/error states, invalidation. useEffect fetch is manual — fine for one-offs.</p>
+
+<p><strong>Render vs commit phase?</strong><br>
+Render: call components, diff (can interrupt). Commit: apply DOM, run effects (atomic).</p>
+
+<h2>Revision order</h2>
+<ol>
+  <li><a href="reactjs-notes.html#hooks">Hooks</a> (useEffect ⭐, custom hooks)</li>
+  <li><a href="reactjs-notes.html#data">React Query + Redux</a></li>
+  <li><a href="reactjs-notes.html#rendering">Rendering &amp; Reconciliation</a></li>
+  <li><a href="reactjs-notes.html#performance">Performance + memo</a></li>
+  <li><a href="reactjs-notes.html#ssr">SSR / RSC</a> + <a href="reactjs-notes.html#nextjs">Next.js</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="reactjs-notes.html">React.js Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>
