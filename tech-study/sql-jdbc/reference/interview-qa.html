@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — SQL &amp; JDBC</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="sql-jdbc-notes.html">SQL &amp; JDBC Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#joins">Joins</a> ·
+  <a href="#aggregates">Aggregates</a> ·
+  <a href="#constraints">Keys &amp; Constraints</a> ·
+  <a href="#indexes">Indexes</a> ·
+  <a href="#transactions">Transactions</a> ·
+  <a href="#normalization">Normalization</a> ·
+  <a href="#jdbc">JDBC</a>
+</nav>
+
+<h2 id="joins">Joins</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between INNER JOIN and LEFT JOIN?</p>
+  <p class="qa-a">INNER JOIN returns only rows that have a match in both tables. LEFT JOIN returns every row from the left table regardless of a match, filling right-side columns with NULL when there's no matching row. Use LEFT JOIN when you need "all of A, with B's data if it exists" — e.g. all customers including ones with zero orders.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How would you find customers who have never placed an order?</p>
+  <p class="qa-a">LEFT JOIN customers to orders, then filter WHERE the order's id IS NULL — rows with no match on the right side have NULL there. Equivalently, <code>WHERE customer_id NOT IN (SELECT customer_id FROM orders)</code>, though NOT IN has NULL-handling pitfalls that make the LEFT JOIN or NOT EXISTS versions safer.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a self join and when would you use one?</p>
+  <p class="qa-a">Joining a table to itself, using two aliases, to compare rows within the same table — e.g. finding employees who earn more than their own manager by joining the employees table to itself on <code>manager_id = id</code>.</p>
+</div>
+
+<h2 id="aggregates">Aggregates &amp; Grouping</h2>
+
+<div class="qa">
+  <p class="qa-q">Why can't you filter on an aggregate in WHERE?</p>
+  <p class="qa-a">Because of SQL's logical evaluation order: WHERE runs before GROUP BY, so the aggregated values don't exist yet at that point. HAVING runs after grouping/aggregation, which is why it's the clause used to filter on things like COUNT(*) or SUM(total).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between COUNT(*) and COUNT(column)?</p>
+  <p class="qa-a">COUNT(*) counts every row regardless of NULLs. COUNT(column) counts only rows where that specific column is non-null — useful for counting how many rows actually have a value set for an optional field.</p>
+</div>
+
+<h2 id="constraints">Keys &amp; Constraints</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between a primary key and a unique constraint?</p>
+  <p class="qa-a">A table can have only one primary key, and it can't be NULL — it's the canonical row identifier, and it's typically what foreign keys reference. A table can have multiple unique constraints, and depending on the database, a unique column may allow one or more NULLs (NULLs generally aren't considered equal to each other).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does ON DELETE CASCADE do, and when is it dangerous?</p>
+  <p class="qa-a">It automatically deletes child rows when the referenced parent row is deleted — e.g. deleting a customer deletes all their orders. It's dangerous when the cascade chain is long or unintentional — a single delete can silently wipe out data several tables deep. ON DELETE RESTRICT (block the delete if children exist) is the safer default unless cascading is explicitly the desired business behavior.</p>
+</div>
+
+<h2 id="indexes">Indexes</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a database index, and what's the trade-off of adding one?</p>
+  <p class="qa-a">A separate B-tree structure over one or more columns that lets the database jump directly to matching rows instead of scanning the whole table — turning an O(n) scan into roughly O(log n) lookup. The cost: every INSERT/UPDATE/DELETE must also update the index, so writes get slower and the index consumes extra disk space. Index columns used heavily in WHERE/JOIN/ORDER BY; don't index everything.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">You have a composite index on (customer_id, status). Does a query filtering only on status use it?</p>
+  <p class="qa-a">Generally no — composite indexes follow the leftmost-prefix rule. The index is usable when the query filters on customer_id alone, or on customer_id AND status together, but not when it filters on status alone, since the index is physically sorted by customer_id first.</p>
+</div>
+
+<h2 id="transactions">Transactions</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain ACID.</p>
+  <p class="qa-a">Atomicity — all statements in a transaction succeed or none do. Consistency — the database moves between valid states, constraints always hold. Isolation — concurrent transactions don't observe each other's uncommitted changes. Durability — once committed, the change survives a crash.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between a dirty read, a non-repeatable read, and a phantom read?</p>
+  <p class="qa-a">Dirty read: seeing another transaction's uncommitted changes. Non-repeatable read: re-reading the same row within one transaction and getting a different value because another transaction committed a change in between. Phantom read: re-running the same filtered query and getting different rows because another transaction inserted/deleted matching rows in between. Higher isolation levels progressively eliminate these, at the cost of concurrency.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What isolation level does Spring's @Transactional use by default?</p>
+  <p class="qa-a">By default it doesn't override anything — it uses whatever the underlying database's default isolation level is (READ COMMITTED for Postgres, REPEATABLE READ for MySQL/InnoDB). You can override it explicitly with <code>@Transactional(isolation = Isolation.SERIALIZABLE)</code> when a specific operation needs stronger guarantees.</p>
+</div>
+
+<h2 id="normalization">Normalization</h2>
+
+<div class="qa">
+  <p class="qa-q">Why would you deliberately denormalize a schema?</p>
+  <p class="qa-a">To trade write-time consistency for read-time performance — e.g. storing a precomputed order total or a cached customer name to avoid an expensive join or aggregation on every read. It's a deliberate, measured trade-off, not a default; it introduces the risk of the duplicated data drifting out of sync if updates aren't kept consistent.</p>
+</div>
+
+<h2 id="jdbc">JDBC</h2>
+
+<div class="qa">
+  <p class="qa-q">Why is PreparedStatement preferred over Statement?</p>
+  <p class="qa-a">Two reasons: security — PreparedStatement sends parameters separately from the SQL text, so user input can never be interpreted as SQL syntax, preventing SQL injection; Statement requires string concatenation, which is exploitable. Performance — a PreparedStatement's query plan can be precompiled and reused across executions with different parameter values.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why do we pool database connections instead of opening a new one per request?</p>
+  <p class="qa-a">Opening a connection involves a TCP handshake and authentication — tens of milliseconds, far too slow to repeat on every request under load. A pool (e.g. HikariCP, Spring Boot's default) keeps a set of connections open and hands them out on demand, dramatically reducing per-request latency and avoiding overwhelming the database with connection churn.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does try-with-resources buy you specifically with JDBC objects?</p>
+  <p class="qa-a">Connection, Statement, and ResultSet all implement AutoCloseable — wrapping them in try-with-resources guarantees they're closed (and, for Connection, returned to the pool) even if an exception is thrown mid-query, preventing connection leaks that would eventually exhaust the pool.</p>
+</div>
+
+<p class="footer-note"><a href="sql-jdbc-notes.html">SQL &amp; JDBC Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

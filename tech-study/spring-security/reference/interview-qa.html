@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Spring Security + JWT</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="spring-security-notes.html">Spring Security + JWT Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#authn-authz">AuthN/AuthZ</a> ·
+  <a href="#filter">Filter Chain</a> ·
+  <a href="#password">Passwords</a> ·
+  <a href="#jwt">JWT</a> ·
+  <a href="#refresh">Refresh Tokens</a> ·
+  <a href="#oauth2">OAuth2</a> ·
+  <a href="#cors-csrf">CORS/CSRF</a>
+</nav>
+
+<h2 id="authn-authz">Authentication vs Authorization</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between authentication and authorization, and which comes first?</p>
+  <p class="qa-a">Authentication verifies who you are (login); authorization decides what you're allowed to do once identified. Authentication always happens first — you can't evaluate permissions for an identity that hasn't been established yet. A failed authentication returns 401; a failed authorization check on a valid identity returns 403.</p>
+</div>
+
+<h2 id="filter">The Security Filter Chain</h2>
+
+<div class="qa">
+  <p class="qa-q">How does Spring Security intercept requests before they reach your controllers?</p>
+  <p class="qa-a">It registers a chain of servlet Filters in front of the DispatcherServlet — every request passes through filters for CORS, CSRF, authentication (e.g. a custom JWT filter), and finally an authorization check, before it's ever routed to a @RestController method. Configuration is done by defining a SecurityFilterChain @Bean, which is the current approach replacing the older WebSecurityConfigurerAdapter subclassing style.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does SessionCreationPolicy.STATELESS mean, and why is it used with JWT?</p>
+  <p class="qa-a">It tells Spring Security not to create or use an HttpSession to track authentication state between requests. JWT-based auth is self-contained — every request carries its own proof of identity in the token — so there's no need for server-side session storage, which is exactly what makes JWT auth horizontally scalable across multiple server instances with no shared state.</p>
+</div>
+
+<h2 id="password">Passwords</h2>
+
+<div class="qa">
+  <p class="qa-q">Why use BCrypt instead of SHA-256 for password hashing?</p>
+  <p class="qa-a">SHA-256 is a fast, general-purpose hash — that speed is exactly what makes brute-forcing leaked hashes cheap (billions of guesses per second on modern hardware). BCrypt is deliberately slow with a configurable work factor, and automatically salts each hash so identical passwords produce different hashes — both properties make large-scale brute-force/rainbow-table attacks impractical.</p>
+</div>
+
+<h2 id="jwt">JWT</h2>
+
+<div class="qa">
+  <p class="qa-q">What are the three parts of a JWT, and what does the signature actually guarantee?</p>
+  <p class="qa-a">Header (algorithm/type), payload (claims — subject, roles, expiry), and signature. The signature is an HMAC or RSA signature over the header+payload using a server-side secret/private key. It guarantees integrity — that the claims haven't been tampered with since the server issued the token — not confidentiality. The payload is only Base64-encoded, not encrypted, so it's readable by anyone who has the token.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Should you ever put a password or sensitive secret in a JWT claim?</p>
+  <p class="qa-a">No — the payload is Base64-encoded, not encrypted, so anyone with the token can decode and read every claim in it. JWTs should carry non-sensitive identity/authorization data (user id, roles, expiry), never secrets.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does the server validate a JWT on an incoming request without hitting the database?</p>
+  <p class="qa-a">It recomputes the signature over the received header+payload using its own secret/public key and compares it to the signature in the token — if they match, the claims weren't tampered with. It also checks the expiration claim locally. Both checks are pure computation, no DB or session-store lookup required, which is the core reason JWT auth is stateless.</p>
+</div>
+
+<h2 id="refresh">Refresh Tokens</h2>
+
+<div class="qa">
+  <p class="qa-q">Why use a short-lived access token plus a separate long-lived refresh token instead of one long-lived token?</p>
+  <p class="qa-a">A short access token limits the damage window if it's ever leaked — it simply expires soon. The refresh token, used only against a dedicated endpoint (not sent on every request), lets the client silently obtain a new access token without forcing the user to log in again, balancing security against user experience.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is refresh token rotation and what does it defend against?</p>
+  <p class="qa-a">Every time a refresh token is used, the server issues a brand new refresh token and invalidates the old one. If a stolen refresh token is later reused by an attacker after the legitimate client already rotated it, the server sees a reuse of an invalidated token — a strong signal of theft — and can revoke the whole token family in response.</p>
+</div>
+
+<h2 id="oauth2">OAuth2</h2>
+
+<div class="qa">
+  <p class="qa-q">What problem does OAuth2 actually solve — how is it different from just checking a username/password?</p>
+  <p class="qa-a">It lets a user grant a third-party application limited, revocable access to their data on another service, without ever sharing their password with that third party. The user authenticates directly with the trusted provider (e.g. Google); the third-party app only ever receives a token, never the credentials.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Briefly describe the Authorization Code flow.</p>
+  <p class="qa-a">The user is redirected to the provider to authenticate and consent; the provider redirects back to the client with a short-lived authorization code; the client's backend then exchanges that code — together with a confidential client secret — for tokens directly with the provider, server-to-server. This means the access token never passes through the user's browser, unlike the older implicit flow.</p>
+</div>
+
+<h2 id="cors-csrf">CORS &amp; CSRF</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between what CORS and CSRF each protect against?</p>
+  <p class="qa-a">CORS protects the server, restricting which browser origins are allowed to make cross-origin JavaScript requests to it — enforced by the browser based on the server's response headers. CSRF protects the user, preventing a malicious site from silently triggering authenticated requests using the victim's ambient credentials (cookies) — enforced by the server requiring a token an attacker's page can't obtain.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why do many stateless JWT-header APIs disable CSRF protection, and when would that be a mistake?</p>
+  <p class="qa-a">CSRF attacks rely on the browser automatically attaching cookies to cross-site requests. A JWT sent explicitly in an Authorization header isn't automatically attached by the browser the way a cookie is, so the classic CSRF attack vector doesn't apply, and disabling CSRF protection is safe. It becomes a mistake the moment the JWT is instead stored in a cookie — then the token IS an ambient credential again and CSRF protection is needed.</p>
+</div>
+
+<p class="footer-note"><a href="spring-security-notes.html">Spring Security + JWT Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

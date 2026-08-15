@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Testing</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="testing-notes.html#study-guide">Testing Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Test pyramid</td><td>Many unit tests · some integration · few E2E</td></tr>
+  <tr><td>@BeforeEach/@AfterEach</td><td>Fresh state per test</td></tr>
+  <tr><td>assertThrows</td><td>Cleaner than manual try/catch + fail()</td></tr>
+  <tr><td>@Mock</td><td>Fake dependency, stub with when/thenReturn</td></tr>
+  <tr><td>@InjectMocks</td><td>Real class under test, mocks wired in</td></tr>
+  <tr><td>verify(mock).method()</td><td>Behavior verification — was it called?</td></tr>
+  <tr><td>@WebMvcTest + MockMvc</td><td>Web layer only · mock services with @MockBean</td></tr>
+  <tr><td>@SpringBootTest</td><td>Full context — slow, use sparingly for E2E</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>@DataJpaTest</td><td>JPA slice + embedded DB, transaction rolled back per test</td></tr>
+  <tr><td>@ParameterizedTest</td><td>One test body, many inputs</td></tr>
+  <tr><td>@Spy</td><td>Real object, override select methods — use sparingly</td></tr>
+  <tr><td>Testcontainers</td><td>Real DB/Kafka in Docker — catches dialect bugs H2 misses</td></tr>
+</table>
+
+<h2>Which test type for which layer</h2>
+<table class="ref">
+  <tr><th>Layer</th><th>Test type</th><th>Speed</th></tr>
+  <tr><td>Service (business logic)</td><td>Plain unit test + Mockito</td><td>Fastest</td></tr>
+  <tr><td>Controller</td><td>@WebMvcTest + MockMvc</td><td>Fast</td></tr>
+  <tr><td>Repository (custom queries)</td><td>@DataJpaTest</td><td>Medium</td></tr>
+  <tr><td>Full request → DB flow</td><td>@SpringBootTest</td><td>Slow</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+<p><strong>when/thenReturn vs verify?</strong><br>
+Stub the input (when) vs assert the interaction happened (verify) — setup vs check.</p>
+<p><strong>Why not @SpringBootTest everywhere?</strong><br>
+Full context startup is slow — reserve it for a handful of true integration flows.</p>
+<p><strong>Why Testcontainers over H2?</strong><br>
+Real DB engine — catches dialect-specific bugs H2 silently allows.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Mockito unit test for a Service: mock repository, verify a downstream call happens</li>
+  <li>@WebMvcTest for a GET and a validation-failing POST (200 + 400 cases)</li>
+  <li>@DataJpaTest verifying a custom findBy query</li>
+  <li>Explain, out loud, when you'd reach for each of the four test types above</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="testing-notes.html#junit">JUnit 5 ⭐</a></li>
+  <li><a href="testing-notes.html#mockito">Mockito ⭐</a></li>
+  <li><a href="testing-notes.html#webmvctest">@WebMvcTest — Controllers</a></li>
+  <li><a href="testing-notes.html#springboottest">@SpringBootTest — Integration</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="testing-notes.html">Testing Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

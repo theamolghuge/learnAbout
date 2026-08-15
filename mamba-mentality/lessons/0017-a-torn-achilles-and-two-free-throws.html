@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Torn Achilles And Two Free Throws — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0016-the-freedom-that-cant-be-taken.html">Lesson 16</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 6 · Adversity · Lesson 2 · ~10 min</div>
+  <h1>A Torn Achilles And Two Free Throws</h1>
+  <p class="subtitle">He knew it probably wasn't a good idea. He did it anyway. Both halves of that sentence matter.</p>
+
+  <div class="meta">
+    A second, differently-shaped case study than Lesson 14 — this one comes with Kobe's own real-time doubt already built in, which makes it more useful, not less.
+  </div>
+
+  <p>April 12, 2013, against Golden State: Kobe Bryant tore his left Achilles tendon late in the game, falling after pushing off his planted foot. He was fouled on the play. Instead of leaving immediately, he walked to the free-throw line and made both shots, tying the game, then walked off the court under his own power. The Lakers won.</p>
+
+  <p>His own account of the decision, given afterward in an ESPN interview, is more interesting than the highlight: <em>"It's probably not a good idea, but I gotta shoot these two free throws."</em> He wasn't unaware of the risk. He named it, out loud, in the moment, and did it anyway.</p>
+
+  <h2>Two different things, worth separating</h2>
+
+  <p>It's tempting to file this under pure inspiration and move on. Section 6 of the mission you set for this curriculum specifically asked for the distinction between <strong>pain tolerance and ignoring legitimate limits</strong> — and this is the exact case that distinction exists for. Two free throws, roughly ten seconds, with a doctor not present to consult: reasonable people can genuinely disagree about which side of that line it falls on, and Kobe's own quote suggests even he wasn't fully certain in the moment.</p>
+
+  <p>What's less ambiguous is what came after: an Achilles tear is a season-ending injury with a notoriously difficult recovery, especially for an athlete in his mid-thirties. In the 2015 documentary <em>Muse</em>, Kobe described the moment differently than the highlight-reel version: <em>"I remember feeling the silence, feeling the fear. I am 35 years old, 18 years in the league... this could really be a wrap."</em> That's not a triumphant quote. It's a specific, honest description of facing the real possibility his career was over — which is much closer to Frankl's territory from Lesson 16 than to a highlight reel.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What's actually extractable here</span>
+    Not "play through serious injury" — that's not a transferable instruction, and this curriculum isn't offering it as one. What's extractable: naming the risk honestly in the moment ("probably not a good idea") instead of pretending there wasn't one, and later admitting the fear plainly rather than only performing composure for an audience. Both are a different, more honest kind of toughness than the myth version, which tends to erase the doubt and the fear entirely.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of a time you pushed through something physical or emotional while privately suspecting it wasn't a good idea. Did you name that doubt honestly to yourself in the moment, the way Kobe's quote does — or did you only decide afterward, looking back, whether it was wise or reckless? Most people only sort it out in hindsight, which means the actual decision was made blind.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Describe a specific moment where you pushed through pain or fear despite real doubt about whether you should. In hindsight, which side of "pain tolerance vs. ignoring a legitimate limit" was it actually on — and how would you have told the difference at the time, not after?</p>
+    <textarea class="journal-input" id="j17" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j17-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    ESPN's SportsCenter interview with Dave McMenamin, and the 2015 documentary <em>Muse</em>, for Kobe's own words about the injury and the fear afterward. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you think this was clearly reckless, or clearly fine, and the "reasonable people can disagree" framing is a dodge — argue the specific side. This is exactly the kind of case Stage 8 needs you to have practiced judging concretely, not just in the abstract.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0017:j17";
+  var ta = document.getElementById("j17");
+  var status = document.getElementById("j17-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

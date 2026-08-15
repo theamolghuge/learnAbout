@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Docker + CI/CD + Cloud</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="docker-cloud-notes.html">Docker + CI/CD + Cloud Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#docker">Docker</a> ·
+  <a href="#cicd">CI/CD</a> ·
+  <a href="#aws">AWS</a> ·
+  <a href="#deployment">Deployment</a>
+</nav>
+
+<h2 id="docker">Docker</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between a Docker image and a container?</p>
+  <p class="qa-a">An image is an immutable, read-only template — a built filesystem snapshot plus metadata about how to run it. A container is a running (or stopped) instance created from that image — you can run many independent containers from the same image, each with its own writable layer and process.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is a multi-stage Dockerfile used for a Spring Boot app instead of a single-stage build?</p>
+  <p class="qa-a">Building the jar requires the full JDK, Maven, and the source tree — all large and unnecessary at runtime. A multi-stage Dockerfile builds in one stage with those tools, then copies only the final jar into a second, minimal JRE-only stage. The shipped image is smaller, starts faster to pull, and doesn't carry build tools or source code as unnecessary attack surface.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does Docker's layer caching affect Dockerfile instruction order?</p>
+  <p class="qa-a">Each instruction creates a cached layer, and Docker reuses a layer on rebuild only if nothing above it in the file changed. Copying dependency manifests (like pom.xml) and resolving dependencies before copying the full source lets the dependency layer stay cached across rebuilds where only application code changed — putting frequently-changing files (source code) later in the file maximizes cache reuse.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is a container lighter-weight than a virtual machine?</p>
+  <p class="qa-a">A VM virtualizes hardware and boots a complete separate guest OS per instance. A container shares the host machine's kernel and only isolates the process/filesystem view — no separate OS boot, much smaller footprint, and starts in milliseconds instead of the minute-plus a VM typically takes.</p>
+</div>
+
+<h2 id="cicd">CI/CD</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between Continuous Delivery and Continuous Deployment?</p>
+  <p class="qa-a">Both automatically build and test every change so it's always in a releasable state. Continuous Delivery still requires a manual approval/trigger to actually release to production. Continuous Deployment removes that human gate entirely — every change that passes the pipeline is automatically released with no manual step.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does a typical CI pipeline do for a Spring Boot project, stage by stage?</p>
+  <p class="qa-a">Checkout the code, set up the JDK, run `mvn clean verify` (compiles, runs unit and integration tests), and if that succeeds, build a Docker image and push it to a registry — all triggered automatically on every push, catching broken builds or failing tests before they ever reach a human reviewer or production.</p>
+</div>
+
+<h2 id="aws">AWS</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between EC2 and RDS for running a database?</p>
+  <p class="qa-a">You could install Postgres yourself on an EC2 virtual machine, but then you're responsible for patching, backups, replication, and failover. RDS is a managed database service — AWS handles those operational concerns for you, at the cost of less low-level control over the database server itself. Most teams default to RDS unless they have a specific reason to self-manage.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is IAM, and why does it matter even for a simple app deployment?</p>
+  <p class="qa-a">IAM (Identity and Access Management) controls exactly which users or services can perform which actions on which AWS resources. It matters because of the principle of least privilege — an app instance should only have the specific permissions it needs (e.g. read/write to one specific S3 bucket), not broad account-wide access, so a compromised instance can't be used to access unrelated resources.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What role does a load balancer play in a horizontally scaled Spring Boot deployment?</p>
+  <p class="qa-a">It sits in front of multiple app instances and distributes incoming traffic across them — this is what makes horizontal scaling (adding more instances under load) actually work, and it also enables zero-downtime deploys by routing traffic away from instances being replaced.</p>
+</div>
+
+<h2 id="deployment">Deployment</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between rolling and blue-green deployment?</p>
+  <p class="qa-a">Rolling deployment replaces old instances with new ones gradually, a few at a time — no downtime, but old and new versions run simultaneously during the rollout, so changes must stay backward compatible. Blue-green runs the full new version alongside the full old version, then switches all traffic at once — rollback is instant (switch back), at the cost of briefly running double the infrastructure.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's a canary deployment, and what does it require to be effective?</p>
+  <p class="qa-a">Routing a small percentage of production traffic to the new version first, then gradually increasing it if things look healthy. It requires good monitoring/metrics (error rates, latency) to actually detect a problem in that small slice of traffic before it's rolled out further — without visibility, a canary deploy is just a slower rollout with no real safety benefit.</p>
+</div>
+
+<p class="footer-note"><a href="docker-cloud-notes.html">Docker + CI/CD + Cloud Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 13 · Asymmetric Information, Adverse Selection &amp; the Market for Lemons</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0012-repeated-games.html">← Lesson 12</a>
+    <span>·</span>
+    <a href="./0014-signaling.html">Next: Lesson 14 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 13 · ~15 min · Level 6: Information &amp; Uncertainty</div>
+  <h1>Asymmetric Information, Adverse Selection &amp; the Market for Lemons</h1>
+  <p class="subtitle">Every game so far quietly assumed both players know the whole payoff structure. Real life almost never works that way — and the gap alone can collapse an entire market.</p>
+  <div class="meta">Recap: Lesson 1 named information as one of the five parts of any game, and flagged asymmetric information as the biggest source of leverage in the salary-offer example. This lesson makes that precise, with the tools to actually reason about hidden information rather than just gesture at it.</div>
+
+  <h2>Three information distinctions, precisely</h2>
+
+  <p>These get blurred together casually — worth separating cleanly, since each answers a different question:</p>
+
+  <ul>
+    <li><strong>Complete vs. incomplete information:</strong> do the players know each other's payoffs and preferences? Every game through Lesson 12 assumed complete information — you always knew the full matrix or tree, including the other player's numbers. Incomplete information means at least one player is unsure what the other actually values.</li>
+    <li><strong>Perfect vs. imperfect information:</strong> in a sequential game, does each player see every prior move before choosing? Chess is perfect information (the whole board is visible); poker is imperfect (hidden cards). Even a complete-information simultaneous game like Lesson 3's Prisoner's Dilemma is technically imperfect information — you know the payoffs, but not the other player's actual move yet.</li>
+    <li><strong>Symmetric vs. asymmetric information:</strong> do all players have the same information as each other, even if it's incomplete? This is the one that matters most for real life — one player quietly knowing something the other doesn't, rather than both being equally in the dark.</li>
+  </ul>
+
+  <p>This lesson lives almost entirely in the asymmetric case, and specifically in one of its two distinct failure modes.</p>
+
+  <h2>Two different problems, often confused</h2>
+
+  <div class="framework-grid">
+    <div class="framework-item"><div class="fi-label">Adverse selection</div><div class="fi-body">Hidden <em>information about type or quality</em>, known before a deal is made. The seller knows if the car is good or bad before you buy it.</div></div>
+    <div class="framework-item"><div class="fi-label">Moral hazard</div><div class="fi-body">Hidden <em>action</em>, taken after a deal is made, because the consequences shifted onto someone else. Someone drives less carefully once fully insured.</div></div>
+  </div>
+
+  <p>The clean test: is the hidden thing a <em>fact about who you're dealing with</em>, knowable before the contract (adverse selection)? Or is it a <em>choice someone makes afterward</em>, once the deal has changed their incentives (moral hazard)? Confusing the two leads to the wrong fix — you can't screen your way out of moral hazard, and you can't monitor your way out of adverse selection, as the solutions section below will make concrete.</p>
+
+  <h2>The Market for Lemons</h2>
+
+  <p>George Akerlof's 1970 paper — work that later won him the Nobel Memorial Prize in Economic Sciences — models exactly what adverse selection can do to an entire market, using used cars. Sellers know whether their car is a "peach" (genuinely good) or a "lemon" (defective) before selling. Buyers can't tell the difference just by looking, so they're only willing to pay a price reflecting the <em>average</em> quality across all cars for sale.</p>
+
+  <p>Here's the collapse, step by step:</p>
+
+  <ol>
+    <li>Buyers offer a price based on average quality across peaches and lemons combined.</li>
+    <li>At that average price, owners of genuinely good peaches — whose cars are worth more than the average — find it not worth selling, and withdraw from the market.</li>
+    <li>With peaches leaving, the average quality of <em>remaining</em> cars for sale drops.</li>
+    <li>Buyers, sensing this, lower the price they're willing to pay further.</li>
+    <li>Repeat: the next tier of decent-but-not-great sellers now finds the (lower) average price not worth it either, and withdraws too.</li>
+  </ol>
+
+  <p>Push this far enough and, in the extreme, only the worst cars remain for sale at any price buyers will pay — a market that could have profitably matched good cars with willing buyers has unraveled into near-collapse, purely from the information gap, with no one having done anything obviously wrong at any single step.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">This is a second kind of "unraveling" — don't confuse it with Lesson 12's</span>
+    Lesson 12's finitely-repeated-game unraveling worked backward through <em>time</em>, from a known last round. This unraveling works through <em>quality tiers</em>, from best to worst, driven by information rather than timing. Different mechanism, same word, worth keeping distinct — and worth noticing that game theory produces this same "everything sound in isolation collapses in aggregate" shape more than once.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. A landlord who can't verify whether a prospective tenant will actually pay rent reliably, before signing a lease, is an example of...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Moral hazard</button>
+      <button class="quiz-choice" data-correct="true">Adverse selection</button>
+      <button class="quiz-choice">A zero-sum game</button>
+      <button class="quiz-choice">A repeated game</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. A renter who treats a rented apartment more carelessly than they would their own home is an example of...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Adverse selection</button>
+      <button class="quiz-choice" data-correct="true">Moral hazard</button>
+      <button class="quiz-choice">A focal point</button>
+      <button class="quiz-choice">A dominant strategy</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. In the Market for Lemons, what actually drives good-quality sellers out of the market first?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">A government regulation banning peaches</button>
+      <button class="quiz-choice">Buyers refusing to buy any car at all</button>
+      <button class="quiz-choice" data-correct="true">The market price only reflects average quality, which is below what a peach is actually worth</button>
+      <button class="quiz-choice">Lemon sellers offering lower prices than peach sellers</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it at work</h2>
+
+  <ul>
+    <li><strong>Hiring.</strong> A candidate knows their true work ethic and skill far better than an interviewer can verify in a few conversations — classic adverse selection. Once hired, day-to-day effort is genuinely hard for a manager to observe closely — classic moral hazard, layered on top of the first problem, and both need different fixes.</li>
+    <li><strong>Health insurance "death spirals."</strong> People who know they're higher-risk are more likely to buy insurance (adverse selection); insurers raise premiums to cover the resulting costs; healthier people, facing higher premiums, opt out; the remaining pool skews riskier still — the exact Market for Lemons mechanism, applied to risk instead of car quality.</li>
+    <li><strong>A company credit card or expense account.</strong> People routinely spend more carelessly with money that isn't visibly, immediately their own — a direct moral hazard, unrelated to who was hired or why.</li>
+  </ul>
+
+  <h2>Fixing each problem, precisely</h2>
+
+  <ul>
+    <li><strong>For adverse selection — signaling and screening.</strong> A costly, hard-to-fake signal (full treatment next lesson) lets good types distinguish themselves from bad ones — a warranty only makes sense to offer if you're confident your product won't need it. Screening flips this: the less-informed party designs a menu of options (e.g., insurance plans with different deductibles) that induce different types to reveal themselves through which option they pick.</li>
+    <li><strong>For moral hazard — monitoring and aligned incentives.</strong> Spot-checks (Lesson 5's inspection game, directly relevant again), performance-based pay tied to outcomes rather than fixed compensation, and deductibles or co-pays (making the insured party bear some real cost) all work by putting some of the consequence back on the person taking the hidden action.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    George Akerlof, "The Market for 'Lemons': Quality Uncertainty and the Market Mechanism" (1970) is the primary source. Ben Polak's Yale course covers adverse selection and moral hazard as a dedicated unit, with several more worked examples (insurance, labor markets).
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A company is hiring for a senior individual-contributor role. They can't fully verify a candidate's true skill and reliability from interviews alone. Separately, once someone is hired, their actual day-to-day focus and effort are hard for a remote-first manager to observe closely.
+      <br><br>
+      Identify which problem is adverse selection and which is moral hazard — they happen at different stages, and that's the point. Then propose one real, concrete fix for each, matched to the right problem (a fix for adverse selection won't help with moral hazard and vice versa, per this lesson's framework).
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Adverse selection:</strong> not being able to verify true skill/reliability <em>before</em> hiring — the candidate already knows this about themselves; the company doesn't. <br><br>
+      <strong>Moral hazard:</strong> effort becoming hard to observe <em>after</em> hiring — the new hire's incentives shift once the contract (and the difficulty of close observation) are in place, regardless of who was actually hired.<br><br>
+      <strong>Fix for adverse selection:</strong> a paid, realistic work-sample project or trial period before full commitment functions as both a screening device (candidates confident in their skill are more willing to do it; weaker candidates are more likely to self-select out) and closer to direct evidence than an interview alone.<br><br>
+      <strong>Fix for moral hazard:</strong> outcome-based performance metrics and a real, regular review cadence — not to catch someone "in the act," but to make effort visible enough over time that it can't be quietly withheld without consequence, the same monitoring logic as Lesson 5's inspection game.
+      <br><br>
+      A common mix-up worth flagging: proposing "just do a more thorough interview" as the fix for moral hazard, or "monitor them closely" as the fix for adverse selection. Both apply the right tool to the wrong stage of the problem — precisely the mistake this lesson's two-column framework is built to prevent.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me which fixes you proposed for each stage, and whether you found it easy or genuinely tricky to keep adverse selection and moral hazard from blurring together. That blur is common on a first pass — worth knowing precisely how it went before Lesson 14 leans on this same distinction from the signaling side.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Tell apart a hidden-type problem (adverse selection, fixed by signaling/screening, addressed before a deal) from a hidden-action problem (moral hazard, fixed by monitoring/aligned incentives, addressed after a deal) — and recognize when unchecked adverse selection risks unraveling an entire market, not just one bad transaction.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0012-repeated-games.html">← Lesson 12</a>
+    <a href="./0014-signaling.html">Lesson 14: Signaling, Cheap Talk &amp; Costly Signals →</a>
+  </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What You Actually Control — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0001-why-pursue-excellence.html">Lesson 1</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 1 · Awakening · Lesson 2 · ~10 min</div>
+  <h1>What You Actually Control</h1>
+  <p class="subtitle">Extreme personal responsibility isn't a mood. It's a sort — and most people sort wrong by default.</p>
+
+  <div class="meta">
+    Builds on <a href="./0001-why-pursue-excellence.html">Lesson 1</a> (mastery vs. validation). This is the second and last lesson in Stage 1 — after this, the curriculum moves into Stage 2 (Philosophy).
+  </div>
+
+  <p>Around 55 AD, a crippled former slave named Epictetus opened his handbook on living with one sentence that most of Stoic philosophy is a footnote to: <em>"Some things are up to us, and some are not."</em> Up to us: our judgments, our effort, our choices, our response. Not up to us: other people, outcomes, reputation, luck, the past. Almost every unnecessary suffering, he argued, comes from treating something in the second category as if it belonged in the first — trying to control what you can't, and as a result neglecting what you actually can.</p>
+
+  <p>Marcus Aurelius — a Roman emperor, and Epictetus's most famous reader — spent much of <em>Meditations</em> re-running this sort on his own daily frustrations: difficult colleagues, physical pain, the tedium of court politics. Not as detachment from life, but as a discipline of putting his attention only where it could do something.</p>
+
+  <h2>Responsibility is where the sort points, not a punishment</h2>
+
+  <p>"Extreme personal responsibility" gets misread two ways, and both are wrong:</p>
+
+  <p><strong>Misreading 1 — fatalism:</strong> "If outcomes aren't up to me, why try?" This gets the sort backwards. Your <em>effort</em> is entirely up to you. What's not up to you is whether that effort produces the result you wanted. You act with everything you have — this is exactly Lesson 1's nishkama karma again, arrived at independently by a Greek Stoic and a Sanskrit text with no contact between them, which is itself worth noticing. Full effort, released attachment to the outcome. Same claim, two traditions, 2,000 miles and a few centuries apart.</p>
+
+  <p><strong>Misreading 2 — self-blame:</strong> "Taking full responsibility" does not mean deciding you caused everything bad that ever happened to you, or that you should have controlled things that were never controllable — someone else's decision, an injury, the economy, who your parents were. That's not responsibility, it's just guilt wearing responsibility's clothes, and it's exhausting in a way real responsibility isn't. Real responsibility is narrower and lighter: own the up-to-us half completely; stop spending energy litigating the rest.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The actual move</span>
+    In any situation, ask two separate questions instead of one blurred one: "What here is genuinely up to me?" and "What here isn't?" Put everything you've got into the first list. Let the second list go — not because it doesn't matter, but because your energy spent there produces nothing except the feeling of having done something.
+  </div>
+
+  <p>This is also the practical engine behind a claim from Lesson 1 you might have taken on faith: that mastery-orientation outlasts validation-orientation. Validation depends on the not-up-to-us list — other people's approval, a result, a comparison. Mastery depends on the up-to-us list — the work itself, today. That's not a coincidence; it's the same sort, applied to two different questions.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Pick one thing currently frustrating you — a person, a result, a situation you keep replaying. Now actually do the sort, out loud or on paper: what part of it is genuinely up to you, and what part isn't? Most people, honestly done, find they've been spending almost all their energy on the second list. What would your life look like if you took full responsibility only for the first — no excuses, but also no guilt for the rest?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Do the sort for real.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the situation. Then list, plainly: what's up to you in it, and what isn't. End with one sentence on what changes if you move your energy from the second list to the first.</p>
+    <textarea class="journal-input" id="j2" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j2-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Epictetus's <em>Enchiridion</em> — about 15 pages, read the whole thing (free, public domain: <a href="https://classics.mit.edu/Epictetus/epicench.html">MIT Classics Archive</a>, Elizabeth Carter translation). Then reread <em>Meditations</em> Book 8 (Hays translation) and notice how often Marcus returns to the same sort. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If the "sort" felt clean in theory but hard to actually do on your real situation, that's normal and worth saying — the gap between understanding a principle and applying it under real emotion is most of what the rest of this curriculum is about.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Stage 1 complete. Next: Stage 2 — Philosophy.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0002:j2";
+  var ta = document.getElementById("j2");
+  var status = document.getElementById("j2-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

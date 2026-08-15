@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML &amp; CSS Notes — Interview Guide</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>HTML &amp; CSS Notes</h1>
+<p class="subtitle">Semantic HTML, layout, responsive design, and accessibility for Full Stack interviews. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#html">1. HTML Fundamentals</a> · <a href="#semantic">2. Semantic HTML</a> ·
+  <a href="#forms">3. Forms</a> · <a href="#a11y">4. Accessibility</a> ·
+  <a href="#css-basics">5. CSS Basics</a> · <a href="#box">6. Box Model</a> ·
+  <a href="#flex">7. Flexbox ⭐</a> · <a href="#grid">8. Grid ⭐</a> ·
+  <a href="#responsive">9. Responsive Design</a> · <a href="#specificity">10. Cascade &amp; Specificity</a> ·
+  <a href="#modern">11. Modern CSS</a> · <a href="#performance">12. Performance</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — HTML &amp; CSS for Interviews</h2>
+
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Document structure, DOCTYPE, head, meta viewport</td><td><a href="#html">§1</a></td></tr>
+  <tr><td>Semantic elements (header, nav, main, article, section, footer)</td><td><a href="#semantic">§2</a></td></tr>
+  <tr><td>Forms — input types, label, validation attributes</td><td><a href="#forms">§3</a></td></tr>
+  <tr><td>Accessibility basics — alt, aria, keyboard, focus</td><td><a href="#a11y">§4</a></td></tr>
+  <tr><td>Box model — content, padding, border, margin</td><td><a href="#box">§6</a></td></tr>
+  <tr><td>Flexbox — axis, justify, align, gap</td><td><a href="#flex">§7</a></td></tr>
+  <tr><td>Grid — tracks, fr, areas, gap</td><td><a href="#grid">§8</a></td></tr>
+  <tr><td>Media queries, mobile-first</td><td><a href="#responsive">§9</a></td></tr>
+  <tr><td>Specificity, cascade, inheritance</td><td><a href="#specificity">§10</a></td></tr>
+  <tr><td>display, position (static, relative, absolute, fixed, sticky)</td><td><a href="#css-basics">§5</a></td></tr>
+</table>
+
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><td>CSS variables, calc, clamp</td><td><a href="#modern">§11</a></td></tr>
+  <tr><td>Transitions, transforms, animations</td><td><a href="#modern">§11</a></td></tr>
+  <tr><td>BEM, CSS Modules, Tailwind concepts</td><td><a href="#modern">§11</a></td></tr>
+  <tr><td>SEO meta, Open Graph, structured data</td><td><a href="#html">§1</a></td></tr>
+  <tr><td>Container queries, :has()</td><td><a href="#modern">§11</a></td></tr>
+</table>
+
+<h3>Tier 3 — Senior</h3>
+<table class="ref">
+  <tr><td>Critical CSS, layout shift (CLS)</td><td><a href="#performance">§12</a></td></tr>
+  <tr><td>Print styles, dark mode (prefers-color-scheme)</td><td><a href="#responsive">§9</a></td></tr>
+</table>
+
+<h3>Learning order</h3>
+<pre class="code"><code>HTML structure → Semantic HTML → Forms → A11y
+  → Box model → Flexbox ⭐ → Grid ⭐ → Positioning
+  → Responsive → Specificity → Modern CSS → Performance</code></pre>
+
+<h2 id="html">1. HTML Fundamentals</h2>
+
+<pre class="code"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Page Title&lt;/title&gt;
+  &lt;meta name="description" content="..."&gt;
+  &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<table class="ref">
+  <tr><th>Element</th><th>Use</th></tr>
+  <tr><td><code>&lt;div&gt;</code></td><td>Generic block container — no semantics</td></tr>
+  <tr><td><code>&lt;span&gt;</code></td><td>Generic inline container</td></tr>
+  <tr><td><code>&lt;a href&gt;</code></td><td>Links — use meaningful text, not "click here"</td></tr>
+  <tr><td><code>&lt;img src alt&gt;</code></td><td>Images — alt required for accessibility</td></tr>
+  <tr><td><code>&lt;ul&gt;/&lt;ol&gt;/&lt;li&gt;</code></td><td>Lists — nav menus often use ul</td></tr>
+  <tr><td><code>&lt;button&gt;</code></td><td>Actions — not div with onClick</td></tr>
+</table>
+
+<h2 id="semantic">2. Semantic HTML</h2>
+<p>Semantic elements describe meaning — better for SEO, screen readers, and maintainability.</p>
+
+<pre class="code"><code>&lt;header&gt;Site logo, nav&lt;/header&gt;
+&lt;nav aria-label="Main"&gt;...&lt;/nav&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Post title&lt;/h1&gt;
+    &lt;section&gt;...&lt;/section&gt;
+  &lt;/article&gt;
+  &lt;aside&gt;Related links&lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;Copyright&lt;/footer&gt;</code></pre>
+
+<table class="ref">
+  <tr><th>Bad</th><th>Good</th></tr>
+  <tr><td><code>&lt;div class="header"&gt;</code></td><td><code>&lt;header&gt;</code></td></tr>
+  <tr><td><code>&lt;div onclick&gt;</code> for button</td><td><code>&lt;button&gt;</code></td></tr>
+  <tr><td>Skip heading levels h1 → h3</td><td>Logical h1 → h2 → h3 hierarchy</td></tr>
+  <tr><td>Multiple h1 per page (debated)</td><td>One h1 per page/section (App Router: per route)</td></tr>
+</table>
+
+<h2 id="forms">3. Forms</h2>
+
+<pre class="code"><code>&lt;form action="/submit" method="post"&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input type="email" id="email" name="email" required autocomplete="email"&gt;
+
+  &lt;label for="pwd"&gt;Password&lt;/label&gt;
+  &lt;input type="password" id="pwd" name="password" minlength="8" required&gt;
+
+  &lt;button type="submit"&gt;Sign in&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+<table class="ref">
+  <tr><th>Input type</th><th>Use</th></tr>
+  <tr><td><code>email</code>, <code>url</code>, <code>tel</code></td><td>Validation + mobile keyboard</td></tr>
+  <tr><td><code>number</code>, <code>range</code></td><td>Numeric input</td></tr>
+  <tr><td><code>checkbox</code>, <code>radio</code></td><td>Boolean / single choice from group</td></tr>
+  <tr><td><code>file</code></td><td>File upload — accept attribute</td></tr>
+  <tr><td><code>hidden</code></td><td>Non-visible data</td></tr>
+</table>
+<p><strong>Always:</strong> associate <code>&lt;label for="id"&gt;</code> with input <code>id</code>. Group radios with <code>fieldset</code> + <code>legend</code>.</p>
+
+<h2 id="a11y">4. Accessibility (a11y)</h2>
+<ul>
+  <li><strong>Semantic HTML</strong> — first line of defense</li>
+  <li><strong>Alt text</strong> — descriptive for content images; empty alt for decorative</li>
+  <li><strong>Keyboard</strong> — all interactive elements focusable and operable</li>
+  <li><strong>Focus visible</strong> — don't remove outline without replacement</li>
+  <li><strong>Color contrast</strong> — WCAG AA: 4.5:1 text, 3:1 large text</li>
+  <li><strong>ARIA</strong> — when HTML insufficient: <code>aria-label</code>, <code>aria-expanded</code>, <code>role</code></li>
+  <li><strong>Skip link</strong> — jump to main content</li>
+</ul>
+
+<pre class="code"><code>&lt;button aria-expanded="false" aria-controls="menu"&gt;Menu&lt;/button&gt;
+&lt;ul id="menu" hidden&gt;...&lt;/ul&gt;</code></pre>
+
+<h2 id="css-basics">5. CSS Basics</h2>
+
+<pre class="code"><code>/* Selectors */
+.element { }           /* class */
+#id { }                /* id — avoid styling, use for JS/anchors */
+div p { }               /* descendant */
+div > p { }             /* child */
+h1 + p { }              /* adjacent sibling */
+a:hover, a:focus { }    /* pseudo-classes */
+
+/* Common properties */
+color, background, font-size, font-weight, line-height,
+text-align, text-decoration, opacity, visibility, overflow</code></pre>
+
+<h3>Position</h3>
+<table class="ref">
+  <tr><th>Value</th><th>Behavior</th></tr>
+  <tr><td><code>static</code></td><td>Default — normal flow</td></tr>
+  <tr><td><code>relative</code></td><td>Offset from self — preserves space</td></tr>
+  <tr><td><code>absolute</code></td><td>Removed from flow — relative to nearest positioned ancestor</td></tr>
+  <tr><td><code>fixed</code></td><td>Relative to viewport</td></tr>
+  <tr><td><code>sticky</code></td><td>Hybrid — scrolls until threshold, then sticks</td></tr>
+</table>
+
+<h2 id="box">6. Box Model</h2>
+
+<pre class="code"><code>/* content → padding → border → margin */
+.box {
+  width: 200px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  margin: 8px;
+  box-sizing: border-box;  /* width INCLUDES padding+border — use everywhere */
+}</code></pre>
+
+<p><strong>box-sizing: border-box</strong> — industry standard. Without it, <code>width: 200px</code> + padding makes element wider than 200px.</p>
+
+<h2 id="flex">7. Flexbox ⭐</h2>
+<p>One-dimensional layout — row OR column. Best for nav bars, centering, distributing space.</p>
+
+<pre class="code"><code>.container {
+  display: flex;
+  flex-direction: row;        /* row | column */
+  justify-content: center;    /* main axis */
+  align-items: center;        /* cross axis */
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.item {
+  flex: 1;                    /* grow/shrink equally */
+  flex: 0 0 200px;            /* fixed basis, no grow/shrink */
+}</code></pre>
+
+<table class="ref">
+  <tr><th>Property</th><th>Axis</th></tr>
+  <tr><td><code>justify-content</code></td><td>Main axis distribution</td></tr>
+  <tr><td><code>align-items</code></td><td>Cross axis alignment</td></tr>
+  <tr><td><code>align-self</code></td><td>Single item cross axis</td></tr>
+  <tr><td><code>flex-grow/shrink/basis</code></td><td>Item sizing flexibility</td></tr>
+</table>
+
+<h2 id="grid">8. CSS Grid ⭐</h2>
+<p>Two-dimensional layout — rows AND columns. Best for page layouts, dashboards, card grids.</p>
+
+<pre class="code"><code>.layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  min-height: 100vh;
+}
+
+.header { grid-column: 1 / -1; }
+
+/* Named areas */
+.page {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 200px 1fr;
+}
+.sidebar { grid-area: sidebar; }</code></pre>
+
+<h3>Flexbox vs Grid</h3>
+<table class="ref">
+  <tr><th>Flexbox</th><th>Grid</th></tr>
+  <tr><td>1 dimension</td><td>2 dimensions</td></tr>
+  <tr><td>Content-driven sizing</td><td>Layout-driven tracks</td></tr>
+  <tr><td>Nav, toolbars, centering</td><td>Page layout, complex grids</td></tr>
+</table>
+
+<h2 id="responsive">9. Responsive Design</h2>
+
+<pre class="code"><code>/* Mobile-first — base styles for mobile, enhance for larger */
+.container { padding: 1rem; }
+
+@media (min-width: 768px) {
+  .container { padding: 2rem; max-width: 720px; margin: 0 auto; }
+}
+
+@media (min-width: 1024px) {
+  .container { max-width: 960px; }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1a1a1a; --text: #eee; }
+}</code></pre>
+
+<ul>
+  <li><strong>Relative units:</strong> <code>rem</code> (root em), <code>em</code>, <code>%</code>, <code>vw/vh</code></li>
+  <li><strong>Fluid typography:</strong> <code>clamp(1rem, 2vw + 1rem, 2rem)</code></li>
+  <li><strong>Responsive images:</strong> <code>max-width: 100%</code>, <code>srcset</code>, <code>sizes</code></li>
+</ul>
+
+<h2 id="specificity">10. Cascade &amp; Specificity</h2>
+
+<p>Specificity (high to low): inline style → ID → class/attribute/pseudo-class → element/pseudo-element.</p>
+
+<pre class="code"><code>/* 0,1,0,1 = 1 class + 1 element */
+.nav a { color: blue; }
+
+/* 0,0,0,2 = 2 elements — LOSES to above */
+header a { color: red; }
+
+/* !important overrides — avoid in production */</code></pre>
+
+<ul>
+  <li>Same specificity → last rule wins (source order)</li>
+  <li>Inheritance — color, font inherit; margin, padding don't</li>
+  <li><code>:root</code> or CSS variables for theming</li>
+</ul>
+
+<h2 id="modern">11. Modern CSS</h2>
+
+<pre class="code"><code>:root {
+  --color-primary: #2563eb;
+  --spacing: 1rem;
+}
+
+.card {
+  background: var(--color-primary);
+  padding: var(--spacing);
+}
+
+/* Container queries — style by parent width */
+.card-container { container-type: inline-size; }
+@container (min-width: 400px) {
+  .card { display: flex; }
+}
+
+/* Parent selector */
+.card:has(img) { padding-top: 0; }</code></pre>
+
+<h3>Approaches in React/Next projects</h3>
+<table class="ref">
+  <tr><th>Approach</th><th>Pros</th></tr>
+  <tr><td>CSS Modules</td><td>Scoped classes, co-located, no runtime</td></tr>
+  <tr><td>Tailwind</td><td>Utility-first, fast prototyping, consistent design tokens</td></tr>
+  <tr><td>CSS-in-JS (styled-components)</td><td>Dynamic styles, colocated — runtime cost</td></tr>
+  <tr><td>BEM</td><td>Naming convention — Block__Element--Modifier</td></tr>
+</table>
+
+<h2 id="performance">12. Performance &amp; Web Vitals</h2>
+<ul>
+  <li><strong>CLS</strong> — reserve space for images (<code>width</code>/<code>height</code> or aspect-ratio)</li>
+  <li><strong>LCP</strong> — optimize hero image, preload critical assets</li>
+  <li>Minimize unused CSS — purge in Tailwind, code-split</li>
+  <li>Avoid <code>@import</code> in CSS — blocks parallel loading</li>
+  <li><code>will-change</code> sparingly — hints GPU layer</li>
+</ul>
+
+<p class="footer-note"><a href="quick-revision.html">Quick Revision</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

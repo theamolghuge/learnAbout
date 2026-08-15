@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Them. Don't Measure Yourself By Them. — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0019-dont-watch-yourself-do-it.html">Lesson 19</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 7 · Performance · Lesson 2 · ~10 min</div>
+  <h1>Study Them. Don't Measure Yourself By Them.</h1>
+  <p class="subtitle">"Stop comparing yourself to others" is bad advice. Comparison isn't optional. What you extract from it is.</p>
+
+  <div class="meta">
+    Applies Lesson 1's mastery-vs-validation axis to a specific, common situation: watching someone better than you.</div>
+
+  <p>Leon Festinger's 1954 social comparison theory makes a claim worth taking seriously before trying to override it: humans have a basic drive to evaluate their own abilities, and in the absence of an objective yardstick, we <em>will</em> use other people as the measuring stick. This isn't a character flaw to eliminate — it's closer to a structural feature of how people assess themselves at all. "Just stop comparing yourself to others" asks you to override a basic drive, which is why it rarely works as advice.</p>
+
+  <p>What the research does show is that the same comparison can cut two different ways. <strong>Upward comparison</strong> (against someone better) can motivate or demoralize depending on whether the gap feels attainable and specific. <strong>Downward comparison</strong> (against someone worse) boosts self-esteem briefly but can produce complacency or guilt. The lever isn't whether you compare — you will — it's what you do with the comparison once it's happened.</p>
+
+  <h2>Information vs. verdict</h2>
+
+  <p>Here's the distinction that actually matters: does the comparison give you a specific, extractable piece of information — a technique, a habit, a decision you could study and use — or does it collapse into a global verdict about your own worth ("they're just better than me," "I'll never be that good")? The first is upward comparison doing useful work. The second is the same comparison feeding straight into Lesson 1's validation-orientation, where someone else's ability becomes evidence in a trial about whether you're good enough.</p>
+
+  <p>Kobe Bryant's well-documented habit of extensive opponent film study is a clean example of the first mode. He wasn't watching better players to generate a verdict about himself — he was extracting specific, actionable information: this player's tendency in this situation, this footwork detail, this decision pattern. The comparison stayed instrumental. It answered "what can I learn and use," not "what does this say about me."</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The practical move</span>
+    Next time you notice yourself comparing — genuinely notice it, it happens fast and mostly below awareness — ask one question before the feeling fully lands: <em>what specific, extractable thing is here?</em> If you can name something concrete (a technique, a routine, a decision), you've kept it in the useful mode. If the honest answer is "nothing specific, it just made me feel behind," that's the signal the comparison has slid into a verdict, and it's worth naming that shift explicitly rather than just absorbing the feeling.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of someone specific you compare yourself to in your pursuit — not abstractly, a real person. When you think about them, what actually happens first: do you reach for something specific about how they got good, or does it go straight to a feeling about where that leaves you? Be honest about which one is your actual default, not which one you'd prefer it to be.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the person. Then do the conversion deliberately: what is one specific, extractable thing about how they operate that you could actually study and use — not "they're talented," something concrete enough to practice.</p>
+    <textarea class="journal-input" id="j20" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j20-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Festinger, L. (1954), "A Theory of Social Comparison Processes," <em>Human Relations</em>. For Kobe's own account of studying opponents: <em>The Mamba Mentality: How I Play</em> (Tier 1). Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If the information/verdict split feels too clean — like real comparison is usually a tangle of both at once — say so. That's a fair complication; the point of naming the two modes is to notice which one is currently dominating, not to claim they're ever perfectly separable.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0020:j20";
+  var ta = document.getElementById("j20");
+  var status = document.getElementById("j20-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

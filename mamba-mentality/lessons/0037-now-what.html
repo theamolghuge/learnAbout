@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Now What? — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0018-what-adversity-actually-does.html">Lesson 18</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 6 · Adversity · Lesson 4 (extension) · ~10 min</div>
+  <h1>Now What?</h1>
+  <p class="subtitle">Failure got a whole lesson and a review protocol. Success never did — which is itself the tell.</p>
+
+  <div class="meta">
+    Extends Stage 6, closing a real gap: this curriculum, like most advice about excellence, quietly assumed success takes care of itself. The research says it specifically doesn't.
+  </div>
+
+  <p>Psychologists Philip Brickman and Donald Campbell named <strong>hedonic adaptation</strong> in 1971: people drift back toward a stable baseline level of happiness after both good and bad changes in circumstance. The evidence is genuinely striking — in follow-up research, lottery winners were only modestly happier than a comparison group a year later, and people who'd survived life-altering accidents were less unhappy than predicted over the same timeframe. Circumstances change dramatically in both directions; the underlying baseline mostly doesn't.</p>
+
+  <p>Psychologist Tal Ben-Shahar named the practical version of this: the <strong>arrival fallacy</strong> — the deeply held belief that reaching a specific goal will produce lasting happiness. What actually happens, per the research it's built on: real, genuine delight on arrival, followed by a fast slide back to baseline — sometimes landing on an unexpected emptiness rather than neutral ground.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this matters for everything Stage 1 already argued</span>
+    Lesson 1 made a philosophical case that validation-orientation is a worse foundation than mastery-orientation because it depends on something outside your control. This adds the empirical version of the same argument: even when validation-orientation <em>works</em> — you get the win, the recognition, the proof — the payoff it was promising doesn't durably arrive. The hedonic treadmill isn't a failure mode of achieving your goals. It's what achieving them predictably does, on the evidence.
+  </div>
+
+  <h2>An actual review, not just relief</h2>
+
+  <p>Lesson 18 gave failure a structured review instead of either a spiral or a shrug. Success deserves the same treatment, for a different reason: without one, the fading satisfaction tends to get quietly answered by immediately chasing the next goal, which just resets the treadmill rather than addressing it. A version of the same protocol, applied to a win: what was actually up to you in it (Lesson 2's dichotomy of control, applied to success this time, not just failure) — versus luck, timing, or circumstance? What specifically worked, that's worth repeating on purpose? And — the part usually skipped — is the satisfaction already fading, and if so, what does that reveal about whether this was ever really the point?</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of your last genuinely significant achievement. Honestly — how long did the satisfaction actually last? Hours? A day? What did you do the moment it faded: sit with that fact and let it inform something, or immediately set a new goal to chase the feeling again without examining why it left?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the achievement and how fast the feeling faded. Then run the review: what was actually up to you, what specifically worked, and — if you're honest — did the payoff match what you expected going in? What does the gap (or the match) tell you about what you're actually pursuing this for?</p>
+    <textarea class="journal-input" id="j37" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j37-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Brickman, P. & Campbell, D. (1971) on hedonic adaptation; Brickman, Coates & Janoff-Bulman (1978) on the lottery-winner/accident-victim comparison. Ben-Shahar, T., <em>Happier</em>, for the "arrival fallacy" framing. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If this lesson reads as cynical about achievement rather than clarifying — worth checking: the claim isn't "don't pursue goals," it's "don't expect the goal itself to deliver lasting satisfaction it was never going to deliver." If that distinction doesn't land, say where it breaks down.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Back to <a href="./0018-what-adversity-actually-does.html">Stage 6</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0037:j37";
+  var ta = document.getElementById("j37");
+  var status = document.getElementById("j37-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

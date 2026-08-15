@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What It Was Always For — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0026-you-could-leave-life-right-now.html">Lesson 26</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 9 · Purpose · Lesson 3 (closing) · ~10 min</div>
+  <h1>What It Was Always For</h1>
+  <p class="subtitle">One more piece from the Gita, then a question you already answered once — worth answering again now.</p>
+
+  <div class="meta">
+    Closes Stage 9 and sets up Stage 10's Manifesto. Revisits Lesson 6's comparison table with eight stages of lived material behind it instead of just philosophy.</div>
+
+  <p>The Gita has one more move worth knowing before this curriculum asks you to state your own answer. In Chapter 3, Krishna tells Arjuna that even great, self-realized people who have nothing left to personally gain continue to act — not from need, but for <strong>lokasangraha</strong>, the welfare of the world. Verse 20: whatever standards great people set, others follow, so act to set a good example. Verse 25: the wise act without attachment to results specifically so they can guide others onto a good path — action redirected entirely outward, once the personal stakes have fallen away.</p>
+
+  <p>This reframes Lesson 25's second act. Kobe's post-retirement years — the storytelling, the coaching, the youth mentorship — fit this pattern more precisely than "he found a new hobby." Once the personal competitive stakes of playing were gone, the same intensity got redirected toward other people's development, without needing anything back from it. That's lokasangraha in a fairly literal sense: skill, still fully applied, no longer in service of your own advancement.</p>
+
+  <h2>Answer it again</h2>
+
+  <p>Lesson 6 closed Stage 2 by asking you to state, in your own words, what excellence is ultimately for — before any of Stages 3 through 9 had actually happened. You've since built a daily practice, tested composure under real pressure, examined two genuinely ambiguous case studies, audited yourself against ten dark-side distinctions, and sat with your own mortality as a filter. That's not nothing. It's worth finding out whether your answer moved.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Before you close this stage</span>
+    Reread what you wrote in Lesson 6 if you still have it. Has your actual answer to "what is excellence for" shifted — toward your own flourishing, toward duty regardless of your own stake in it, toward something like lokasangraha, or somewhere none of the traditions quite named? If it hasn't moved at all after eight stages of real material, that's worth being curious about too — not necessarily wrong, but worth checking whether it's genuinely unchanged or just unexamined since Lesson 6.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write your answer again, now.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">State it fresh, in your own words, as if for the first time. Then, in a line or two, name specifically what changed (or didn't) since Lesson 6 — and what in this curriculum actually moved it, if anything did.</p>
+    <textarea class="journal-input" id="j27" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j27-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>Bhagavad Gita</em>, Chapter 3, verses 20 and 25 (Easwaran translation) — read alongside Lesson 6's comparison table for the fuller context of how this fits the other three traditions. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If lokasangraha sounds noble in theory but you're skeptical anyone actually operates this selflessly in practice — including Kobe, including the Gita's own ideal — say so. Healthy skepticism toward a tradition's most flattering self-description is exactly the kind of intellectual honesty this curriculum has tried to model throughout.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Stage 9 complete — 3 lessons.</span>
+  </p>
+  <p class="lesson-footer" style="margin-top:0;">
+    <span>Next: Stage 10 — Integration. The Manifesto. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0027:j27";
+  var ta = document.getElementById("j27");
+  var status = document.getElementById("j27-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

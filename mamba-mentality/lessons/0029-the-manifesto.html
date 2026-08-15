@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Manifesto — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0028-the-operating-system.html">Lesson 28</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 10 · Integration · Lesson 2 (final) · ~15 min</div>
+  <h1>The Manifesto</h1>
+  <p class="subtitle">Twelve questions. Twelve short answers. The one document from this entire curriculum worth reading every morning.</p>
+
+  <div class="meta">
+    The final lesson of this curriculum's core arc. Not new material — the culmination of everything from Lesson 1 to Lesson 28, compressed into something short enough to actually reread daily. Answer in your own words; nobody else's version, including this curriculum's, is the right one for you.
+  </div>
+
+  <p>Twelve questions, from your original brief. Answer each in one sentence — a manifesto you'll actually reread has to be short enough to hold in your head, not a paragraph you skim past after the second week. Pull from Lesson 28's ten principles where they apply, but write your own words here, not a copy-paste. If an honest answer is still unsettled, write the unsettled version — a manifesto that pretends to certainty you don't have is worse than one that's honest about what's still open.</p>
+
+  <div class="manifesto-form">
+    <div><label for="mf-think">How should I think?</label><input type="text" id="mf-think" placeholder="e.g. mastery-oriented, not chasing proof I'm good enough"></div>
+    <div><label for="mf-work">How should I work?</label><input type="text" id="mf-work" placeholder="e.g. with a real feedback loop, not just hours logged"></div>
+    <div><label for="mf-train">How should I train?</label><input type="text" id="mf-train" placeholder="e.g. deliberately, at the edge of my ability, on a decades timeline"></div>
+    <div><label for="mf-failure">How should I respond to failure?</label><input type="text" id="mf-failure" placeholder="e.g. run the actual review protocol before I let myself spiral"></div>
+    <div><label for="mf-success">How should I respond to success?</label><input type="text" id="mf-success" placeholder="e.g. as information, not proof I've arrived"></div>
+    <div><label for="mf-people">How should I treat other people?</label><input type="text" id="mf-people" placeholder="e.g. use comparison as information about them, not a verdict on me"></div>
+    <div><label for="mf-fear">How should I handle fear?</label><input type="text" id="mf-fear" placeholder="e.g. name it honestly, in the moment, like the free-throw quote"></div>
+    <div><label for="mf-pain">How should I handle pain?</label><input type="text" id="mf-pain" placeholder="e.g. as a conscious, named risk — never damage absorbed on autopilot"></div>
+    <div><label for="mf-uncertainty">How should I handle uncertainty?</label><input type="text" id="mf-uncertainty" placeholder="e.g. act fully, release my grip on how it turns out"></div>
+    <div><label for="mf-daily">What should I do every day?</label><input type="text" id="mf-daily" placeholder="e.g. the specific practice, at the specific cue, no negotiation"></div>
+    <div><label for="mf-never">What should I never compromise on?</label><input type="text" id="mf-never" placeholder="e.g. self-compassion when I fall short of my own standard"></div>
+    <div><label for="mf-become">What kind of person should I become?</label><input type="text" id="mf-become" placeholder="e.g. someone whose effort doesn't need an audience to sustain it"></div>
+    <button class="quiz-btn" id="mf-save" type="button" style="align-self:flex-start;">Generate my Manifesto</button>
+  </div>
+
+  <div class="manifesto-doc" id="mf-doc">
+    <div class="md-title">My Mamba Mentality Manifesto</div>
+    <div class="md-subtitle">Reread this. Revise it as you change. It's a living document, not a plaque.</div>
+    <div class="manifesto-line"><span class="ml-q">How should I think?</span><span class="ml-a" id="md-think"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I work?</span><span class="ml-a" id="md-work"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I train?</span><span class="ml-a" id="md-train"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I respond to failure?</span><span class="ml-a" id="md-failure"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I respond to success?</span><span class="ml-a" id="md-success"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I treat other people?</span><span class="ml-a" id="md-people"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I handle fear?</span><span class="ml-a" id="md-fear"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I handle pain?</span><span class="ml-a" id="md-pain"></span></div>
+    <div class="manifesto-line"><span class="ml-q">How should I handle uncertainty?</span><span class="ml-a" id="md-uncertainty"></span></div>
+    <div class="manifesto-line"><span class="ml-q">What should I do every day?</span><span class="ml-a" id="md-daily"></span></div>
+    <div class="manifesto-line"><span class="ml-q">What should I never compromise on?</span><span class="ml-a" id="md-never"></span></div>
+    <div class="manifesto-line"><span class="ml-q">What kind of person should I become?</span><span class="ml-a" id="md-become"></span></div>
+    <div class="md-footer">Written after 29 lessons · revisit and revise</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What to actually do with this</span>
+    Screenshot or print the document above once it's generated — it stays saved on this device, but a manifesto you have to open a laptop to reread doesn't get reread. Put it somewhere you'll actually see it most mornings. And revise it — the version you write today, at the end of this curriculum, is not supposed to be final. Come back to it in six months. If nothing has changed, ask yourself honestly whether that's because it's still true, or because you haven't looked at it since.
+  </div>
+
+  <h2>This is the end of the core arc, not the end of the curriculum</h2>
+  <p>Twenty-nine lessons, ten stages, from "why pursue excellence at all" to a document you're meant to reread for years. That's the arc your original brief asked for — but it isn't a finished project so much as a foundation now built. The Tier 2 and Tier 3 resources in <a href="../RESOURCES.md">RESOURCES.md</a> go deeper into everything touched here. The <a href="../reference/glossary.html">glossary</a> and the <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a> are built to be returned to, not read once. And your <a href="../MISSION.md">attention</a> and <a href="../MISSION.md">anvikshiki</a> workspaces cover real, adjacent ground this curriculum deliberately didn't duplicate.</p>
+
+  <p>Whenever something in your actual life needs a lesson this curriculum doesn't have yet — a new adversity, a new craft, a new question the ten stages didn't anticipate — that's not a gap in the design. It's what a lifelong curriculum is supposed to keep doing. Just say so.</p>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Before you close this</span>
+    Reread your Manifesto once, right now, out loud if you can. If any line already feels false as you say it, fix it before you screenshot it — better to catch that now than the first morning you reread it for real.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Curriculum core arc complete.</span>
+    <span><a href="../index.html">Back to the index</a> — or just keep talking to your teacher.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0029:";
+  var fields = ["think", "work", "train", "failure", "success", "people", "fear", "pain", "uncertainty", "daily", "never", "become"];
+  var doc = document.getElementById("mf-doc");
+
+  function render() {
+    var any = false;
+    fields.forEach(function (f) {
+      var v = localStorage.getItem(key + f);
+      if (v) any = true;
+      document.getElementById("md-" + f).textContent = v ? ("“" + v + "”") : "—";
+    });
+    if (any) doc.classList.add("show");
+  }
+  fields.forEach(function (f) {
+    var el = document.getElementById("mf-" + f);
+    if (el) el.value = localStorage.getItem(key + f) || "";
+  });
+  render();
+
+  document.getElementById("mf-save").addEventListener("click", function () {
+    fields.forEach(function (f) {
+      var el = document.getElementById("mf-" + f);
+      localStorage.setItem(key + f, el.value);
+    });
+    render();
+    doc.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+})();
+</script>
+</body>
+</html>

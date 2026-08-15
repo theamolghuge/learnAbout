@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Git + Maven/Gradle + API Tools</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="devtools-notes.html#study-guide">Git + Maven + API Tools Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Branch</td><td>Movable pointer to a commit</td></tr>
+  <tr><td>Merge</td><td>New commit, two parents, history preserved unchanged</td></tr>
+  <tr><td>Rebase</td><td>Replays commits, new hashes, linear history</td></tr>
+  <tr><td>Rebase rule</td><td>Never rebase a branch others already pulled</td></tr>
+  <tr><td>Fast-forward</td><td>No divergence — pointer just moves, no merge commit</td></tr>
+  <tr><td>Conflict resolution</td><td>Edit &lt;&lt;&lt;&lt;/====/&gt;&gt;&gt;&gt; markers → add → commit</td></tr>
+  <tr><td>compile scope</td><td>Everywhere, packaged (default)</td></tr>
+  <tr><td>provided scope</td><td>Compile/test only, NOT packaged</td></tr>
+  <tr><td>runtime scope</td><td>Not compile, needed to run, packaged</td></tr>
+  <tr><td>test scope</td><td>Test only, not packaged</td></tr>
+  <tr><td>Maven lifecycle</td><td>validate→compile→test→package→verify→install→deploy</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Parent POM</td><td>Centrally manages compatible dependency versions</td></tr>
+  <tr><td>Gradle vs Maven</td><td>Groovy/Kotlin DSL, faster via incremental build + cache</td></tr>
+  <tr><td>Postman</td><td>Manual/exploratory API testing, not a regression suite</td></tr>
+  <tr><td>OpenAPI/Swagger</td><td>Docs auto-generated from code — never drifts out of sync</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+<p><strong>Merge vs rebase, one more time?</strong><br>
+Merge preserves history + adds a merge commit. Rebase rewrites history into a line, new commit hashes.</p>
+<p><strong>Why is provided scope not packaged?</strong><br>
+Assumes the runtime environment already supplies it (e.g. app-server-provided servlet API).</p>
+<p><strong>Why springdoc-openapi over hand-written docs?</strong><br>
+Generated straight from the controllers — can't silently drift out of date.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Create a branch, make a commit, resolve a conflict on merge back to main</li>
+  <li>Write a pom.xml dependency block for spring-boot-starter-web + a test-scoped dependency</li>
+  <li>Explain the 7-phase Maven lifecycle out loud</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="devtools-notes.html#git-rebase">Rebase vs Merge</a></li>
+  <li><a href="devtools-notes.html#git-workflow">PR Workflow &amp; Conflicts</a></li>
+  <li><a href="devtools-notes.html#maven">Maven ⭐</a></li>
+  <li><a href="devtools-notes.html#openapi">Swagger / OpenAPI</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="devtools-notes.html">Git + Maven + API Tools Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

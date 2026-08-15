@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Kubernetes + System Design</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="system-design-notes.html#study-guide">Kubernetes + System Design Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Pod</td><td>Smallest deployable unit, usually 1 container</td></tr>
+  <tr><td>Deployment</td><td>Declares desired replica count/image, self-heals</td></tr>
+  <tr><td>Service</td><td>Stable name/IP in front of changing Pods</td></tr>
+  <tr><td>Horizontal scaling</td><td>More machines, no downtime, needs stateless services</td></tr>
+  <tr><td>Vertical scaling</td><td>Bigger machine, hard ceiling, often needs downtime</td></tr>
+  <tr><td>Cache-aside</td><td>Check cache → miss → read DB → populate cache</td></tr>
+  <tr><td>Read replica</td><td>Offloads reads, writes still go to primary</td></tr>
+  <tr><td>Sharding</td><td>Splits data by key — scales writes, cross-shard joins hard</td></tr>
+  <tr><td>CAP theorem</td><td>During a partition: choose C or A — P isn't optional</td></tr>
+  <tr><td>CP vs AP</td><td>CP = banking/RDBMS · AP = DNS/Cassandra/DynamoDB default</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>ConfigMap</td><td>Non-sensitive config, injected into Pods</td></tr>
+  <tr><td>Secret</td><td>Base64-encoded, NOT encrypted by default</td></tr>
+  <tr><td>Namespace</td><td>Virtual cluster within a cluster — dev/staging/prod</td></tr>
+  <tr><td>HPA</td><td>Auto-adjusts replica count from CPU/memory/custom metrics</td></tr>
+  <tr><td>Write-through cache</td><td>Cache updated with DB write — never stale, slower writes</td></tr>
+  <tr><td>Fixed window rate limit</td><td>Simple, allows 2x burst at window boundary</td></tr>
+  <tr><td>Token bucket</td><td>Steady refill rate, allows controlled bursts</td></tr>
+</table>
+
+<h2>DB scaling order of operations</h2>
+<pre class="code"><code>Index properly → Read replicas (read-heavy) → Cache aggressively
+  → Shard (only once a single primary can't handle write volume)</code></pre>
+
+<h2>System design question — first 5 minutes</h2>
+<pre class="code"><code>1. Clarify functional + non-functional requirements (scale, read/write ratio, latency)
+2. Estimate scale — back-of-envelope requests/sec, storage growth
+3. High-level design — major components + data flow
+4. Deep dive on 1-2 components the interviewer cares about
+5. Name the trade-offs explicitly — there's no single "correct" answer</code></pre>
+
+<h2>30-second answers</h2>
+<p><strong>CAP theorem, cleanly?</strong><br>
+Partition tolerance isn't optional — the real choice during a partition is consistency vs availability.</p>
+<p><strong>Why is Kubernetes Secret not "secure" by default?</strong><br>
+Base64 is encoding, not encryption — need etcd encryption-at-rest or an external secrets manager.</p>
+<p><strong>Read replica vs shard?</strong><br>
+Replica scales reads only. Shard scales reads AND writes, at the cost of cross-shard query complexity.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>A Deployment + Service YAML pair for a Spring Boot app</li>
+  <li>Explain cache-aside vs write-through with a concrete example</li>
+  <li>Explain CAP with a concrete CP system and a concrete AP system</li>
+  <li>Whiteboard a "design a URL shortener" in 5 structured steps</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="system-design-notes.html#k8s-core">Kubernetes Core Objects ⭐</a></li>
+  <li><a href="system-design-notes.html#scalability">Scalability &amp; Load Balancing ⭐</a></li>
+  <li><a href="system-design-notes.html#db-scaling">Database Scaling &amp; Indexing</a></li>
+  <li><a href="system-design-notes.html#cap">CAP Theorem ⭐</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="system-design-notes.html">Kubernetes + System Design Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

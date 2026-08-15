@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — HTML &amp; CSS</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A — HTML &amp; CSS</h1>
+<p class="subtitle">Concepts in <a href="html-css-notes.html">HTML &amp; CSS Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#html">HTML</a> ·
+  <a href="#semantic">Semantic</a> ·
+  <a href="#a11y">A11y</a> ·
+  <a href="#css">CSS</a> ·
+  <a href="#layout">Layout</a> ·
+  <a href="#responsive">Responsive</a>
+</nav>
+
+<h2 id="html">HTML</h2>
+
+<div class="qa">
+  <p class="qa-q">What is the purpose of the DOCTYPE declaration?</p>
+  <p class="qa-a">Tells the browser to render in standards mode (HTML5: <code>&lt;!DOCTYPE html&gt;</code>). Without it, browsers may use quirks mode with inconsistent layout. Always first line of document.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does the viewport meta tag do?</p>
+  <p class="qa-a"><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> — sets viewport width to device width for responsive mobile layouts. Without it, mobile browsers render at desktop width then scale down.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between block and inline elements?</p>
+  <p class="qa-a">Block: starts new line, takes full width (<code>div</code>, <code>p</code>, <code>h1</code>). Inline: flows in text line, width by content (<code>span</code>, <code>a</code>, <code>strong</code>). Inline-block combines both. CSS <code>display</code> can change behavior.</p>
+</div>
+
+<h2 id="semantic">Semantic HTML</h2>
+
+<div class="qa">
+  <p class="qa-q">Why use semantic HTML?</p>
+  <p class="qa-a">Clear meaning for browsers, screen readers, and search engines. Better accessibility without extra ARIA. Easier maintenance than div soup. Examples: <code>nav</code>, <code>main</code>, <code>article</code>, <code>button</code> vs styled divs.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When to use article vs section?</p>
+  <p class="qa-a"><code>article</code> — self-contained content that could stand alone (blog post, comment). <code>section</code> — thematic grouping within a page, usually with a heading. Article can contain sections; section can contain articles.</p>
+</div>
+
+<h2 id="a11y">Accessibility</h2>
+
+<div class="qa">
+  <p class="qa-q">How do you make a form accessible?</p>
+  <p class="qa-a">Every input has associated <code>&lt;label for="id"&gt;</code>. Group related fields with <code>fieldset</code>/<code>legend</code>. Use correct input types. Show validation errors linked with <code>aria-describedby</code>. Ensure keyboard submission works. Don't rely on color alone for errors.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When should you use ARIA?</p>
+  <p class="qa-a">When native HTML can't express the pattern — custom widgets, live regions, expanded/collapsed state. First rule of ARIA: don't use ARIA if native HTML works. Never use ARIA instead of semantic elements.</p>
+</div>
+
+<h2 id="css">CSS</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the CSS box model.</p>
+  <p class="qa-a">Every element is a box: content → padding → border → margin. <code>box-sizing: content-box</code> (default): width is content only. <code>border-box</code>: width includes padding and border — predictable sizing. Use border-box globally.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does CSS specificity work?</p>
+  <p class="qa-a">Inline styles beat IDs beat classes/attributes/pseudo-classes beat elements. Calculated as (inline, ID, class, element). Equal specificity → last rule in source wins. Avoid !important except utilities/overrides.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between display: none and visibility: hidden?</p>
+  <p class="qa-a"><code>display: none</code> — removed from layout, takes no space, not focusable. <code>visibility: hidden</code> — invisible but still occupies space in layout. Use <code>hidden</code> attribute or aria for accessible hiding patterns.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain position absolute vs relative.</p>
+  <p class="qa-a"><code>relative</code> — offset from normal position, original space preserved. <code>absolute</code> — removed from flow, positioned relative to nearest ancestor with position not static. Common pattern: relative parent + absolute child for overlays/badges.</p>
+</div>
+
+<h2 id="layout">Flexbox &amp; Grid</h2>
+
+<div class="qa">
+  <p class="qa-q">Flexbox vs CSS Grid — when to use which?</p>
+  <p class="qa-a">Flexbox: one-dimensional — nav bars, centering, distributing items in a row/column. Grid: two-dimensional — page layouts, card grids with rows and columns. Often combined — Grid for page shell, Flexbox for components.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you center a div horizontally and vertically?</p>
+  <p class="qa-a">Flexbox: <code>display: flex; justify-content: center; align-items: center; min-height: 100vh;</code>. Grid: <code>display: grid; place-items: center;</code>. Modern and interview-friendly — avoid negative margins or transform hacks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does flex: 1 mean?</p>
+  <p class="qa-a">Shorthand for <code>flex: 1 1 0%</code> — grow equally, shrink equally, zero basis. Items share available space. <code>flex: auto</code> uses content size as basis. <code>flex: none</code> prevents grow/shrink.</p>
+</div>
+
+<h2 id="responsive">Responsive &amp; Modern</h2>
+
+<div class="qa">
+  <p class="qa-q">Mobile-first vs desktop-first CSS?</p>
+  <p class="qa-a">Mobile-first: base styles for small screens, <code>min-width</code> media queries add complexity for larger. Progressive enhancement — recommended. Desktop-first uses <code>max-width</code> queries to scale down — harder to maintain.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">rem vs em vs px?</p>
+  <p class="qa-a"><code>px</code> — absolute pixels. <code>rem</code> — relative to root font size (accessible, scales with user settings). <code>em</code> — relative to parent font size (compounds nested). Prefer rem for spacing/typography; px for borders/shadows.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is BEM?</p>
+  <p class="qa-a">Block Element Modifier naming: <code>.card</code>, <code>.card__title</code>, <code>.card--featured</code>. Avoids specificity wars, clear component structure. Alternative to CSS Modules scoping or Tailwind utilities in modern React apps.</p>
+</div>
+
+<p class="footer-note"><a href="html-css-notes.html">HTML &amp; CSS Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

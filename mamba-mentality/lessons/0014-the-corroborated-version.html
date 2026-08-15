@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Corroborated Version — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0013-10000-hours-wasnt-the-finding.html">Lesson 13</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 2 · ~10 min</div>
+  <h1>The Corroborated Version</h1>
+  <p class="subtitle">Not the "Kobe always woke up at 4am" legend. One specific, multiply-witnessed morning — and what it actually shows.</p>
+
+  <div class="meta">
+    A case study, not a biography — extracting one specific, extractable behavior, verified rather than assumed. Stage 8 will come back to ask a harder question about this same story.
+  </div>
+
+  <p>"Kobe worked out at 4am" has become internet legend, repeated so often and so vaguely it's hard to know what, specifically, actually happened versus what got smoothed into folklore over time. There's a more useful version: a single, specific, multiply-corroborated morning, during preparation for the 2008 Beijing Olympics with Team USA.</p>
+
+  <p>An athletic trainer has described Kobe calling him at 4am to train before the team's scheduled scrimmage — and staying until the team's 11am practice began. This isn't a lone claim: teammates independently described the same period from the outside. Chris Bosh recalled Kobe showing up to team breakfast "with ice on his knees and with his trainers and stuff." Dwyane Wade put it more bluntly: "We're all yawning, and he's already three hours and a full workout into his day." Multiple people, describing the same stretch of days, without needing to coordinate their stories — that's a meaningfully different kind of evidence than a repeated internet quote with no attribution.</p>
+
+  <h2>What this actually demonstrates</h2>
+
+  <p>Not superhuman willpower as the takeaway — that's the mythologized reading, and it's not useful, because "have superhuman willpower" isn't a transferable instruction. What's actually extractable: Kobe was already one of the most accomplished players alive, on a team of other elite players, with no external requirement forcing that specific 4am session. Nobody was checking. Section 12's confront questions in your original brief asked what you'd do if you knew nobody would ever find out — this is one documented case of someone in a position to coast choosing not to, when coasting would have cost him nothing visible.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Tie back to Lesson 13, not just admiration</span>
+    The interesting question isn't "wow, 4am" — it's whether this fits Lesson 13's actual definition of deliberate practice, or whether it's just hours logged. The corroborating accounts suggest the former: this was specific, targeted extra training during a period of high-stakes preparation, not undirected grinding. That distinction — targeted effort with a purpose, versus hours as a display — is the one worth carrying forward, not the wake-up time itself.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">A question this lesson deliberately leaves open</span>
+    Is this story straightforwardly admirable, or does something about it also look like exactly the kind of pattern Stage 8 will ask you to examine — work as a way of outrunning something, rather than work in service of something? This curriculum isn't going to answer that for you yet, on purpose. Sit with the discomfort of not resolving it cleanly rather than reaching for either "purely inspiring" or "clearly unhealthy" before you have more to go on.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name one thing you have done, or could do, that nobody would ever check on or find out about — genuinely invisible effort. Would you actually do it? What does your honest answer say about which engine (Lesson 1: mastery vs. validation) is actually driving you right now?</p>
+    <textarea class="journal-input" id="j14" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j14-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    For Kobe's own account of his preparation philosophy in his own words, in a lower-stakes and more reflective register than the Olympics anecdote above: <em>The Mamba Mentality: How I Play</em> (Tier 1). Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you think this lesson is still too close to hero-worship despite the "don't resolve it yet" framing, say so directly — that's a fair critique of how case studies like this one get used, and worth pressure-testing now rather than waiting for Stage 8 to arrive.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0014:j14";
+  var ta = document.getElementById("j14");
+  var status = document.getElementById("j14-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

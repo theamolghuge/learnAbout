@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You're Not Going To Please Everybody — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0024-ten-lines-and-a-checklist.html">Lesson 24</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 8 · Character · Lesson 4 (extension) · ~11 min</div>
+  <h1>You're Not Going To Please Everybody</h1>
+  <p class="subtitle">The version of Kobe's leadership people usually cite skips the part where it was, for years, a documented problem.</p>
+
+  <div class="meta">
+    Extends Stage 8, closing several real gaps at once: his formative childhood, his relationship with criticism and leadership, how his mentality actually changed over his career, and what popular retellings of "Mamba Mentality" tend to leave out.
+  </div>
+
+  <p>Between ages six and thirteen, Kobe Bryant lived in Italy while his father, Joe Bryant, played professionally there. He learned fluent Italian, immersed himself in a professional basketball environment from childhood, and — per multiple accounts from that period — showed an early, near-obsessive pull toward the game, reportedly slipping out as a young child to play for hours at a nearby court. That's a real formative period: total immersion in elite basketball culture, in a foreign country, years before most American peers had any comparable exposure.</p>
+
+  <h2>The part usually left out</h2>
+
+  <p>Early in his NBA career, Kobe had a well-documented reputation for berating teammates and demanding they play through injury — intense to the point that, per multiple accounts, some talented players avoided signing with the Lakers specifically because of the culture he'd created. This isn't a minor footnote; it's a real, documented cost, not just an intensity flex. His own stated leadership philosophy, quoted directly: "If you're going to be a leader, you're not going to please everybody. You've got to hold people accountable." Defensible as a principle — but the actual outcome data from that period (talent avoiding the team) suggests it was doing real damage, not just ruffling feathers.</p>
+
+  <h2>What actually changed</h2>
+
+  <p>By the 2008–09 season, accounts describe a documented shift: Kobe deliberately worked to grow closer to his teammates and communicate rather than simply demand the ball and expect people to match his standard unprompted. That's a real, measurable change in approach — not just more of the same effort, but a different strategy, in exactly the sense Lesson 31's growth mindset research describes. The leadership that eventually worked wasn't the early, purely demanding version — it required him to recognize that version wasn't working and change it.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What this reveals about the popular version of "Mamba Mentality"</span>
+    A common misreading treats Mamba Mentality as pure, unmodified intensity — hold everyone to your standard, no matter the cost, and call the cost proof of commitment. The fuller, more honest account includes the part where that specific approach caused real damage and had to be corrected. The mentality that actually held up long-term wasn't the one that never adjusted — it was the one willing to admit an approach wasn't working and change it, which is a very different (and less quotable) lesson than "hold the highest standard no matter what."
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Apply this directly, using the <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a>. Is there a place — with a teammate, a report, a partner, or yourself — where you're currently holding a standard in a way that's closer to Kobe's early-career reputation than you'd like to admit, and calling it "high standards" rather than examining whether it's actually working?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the specific relationship or situation. What's the actual evidence — not your intention, the outcome — about whether your current approach is working? What would the 2008-09-style adjustment look like here, concretely?</p>
+    <textarea class="journal-input" id="j35" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j35-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    ESPN's Los Angeles Lakers Blog coverage of Kobe's leadership doctrine, and contemporaneous reporting on the 2008–09 season shift. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you think this lesson is too quick to credit the "he changed and it worked" narrative — worth asking whether that's also a tidier story than what actually happened, the same pattern this curriculum has flagged in its own case studies before. Push on it if the redemption arc feels too clean.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Back to <a href="./0024-ten-lines-and-a-checklist.html">Stage 8</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0035:j35";
+  var ta = document.getElementById("j35");
+  var status = document.getElementById("j35-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

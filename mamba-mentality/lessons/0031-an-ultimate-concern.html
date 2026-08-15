@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>An Ultimate Concern — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0030-temperament-over-talent.html">Lesson 30</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 5 (extension) · ~10 min</div>
+  <h1>An Ultimate Concern</h1>
+  <p class="subtitle">Two of psychology's most famous popular concepts, and the actual research underneath the parts that got flattened.</p>
+
+  <div class="meta">
+    Closes a real gap: Grit and Mindset have been sitting in RESOURCES.md Tier 2 since session 1, cited but never actually taught. Extends Stage 5 with the research each is actually built on.
+  </div>
+
+  <h2>Grit isn't intensity</h2>
+
+  <p>Angela Duckworth's 2007 research defines <strong>grit</strong> precisely: perseverance <em>and</em> passion for long-term goals — not how intensely you want something right now, but an "ultimate concern" that organizes effort across years. Her original study found grit explained a real but modest ~4% of variance in outcomes across West Point retention, National Spelling Bee ranking, and Ivy League GPA — worth stating honestly rather than inflating: a genuine, measured effect, not the sole determinant of success. What the definition rules out is more useful than the number: a burst of enthusiasm that fades in six weeks isn't grit by this definition, however intense it felt while it lasted. Grit specifically requires the passion to still be organizing your behavior years later.</p>
+
+  <h2>Mindset isn't "try harder"</h2>
+
+  <p>Carol Dweck's foundational research (Mueller & Dweck, 1998) found that praising children for intelligence pushed them toward a <strong>fixed mindset</strong> — avoiding challenges that might reveal a limit — while praising the process pushed them toward a <strong>growth mindset</strong>, engaging harder challenges without the same fear. The most common popular misreading, worth correcting directly: growth mindset does not just mean "believe you can improve if you try harder." The actual research requires trying <em>new strategies</em> and <em>seeking feedback</em> when stuck — more of the same effort, without adjustment, isn't growth mindset. It's the same mistake Lesson 13 flagged for deliberate practice: repetition alone doesn't improve skill, and effort alone doesn't reflect a growth mindset. Both require the same missing ingredient — a real feedback loop that changes what you do next.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">How they fit together</span>
+    Grit is about whether a single "ultimate concern" organizes your years. Mindset is about how you interpret the plateaus and setbacks that inevitably happen within those years. Put together with Lesson 30's Tendulkar and Musashi's thousand-day timeframe: sustained excellence needs both a concern that survives years, and an interpretation of setbacks inside those years that pushes you toward adjustment rather than avoidance.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Can you name your own "ultimate concern," by Duckworth's actual definition — not what you're excited about this month, the thing that's been organizing years of your behavior? If you genuinely can't name one clearly, that's worth taking seriously rather than forcing an answer: it might mean you're still in Stage 1's exploration phase, which is a legitimate place to be, not a failure of grit.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name your ultimate concern, if you have one — or write honestly that you don't yet. Then: think of your most recent real plateau or setback in that pursuit. Did you respond with more of the same effort, or did you actually change your strategy and seek new feedback? Be specific.</p>
+    <textarea class="journal-input" id="j31" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j31-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Duckworth, A. et al. (2007), "Grit: Perseverance and Passion for Long-Term Goals" (RESOURCES.md Tier 2). Mueller, C. & Dweck, C. (1998), the original praise study underlying <em>Mindset</em>. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If 4% of variance sounds too small to justify all the attention grit gets in popular culture, that's a fair reaction — worth naming the gap between the modest research finding and the outsized cultural narrative built on top of it.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Back to <a href="./0030-temperament-over-talent.html">Lesson 30</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0031:j31";
+  var ta = document.getElementById("j31");
+  var status = document.getElementById("j31-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

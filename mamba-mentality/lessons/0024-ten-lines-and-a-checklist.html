@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ten Lines And A Checklist — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0023-what-happens-when-youre-challenged.html">Lesson 23</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 8 · Character · Lesson 3 (closing) · ~10 min</div>
+  <h1>Ten Lines And A Checklist</h1>
+  <p class="subtitle">Your original brief named ten distinctions. Here they all are, with a test for each — not just a definition.</p>
+
+  <div class="meta">
+    Closes Stage 8. Two lessons gave four of these real research treatment. This one completes the set, honestly marking which rows are researched and which are this workspace's own reasoning — then turns the whole thing into something you actually check yourself against.
+  </div>
+
+  <p>Lessons 22 and 23 gave real research treatment to four of the ten distinctions your original brief named: discipline vs. compulsion, work ethic vs. workaholism, confidence vs. ego, and high standards vs. perfectionism. Lesson 20 touched competition vs. comparison. That leaves ambition vs. insecurity, sacrifice vs. self-destruction, persistence vs. stubbornness, pain tolerance vs. ignoring legitimate limits (Lesson 17's case study), and obsession with mastery vs. obsession with validation (this whole curriculum's opening theme, Lesson 1) — completing the set without pretending every row has the same evidentiary weight.</p>
+
+  <p>The full table, with a specific test for each row, is now a standalone reference: <a href="../reference/dark-side-checklist.html">The Dark Side Checklist</a>. Three of its rows are marked "Reasoned" rather than "Researched" — this workspace's own logical distinctions, not findings from a cited study. That's a deliberate choice, not an oversight: better to be honest about which claims are backed by evidence and which are this curriculum's own best reasoning than to dress up reasoning as research.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The pattern across all ten</span>
+    Look at the "test" column across all ten rows. Almost every single one comes down to the same underlying question, asked in a different costume: <em>what happens when things don't go your way</em> — when you fall short, get challenged, face a setback, or have to change course? The healthy version holds steady. The dark-side version reacts — defensively, rigidly, compulsively, or by seeking an audience to repair the damage. If you only remember one thing from this stage, it's that the tell isn't in how someone behaves when things are going well. It's what happens the moment they aren't.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">A genuinely hard question to close this stage</span>
+    Go through the checklist honestly, row by row, applied to yourself right now — not to Kobe, not to Goggins, not to anyone else this curriculum has used as a case study. Where do you currently land on the dark side of at least one of these ten? Not "where could you theoretically slip" — where are you actually, right now, closer to the corrosive twin than the healthy trait. Naming zero is itself worth being suspicious of.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the one (or more) row where you're honestly closer to the dark side than you'd like to admit. What's one specific, observable sign of it — something someone else could actually notice, not just an internal feeling — and what would you need to see change to know it had genuinely shifted?</p>
+    <textarea class="journal-input" id="j24" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j24-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Reference</span>
+    <a href="../reference/dark-side-checklist.html">The Dark Side Checklist</a> — worth returning to periodically, not just once here. Full source annotations for the researched rows: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If any of the three "reasoned" rows (ambition/insecurity, sacrifice/self-destruction, persistence/stubbornness) feel wrong or too neat, say so directly — those specifically haven't been checked against real research the way the other rows have, so your pushback carries more weight there than anywhere else in this stage.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Stage 8 complete — 3 lessons.</span>
+    <span>Next: Stage 9 — Purpose. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0024:j24";
+  var ta = document.getElementById("j24");
+  var status = document.getElementById("j24-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

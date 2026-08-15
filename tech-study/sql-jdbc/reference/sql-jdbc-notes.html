@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL &amp; JDBC Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>SQL &amp; JDBC Notes</h1>
+<p class="subtitle">Topic 2 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Builds toward Spring Data JPA, which sits on top of everything here.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#basics">1. SQL Basics</a> · <a href="#joins">2. Joins ⭐</a> ·
+  <a href="#aggregates">3. Aggregates &amp; Grouping</a> · <a href="#subqueries">4. Subqueries</a> ·
+  <a href="#constraints">5. Keys &amp; Constraints</a> · <a href="#indexes">6. Indexes ⭐</a> ·
+  <a href="#transactions">7. Transactions &amp; ACID ⭐</a> · <a href="#normalization">8. Normalization</a> ·
+  <a href="#jdbc">9. JDBC ⭐</a> · <a href="#pooling">10. Connection Pooling</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>INNER/LEFT/RIGHT joins, when each applies</td><td><a href="#joins">§2</a></td></tr>
+  <tr><td>GROUP BY + HAVING vs WHERE</td><td><a href="#aggregates">§3</a></td></tr>
+  <tr><td>Primary key, foreign key, unique, not null</td><td><a href="#constraints">§5</a></td></tr>
+  <tr><td>Indexes — what they speed up and cost</td><td><a href="#indexes">§6</a></td></tr>
+  <tr><td>ACID, isolation levels, transactions</td><td><a href="#transactions">§7</a></td></tr>
+  <tr><td>PreparedStatement vs Statement — SQL injection</td><td><a href="#jdbc">§9</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Correlated subqueries, EXISTS vs IN</td><td><a href="#subqueries">§4</a></td></tr>
+  <tr><td>Normalization (1NF-3NF), denormalization trade-off</td><td><a href="#normalization">§8</a></td></tr>
+  <tr><td>Connection pooling (HikariCP)</td><td><a href="#pooling">§10</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>SELECT/WHERE/ORDER BY → Joins ⭐ → Aggregates + GROUP BY/HAVING
+  → Subqueries → Keys + Constraints → Indexes ⭐
+  → Transactions + ACID ⭐ → Normalization
+  → JDBC ⭐ (Connection → PreparedStatement → ResultSet) → Connection Pooling
+  → Spring Data JPA (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://www.postgresql.org/docs/current/tutorial.html">PostgreSQL official tutorial</a> — precise semantics, the RDBMS most Spring Boot shops actually run in production</li>
+  <li><a href="https://use-the-index-luke.com/">Use The Index, Luke</a> — the canonical deep-dive on how indexes actually work and why queries are slow</li>
+  <li><a href="https://docs.oracle.com/javase/tutorial/jdbc/">Oracle's JDBC tutorial</a> — the official reference for Connection/Statement/ResultSet</li>
+</ul>
+
+<!-- ==================== 1. BASICS ==================== -->
+<h2 id="basics">1. SQL Basics</h2>
+<pre class="code"><code>SELECT id, name, email
+FROM users
+WHERE created_at > '2026-01-01'
+ORDER BY created_at DESC
+LIMIT 20 OFFSET 40;          -- pagination: page 3, 20 per page
+
+INSERT INTO users (name, email) VALUES ('Ada', 'ada@example.com');
+
+UPDATE users SET email = 'new@example.com' WHERE id = 10;
+
+DELETE FROM users WHERE id = 10;</code></pre>
+<p>Clause evaluation order differs from write order: <code>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT</code>. This is why you can't reference a <code>SELECT</code> alias in the same query's <code>WHERE</code> clause — <code>WHERE</code> runs before <code>SELECT</code>.</p>
+
+<!-- ==================== 2. JOINS ==================== -->
+<h2 id="joins">2. Joins ⭐</h2>
+<table class="ref">
+  <tr><th>Join</th><th>Returns</th></tr>
+  <tr><td>INNER JOIN</td><td>Only rows with a match in both tables</td></tr>
+  <tr><td>LEFT JOIN</td><td>All rows from the left table, matched columns from the right (NULL if no match)</td></tr>
+  <tr><td>RIGHT JOIN</td><td>All rows from the right table, matched columns from the left (NULL if no match) — rarely used, a LEFT JOIN with tables swapped is equivalent and more common in practice</td></tr>
+  <tr><td>FULL OUTER JOIN</td><td>All rows from both sides, NULLs where no match — not supported by MySQL directly</td></tr>
+</table>
+<pre class="code"><code>-- Every order with its customer name — orders with a deleted customer are dropped
+SELECT o.id, c.name
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.id;
+
+-- Every customer, even ones with zero orders (order columns are NULL)
+SELECT c.name, o.id AS order_id
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id;
+
+-- Find customers with NO orders — the classic LEFT JOIN + IS NULL pattern
+SELECT c.name
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+WHERE o.id IS NULL;</code></pre>
+<p><strong>Self join:</strong> join a table to itself to compare rows within it — e.g. finding employees who earn more than their manager, by joining <code>employees e1</code> to <code>employees e2</code> on <code>e1.manager_id = e2.id</code>.</p>
+
+<!-- ==================== 3. AGGREGATES ==================== -->
+<h2 id="aggregates">3. Aggregate Functions &amp; Grouping</h2>
+<table class="ref">
+  <tr><th>Function</th><th>Does</th></tr>
+  <tr><td><code>COUNT(*)</code> / <code>COUNT(col)</code></td><td>Row count / non-null value count</td></tr>
+  <tr><td><code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code></td><td>Numeric aggregation</td></tr>
+</table>
+<pre class="code"><code>-- Orders per customer, only customers with more than 5 orders
+SELECT customer_id, COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(*) > 5
+ORDER BY order_count DESC;</code></pre>
+<p><strong>WHERE vs HAVING:</strong> <code>WHERE</code> filters raw rows before grouping; <code>HAVING</code> filters groups after aggregation. You can't put an aggregate function in <code>WHERE</code> — the aggregate doesn't exist yet at that stage of evaluation.</p>
+
+<!-- ==================== 4. SUBQUERIES ==================== -->
+<h2 id="subqueries">4. Subqueries</h2>
+<pre class="code"><code>-- Scalar subquery — customers who spent more than the average order
+SELECT * FROM orders WHERE total > (SELECT AVG(total) FROM orders);
+
+-- IN — customers who have placed at least one order
+SELECT * FROM customers WHERE id IN (SELECT customer_id FROM orders);
+
+-- Correlated subquery — re-evaluated per outer row, references the outer table
+SELECT c.name FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);</code></pre>
+<p><strong>EXISTS vs IN:</strong> <code>EXISTS</code> stops at the first match (short-circuits) and handles NULLs safely — generally preferred for large subquery result sets. <code>IN</code> materializes the full subquery result first and can behave unexpectedly if that list contains NULL.</p>
+
+<!-- ==================== 5. CONSTRAINTS ==================== -->
+<h2 id="constraints">5. Keys &amp; Constraints</h2>
+<table class="ref">
+  <tr><th>Constraint</th><th>Enforces</th></tr>
+  <tr><td>PRIMARY KEY</td><td>Unique + not null identifier for each row — one per table, often auto-incrementing</td></tr>
+  <tr><td>FOREIGN KEY</td><td>A column must reference an existing row in another table — maintains referential integrity</td></tr>
+  <tr><td>UNIQUE</td><td>No duplicate values in the column, but NULL is allowed (implementation-dependent)</td></tr>
+  <tr><td>NOT NULL</td><td>Column must always have a value</td></tr>
+  <tr><td>CHECK</td><td>Custom boolean condition, e.g. <code>CHECK (price >= 0)</code></td></tr>
+</table>
+<pre class="code"><code>CREATE TABLE orders (
+    id BIGSERIAL PRIMARY KEY,
+    customer_id BIGINT NOT NULL REFERENCES customers(id),
+    total NUMERIC(10,2) CHECK (total >= 0),
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+);</code></pre>
+<p>A foreign key delete behavior matters in interviews: <code>ON DELETE CASCADE</code> (delete children too), <code>ON DELETE RESTRICT</code> (block the delete if children exist — the safe default), <code>ON DELETE SET NULL</code>.</p>
+
+<!-- ==================== 6. INDEXES ==================== -->
+<h2 id="indexes">6. Indexes ⭐</h2>
+<p>An index is a separate data structure (usually a <strong>B-tree</strong>) that lets the database find rows without scanning the whole table — the equivalent of a book's index instead of reading every page.</p>
+<pre class="code"><code>CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+
+-- Composite index — column order matters, leftmost-prefix rule
+CREATE INDEX idx_orders_customer_status ON orders(customer_id, status);
+-- Usable for: WHERE customer_id = ?  AND  WHERE customer_id = ? AND status = ?
+-- NOT usable for: WHERE status = ? alone</code></pre>
+<table class="ref">
+  <tr><th>Benefit</th><th>Cost</th></tr>
+  <tr><td>Fast lookups on WHERE/JOIN/ORDER BY columns — O(log n) vs O(n) full scan</td><td>Slower writes — every INSERT/UPDATE/DELETE must also update the index</td></tr>
+  <tr><td></td><td>Extra disk space — each index is a full copy of the indexed columns plus pointers</td></tr>
+</table>
+<p><strong>Rule of thumb:</strong> index foreign keys and columns frequently used in <code>WHERE</code>/<code>JOIN</code>/<code>ORDER BY</code>; don't index every column, and don't index low-cardinality columns (e.g. a boolean) alone — the database often skips the index and scans anyway.</p>
+
+<!-- ==================== 7. TRANSACTIONS ==================== -->
+<h2 id="transactions">7. Transactions &amp; ACID ⭐</h2>
+<table class="ref">
+  <tr><th>Letter</th><th>Guarantee</th></tr>
+  <tr><td>Atomicity</td><td>All statements in the transaction succeed, or none do (rollback)</td></tr>
+  <tr><td>Consistency</td><td>A transaction moves the DB from one valid state to another — constraints always hold</td></tr>
+  <tr><td>Isolation</td><td>Concurrent transactions don't see each other's uncommitted changes</td></tr>
+  <tr><td>Durability</td><td>Once committed, the change survives a crash</td></tr>
+</table>
+<pre class="code"><code>BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;   -- both succeed together, or ROLLBACK undoes both</code></pre>
+
+<h3>Isolation levels — the trade-off knob</h3>
+<table class="ref">
+  <tr><th>Level</th><th>Prevents</th><th>Allows</th></tr>
+  <tr><td>READ UNCOMMITTED</td><td>Nothing</td><td>Dirty reads (see uncommitted changes)</td></tr>
+  <tr><td>READ COMMITTED (Postgres default)</td><td>Dirty reads</td><td>Non-repeatable reads (same row changes between reads in one tx)</td></tr>
+  <tr><td>REPEATABLE READ (MySQL default)</td><td>Dirty + non-repeatable reads</td><td>Phantom reads (new rows matching a filter appear)</td></tr>
+  <tr><td>SERIALIZABLE</td><td>All of the above</td><td>Nothing — behaves as if transactions ran one at a time; lowest concurrency</td></tr>
+</table>
+<p>This is what Spring's <code>@Transactional(isolation = ...)</code> configures. Higher isolation = safer but more locking/lower throughput.</p>
+
+<!-- ==================== 8. NORMALIZATION ==================== -->
+<h2 id="normalization">8. Normalization</h2>
+<table class="ref">
+  <tr><th>Form</th><th>Rule</th></tr>
+  <tr><td>1NF</td><td>Atomic columns — no repeating groups or arrays crammed into one column</td></tr>
+  <tr><td>2NF</td><td>1NF + every non-key column depends on the <em>whole</em> primary key (matters for composite keys)</td></tr>
+  <tr><td>3NF</td><td>2NF + no non-key column depends on another non-key column (no transitive dependency)</td></tr>
+</table>
+<p>Example violation: storing <code>customer_name</code> directly on the <code>orders</code> table instead of just <code>customer_id</code> — it's transitively dependent on the customer, not the order, and will drift out of sync if the customer renames. Normalize to remove duplication; deliberately <strong>denormalize</strong> (e.g. cache a computed total) only for measured read-performance wins, and know you're trading consistency risk for speed when you do.</p>
+
+<!-- ==================== 9. JDBC ==================== -->
+<h2 id="jdbc">9. JDBC ⭐</h2>
+<p>JDBC is the low-level API Java uses to talk to a relational database. Spring Data JPA/Hibernate use JDBC underneath — understanding this layer explains what's actually happening when a repository method runs.</p>
+<pre class="code"><code>String url = "jdbc:postgresql://localhost:5432/mydb";
+try (Connection conn = DriverManager.getConnection(url, user, password);
+     PreparedStatement stmt = conn.prepareStatement(
+         "SELECT id, name FROM users WHERE email = ?")) {
+
+    stmt.setString(1, "ada@example.com");
+    try (ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+            long id = rs.getLong("id");
+            String name = rs.getString("name");
+        }
+    }
+}</code></pre>
+<table class="ref">
+  <tr><th>Type</th><th>Purpose</th></tr>
+  <tr><td><code>Connection</code></td><td>A live session to the database — expensive to open, hence pooling (§10)</td></tr>
+  <tr><td><code>Statement</code></td><td>Runs a static SQL string — vulnerable to SQL injection if you concatenate user input into it</td></tr>
+  <tr><td><code>PreparedStatement</code></td><td>Precompiled SQL with <code>?</code> placeholders — parameters are sent separately from the query, so user input can never be interpreted as SQL. Also faster for repeated execution.</td></tr>
+  <tr><td><code>ResultSet</code></td><td>A cursor over the query results — read forward with <code>.next()</code>, closed automatically by try-with-resources</td></tr>
+</table>
+<pre class="code"><code>// NEVER do this — string concatenation enables SQL injection
+String sql = "SELECT * FROM users WHERE email = '" + userInput + "'";
+// userInput = "' OR '1'='1" returns every row
+
+// ALWAYS do this — the driver treats the parameter as pure data, never as SQL
+PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE email = ?");
+stmt.setString(1, userInput);</code></pre>
+
+<!-- ==================== 10. POOLING ==================== -->
+<h2 id="pooling">10. Connection Pooling</h2>
+<p>Opening a DB connection (TCP handshake + auth) takes tens of milliseconds — far too slow to do per request. A <strong>connection pool</strong> keeps a set of open connections ready to reuse: borrow one, use it, return it to the pool instead of closing it.</p>
+<pre class="code"><code># application.yml — HikariCP is Spring Boot's default pool
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000   # ms to wait for a free connection before failing</code></pre>
+<p><strong>HikariCP</strong> is the fastest and default pool in Spring Boot. Sizing rule of thumb: pool size should relate to available DB connections and typical query concurrency, not just "bigger is better" — an oversized pool can overwhelm the database with concurrent queries and actually reduce throughput.</p>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Spring Core + Spring Boot + REST</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

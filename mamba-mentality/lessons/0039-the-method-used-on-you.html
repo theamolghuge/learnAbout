@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Method Used On You — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0034-effortless-not-empty.html">Lesson 34</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 2 · Philosophy · Lesson 6 (extension) · ~10 min</div>
+  <h1>The Method Used On You</h1>
+  <p class="subtitle">Every "sit with this" box in this curriculum has been borrowing from one person, unnamed until now.</p>
+
+  <div class="meta">
+    Extends Stage 2, closing a real gap: Socrates never got covered, despite being named explicitly in your original brief — and despite this curriculum quietly using his method in every single lesson.
+  </div>
+
+  <p>Socrates wrote nothing himself. Everything known of him comes through his student Plato's dialogues, in which Socrates rarely states a positive doctrine — he mostly does something else: asks someone to define a concept they're confident they understand (justice, courage, piety), then, through further questions, shows that their own further beliefs contradict the definition they just gave. This is the <strong>elenchus</strong> — not a lecture, a structured unraveling. It doesn't end with Socrates supplying the correct answer. It ends in <strong>aporia</strong> — productive puzzlement, the honest admission that the confident answer didn't hold up.</p>
+
+  <p>In the <em>Apology</em>, his defense speech at his own trial — the one that ended in his execution — Socrates gave his reason for spending his life doing this to people, at genuine cost to himself: <strong>"the unexamined life is not worth living."</strong> Not a slogan. A statement he was, by that point, dying for. He traced the underlying principle to an inscription at the Temple of Delphi: <strong>know thyself.</strong></p>
+
+  <h2>What this curriculum has actually been doing to you</h2>
+
+  <p>Every "sit with this" box across 38 lessons has followed the same structure: not a lecture delivering an answer, but a question designed to expose a gap between what you'd confidently say you believe and what your actual answer, honestly given, reveals. Lesson 22 asked what would happen if you deliberately skipped your practice. Lesson 30 asked which case study's method is <em>least</em> like your own. This lesson's own confront question, below, is built the same way on purpose — it's worth noticing that structure now that it has a name, rather than after 38 more lessons of it happening without comment.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Two different modes this curriculum has run in</span>
+    Worth distinguishing precisely: most of this curriculum's actual content has been Aristotelian in method — positive claims, defined terms, cited research, systematic argument (Plato's student was Aristotle; the two approaches genuinely differ). But its confrontation callouts have been Socratic — not building a positive claim, but destabilizing an assumed one. Both are real philosophical methods, doing different work. Confusing them — mistaking a Socratic question for something with a "correct" answer to look up — is a category error worth avoiding going forward.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">The elenchus, applied to you directly</span>
+    Define, in one sentence, what "excellence" actually means to you — not Lesson 1's definition, your own, right now. Now: does your actual behavior over the past week match that stated definition, or does your behavior reveal a different, unstated definition you're actually operating by? Don't resolve the gap if you find one. Sit in it — that's aporia, and per Socrates, it's the honest starting point, not a failure to reach.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Your one-sentence definition of excellence. Then, honestly, the gap (if any) between that definition and your actual behavior this week. If there's no gap, say what specifically confirms that — not just the absence of a feeling of contradiction.</p>
+    <textarea class="journal-input" id="j39" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j39-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Plato's <em>Apology</em> (Socrates' trial defense) and any of the early "definitional" dialogues (<em>Euthyphro</em>, <em>Meno</em>) for the elenchus in action. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If sitting in aporia — an unresolved gap, no tidy fix offered — feels unsatisfying after 38 lessons that mostly did resolve into something actionable, that's a fair reaction. Say so; it's worth knowing whether this mode of teaching actually works for you or just feels like withholding.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Back to <a href="./0034-effortless-not-empty.html">Stage 2</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0039:j39";
+  var ta = document.getElementById("j39");
+  var status = document.getElementById("j39-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

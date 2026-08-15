@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 14 · Signaling, Cheap Talk &amp; Costly Signals</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0013-asymmetric-information.html">← Lesson 13</a>
+    <span>·</span>
+    <a href="./0015-negotiation.html">Next: Lesson 15 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 14 · ~14 min · Level 7: Signaling &amp; Reputation</div>
+  <h1>Signaling, Cheap Talk &amp; Costly Signals</h1>
+  <p class="subtitle">The precise reason a warranty, a degree, or a GitHub portfolio can carry real information, while a plain claim usually can't.</p>
+  <div class="meta">Recap: Lesson 13 ended with signaling as the fix for adverse selection — a way for a genuinely high-quality party to distinguish themselves from a lower-quality one. This lesson gives you the exact condition that makes a signal actually work, and just as importantly, the test for when it doesn't.</div>
+
+  <h2>The core question to ask of any signal</h2>
+
+  <p>Not "does this look impressive," but: <strong>would it be relatively easier, or relatively harder, for someone who <em>doesn't</em> have the underlying quality to fake this same signal?</strong> That relative-difficulty gap — not the signal's absolute cost — is what determines whether it carries real information.</p>
+
+  <h2>Spence's job market model, worked through</h2>
+
+  <p>Economist Michael Spence's 1973 model (part of the same body of work that later shared the 2001 Nobel Memorial Prize with Akerlof's lemons paper) makes a claim that sounds strange the first time you hear it: a college degree can function as a credible signal of ability to employers <em>even if the coursework itself teaches nothing directly useful for the job</em>.</p>
+
+  <p>Here's why it can still work. Assume higher-ability people find a demanding degree genuinely easier — less effortful, less costly in time and stress — to complete than lower-ability people do (a plausible, not certain, assumption; note it's doing real work here). If that's true, then completing the degree is a <em>relatively cheaper</em> signal for high-ability candidates than for low-ability ones — even though it costs both groups real years and real money in absolute terms. That cost gap is what makes the signal credible: a rational low-ability candidate, facing a genuinely higher personal cost to finish, is more likely to be deterred from even attempting it, which is exactly what lets employers infer something real from "this candidate has the degree."</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The one condition that decides everything</span>
+    A signal is credible only when it's <strong>differentially costly</strong> — cheaper for the true high type to produce than for a low type trying to fake it. If the cost were the same for everyone regardless of true quality, every type would send the same signal, and it would carry zero information (this is called a <strong>pooling equilibrium</strong> — everyone looks the same from the outside). A working signal produces a <strong>separating equilibrium</strong> — different types make different choices, precisely because the cost bites them differently.
+  </div>
+
+  <h2>Cheap talk vs. costly signals</h2>
+
+  <p><strong>Cheap talk</strong> is communication that costs the same (roughly nothing) regardless of whether it's true — "I'm a great candidate," "this product is excellent," "trust me." Because a low type can say exactly the same words at exactly the same (zero) cost as a high type, cheap talk alone carries no differential cost, and therefore — on its own — no credible information. A <strong>costly signal</strong> only becomes a <strong>credible signal</strong> when the differential-cost condition above actually holds — cost alone isn't sufficient; it has to be relatively cheaper for the genuine high type specifically.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">An important exception, so you don't overcorrect</span>
+    Cheap talk isn't <em>always</em> worthless — when the sender's and receiver's interests are already well-aligned, even costless communication can be genuinely informative. A close friend's restaurant recommendation carries real weight despite costing them nothing to give, because they have no incentive to mislead you. The distrust of cheap talk specifically applies when interests might diverge — a stranger's unverified claim, a salesperson's pitch, a resume bullet point nobody's checking.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What actually makes a costly signal credible, precisely?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">It costs a large amount of money in absolute terms</button>
+      <button class="quiz-choice" data-correct="true">It's relatively cheaper for the true high type to produce than for a low type faking it</button>
+      <button class="quiz-choice">It's stated confidently and repeated often</button>
+      <button class="quiz-choice">It's verified by a third party, regardless of cost</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. When can cheap talk actually be trusted, despite costing nothing?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Never — cheap talk is always worthless</button>
+      <button class="quiz-choice">Only when it's repeated by many different sources</button>
+      <button class="quiz-choice" data-correct="true">When the sender's and receiver's interests are already well-aligned</button>
+      <button class="quiz-choice">Only in cooperative, not non-cooperative, games</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it outside a classroom</h2>
+
+  <ul>
+    <li><strong>Warranties.</strong> A company offering a long, generous warranty is making a costly signal — genuine, because a company with a truly reliable product pays out on very few claims (cheap for them), while a company with an unreliable product would be bankrupted by the same offer (expensive for them). The warranty length itself carries real information, precisely because it's differentially costly.</li>
+    <li><strong>GitHub contributions and open-source portfolios in tech hiring.</strong> A large, sustained, genuinely-used-by-others body of public code is expensive to fake convincingly — copying a repo is easy, but sustaining real commit history, real issue engagement, and real external usage over time is not. This is a real, differentially-costly signal, though worth applying the skeptical test below to it too.</li>
+    <li><strong>A founder publicly quitting a stable job</strong> to work on a startup full-time — the same move Lesson 7 analyzed as a credible <em>commitment</em> is also, from an investor's point of view, a credible <em>signal</em> of genuine belief in the venture. Commitment devices and signals often overlap: both work through the same underlying mechanism — a costly, hard-to-reverse action that a less-committed person would be less willing to take.</li>
+    <li><strong>Diamond engagement rings, treated critically.</strong> Often cited as a costly signal of romantic commitment — but worth actually applying the test rather than accepting the example uncritically: is spending on a ring genuinely differentially cheaper for a more-committed partner than a less-committed one, or is it simply a culturally manufactured norm (well-documented 20th-century marketing history) that everyone follows regardless of true commitment level, making it closer to a costly-but-uninformative convention than a real signal? Worth sitting with as practice for not taking a "costly, therefore meaningful" claim at face value.</li>
+  </ul>
+
+  <h2>The skeptic's follow-up question</h2>
+
+  <p>Any signal, however credible today, is only as good as how hard it stays to fake. If a signal becomes cheap to fake at scale — a diploma mill, a purchased-and-abandoned open-source repo, a bought batch of fake reviews — it stops separating high types from low types and collapses back toward cheap talk, even if it once worked. This is why credible signals in practice tend to need ongoing verification or reputation infrastructure behind them (a university's accreditation, a platform's fraud detection) — the signal alone rarely stays credible forever without something maintaining the cost gap.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Michael Spence, "Job Market Signaling" (1973) is the primary academic source. Ben Polak's Yale course covers signaling games directly, including the formal separating/pooling equilibrium machinery this lesson deliberately kept informal.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      Two candidates apply for a technical role. Candidate A's cover letter says "I'm an excellent programmer with strong problem-solving skills." Candidate B includes a link to a well-documented open-source project they've maintained for two years, with real external contributors and issue history.
+      <br><br>
+      Apply the differential-cost test to each. Which is a credible signal, which is cheap talk, and why specifically? Then apply the skeptic's follow-up question from above: how could Candidate B's signal be partially faked or gamed, and does that possibility mean it should be ignored — or just weighted and verified rather than taken completely at face value?
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Candidate A:</strong> pure cheap talk — any candidate, regardless of true skill, can write the identical sentence at zero cost. It fails the differential-cost test completely; a weak programmer loses nothing by claiming the same thing.<br><br>
+      <strong>Candidate B:</strong> a genuine costly signal, and a credible one — sustaining a real project with external contributors over two years is dramatically harder to fake convincingly than to actually do if you have the underlying skill; the cost is real and differential (a low-skill candidate would find it far more costly to produce a convincing two-year history than a genuinely skilled one would).<br><br>
+      <strong>The skeptic's check:</strong> the signal could be partially gamed — inflated contribution counts, a project mostly built by someone else and lightly touched, external contributors who are personal friends rather than genuine independent users. This doesn't make the signal worthless; it means treating it as strong evidence to verify (read the actual code, check contributor independence, ask about specific design decisions in an interview) rather than as proof requiring no further check — exactly the "ongoing verification" point from just above.
+      <br><br>
+      If your answer treated Candidate B's portfolio as unimpeachable proof rather than strong-but-verifiable evidence, that's worth reconsidering — the whole point of the skeptic's question is that even a genuinely credible signal today can be undermined by a determined-enough low type tomorrow, which is exactly why real hiring pipelines still interview even strong-portfolio candidates rather than skipping straight to an offer.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what you concluded about verifying Candidate B's signal. If you landed on "trust it completely" or "ignore it entirely," both miss the calibrated middle this lesson is aiming for — strong evidence, still worth checking.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Apply the differential-cost test to any claimed signal — a warranty, a credential, a portfolio, a public commitment — to judge whether it's genuinely credible or just expensive-sounding cheap talk, and stay appropriately skeptical of even a real signal's long-term fakeability.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0013-asymmetric-information.html">← Lesson 13</a>
+    <a href="./0015-negotiation.html">Lesson 15: Negotiation — BATNA, ZOPA &amp; the ₹25 LPA Offer →</a>
+  </p>
+
+</div>
+</body>
+</html>

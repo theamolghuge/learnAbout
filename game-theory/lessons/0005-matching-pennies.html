@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 5 · Matching Pennies, Mixed Strategies &amp; Expected Value</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0004-battle-of-the-sexes.html">← Lesson 4</a>
+    <span>·</span>
+    <a href="./0006-stag-hunt.html">Next: Lesson 6 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 5 · ~16 min · Level 2-3: Strategic Games</div>
+  <h1>Matching Pennies, Mixed Strategies &amp; Expected Value</h1>
+  <p class="subtitle">A game with no stable answer at all — until you allow players to randomize on purpose.</p>
+  <div class="meta">Recap: Lesson 3 had one pure equilibrium (via dominant strategies). Lesson 4 had two. This lesson has <strong>zero</strong> — in pure strategies, at least — which forces a genuinely new idea: sometimes the smartest thing a rational player can do is be unpredictable, on purpose, in a precise and calculable way.</div>
+
+  <h2>The game</h2>
+
+  <p>Two players each secretly place a coin showing Heads or Tails, then reveal simultaneously. If the coins <strong>match</strong> (both Heads or both Tails), Player 1 ("Even") keeps both coins. If they <strong>don't match</strong>, Player 2 ("Odd") keeps both. Purely zero-sum — Odd's gain is always exactly Even's loss.</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <caption>Even's payoff (amber) first, Odd's (blue) second. In coins, so +1/−1.</caption>
+      <tr>
+        <th></th>
+        <th>Odd: Heads</th>
+        <th>Odd: Tails</th>
+      </tr>
+      <tr>
+        <th>Even: Heads</th>
+        <td class="cell"><span class="payoff-a">+1</span>, <span class="payoff-b">−1</span></td>
+        <td class="cell"><span class="payoff-a">−1</span>, <span class="payoff-b">+1</span></td>
+      </tr>
+      <tr>
+        <th>Even: Tails</th>
+        <td class="cell"><span class="payoff-a">−1</span>, <span class="payoff-b">+1</span></td>
+        <td class="cell"><span class="payoff-a">+1</span>, <span class="payoff-b">−1</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Why no pure strategy is ever stable</h2>
+
+  <p>Try to find a Nash equilibrium the way Lessons 3 and 4 did — pick a cell, check if either player wants to switch. Take (Heads, Heads): Even is winning (+1), so Even's happy — but Odd is losing, and Odd can flip to Tails and win instead. So Odd moves. Now you're at (Heads, Tails) — but now <em>Even</em> is losing, and Even can flip to Tails to win. That sends you to (Tails, Tails) — and now Odd wants to move again. <strong>Every single cell has someone who wants to unilaterally switch.</strong> There is no pure-strategy Nash equilibrium in this game at all — the first time in this course that's happened.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The deeper reason, not just the mechanical one</span>
+    Any <em>predictable</em> pure strategy is exploitable here. If Even always plays Heads, Odd learns that and always plays Tails to win every round. The instant your strategy is knowable in advance, in a purely zero-sum, match/mismatch game, the other player can exploit it perfectly. The fix isn't a smarter fixed choice — there isn't one — it's to stop being predictable at all.</span>
+  </div>
+
+  <h2>Expected value, in plain English first</h2>
+
+  <p>Before the fix makes sense, you need one piece of math: <strong>expected value</strong> is just the average outcome you'd get if a random event happened many times, weighted by how likely each result is. If a bet pays +₹10 with 50% chance and −₹6 with 50% chance, the expected value is <code>0.5 × 10 + 0.5 × (−6) = 5 − 3 = 2</code> — meaning if you took this exact bet over and over, you'd average +₹2 per round, even though any single round is either +10 or −6, never +2.</p>
+
+  <p>Why you need it here: once a player randomizes, "their payoff" isn't one number anymore — it's a range of possible outcomes depending on how the coin lands. Expected value is how you compare two randomized strategies on equal footing.</p>
+
+  <h2>The mixed-strategy equilibrium</h2>
+
+  <p>A <strong>mixed strategy</strong> is a plan to randomize over your available actions with specific probabilities, rather than committing to one action for certain. Here's the key insight for finding the right probability: <strong>you should randomize in exactly the way that makes your opponent indifferent between their own options</strong> — if they'd still prefer one action over the other even against your randomization, you're still exploitable, just less obviously.</p>
+
+  <p>Let Even play Heads with probability <var>p</var> (and Tails with probability 1−<var>p</var>). Work out Odd's expected payoff from each of Odd's own pure choices, against that mix:</p>
+
+  <ul>
+    <li>Odd plays Heads: gets −1 when Even plays Heads (prob <var>p</var>), +1 when Even plays Tails (prob 1−<var>p</var>). Expected value: <code>−1(p) + 1(1−p) = 1 − 2p</code></li>
+    <li>Odd plays Tails: gets +1 when Even plays Heads (prob <var>p</var>), −1 when Even plays Tails (prob 1−<var>p</var>). Expected value: <code>1(p) − 1(1−p) = 2p − 1</code></li>
+  </ul>
+
+  <p>For Even's mix to leave Odd with no exploitable preference, these must be equal: <code>1 − 2p = 2p − 1</code> → <code>2 = 4p</code> → <code>p = 0.5</code>. Even should play Heads exactly half the time. By the matrix's symmetry, the same logic makes Odd's equilibrium mix 50/50 too. <strong>Real-life interpretation:</strong> in a game this perfectly symmetric, "flip a fair coin" isn't a cop-out — it's the mathematically optimal, unexploitable strategy, and it's the <em>only</em> stable one.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The general recipe, once you see it</span>
+    You don't always land on 50/50 — that's specific to this symmetric game. The method generalizes: to find your own equilibrium mixing probability, set your <em>opponent's</em> two expected payoffs equal to each other and solve. It feels backwards the first time (why am I solving for their indifference to find my own move?) — but it's correct: your randomization exists specifically to deny them an exploitable pattern, so it's calibrated to their payoffs, not yours.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Why does Matching Pennies have no pure-strategy Nash equilibrium?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because the game isn't actually zero-sum</button>
+      <button class="quiz-choice" data-correct="true">Every cell leaves one player wanting to unilaterally switch</button>
+      <button class="quiz-choice">Because the players move sequentially, not simultaneously</button>
+      <button class="quiz-choice">Because coins only have two sides</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What is a mixed strategy, precisely?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Alternating actions in a fixed pattern each round</button>
+      <button class="quiz-choice">Choosing whichever action worked last time</button>
+      <button class="quiz-choice" data-correct="true">A plan to randomize over your actions with specific probabilities</button>
+      <button class="quiz-choice">Combining two different games into one</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. To find your own equilibrium mixing probability, you set equal...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Your own two expected payoffs</button>
+      <button class="quiz-choice" data-correct="true">Your opponent's two expected payoffs</button>
+      <button class="quiz-choice">The total payoffs of both players</button>
+      <button class="quiz-choice">The probabilities of each action occurring</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it outside a coin game</h2>
+
+  <ul>
+    <li><strong>Penalty kicks in football.</strong> The kicker picks a side, the goalkeeper dives a side, simultaneously. If either side is predictable, the other exploits it perfectly — economists who studied professional penalty kicks (Ignacio Palacios-Huerta's work is the well-known version) found real players' left/right splits land remarkably close to the game-theoretic mixed-strategy prediction, not 50/50 exactly (their payoffs aren't perfectly symmetric — some players are stronger kicking one side), but close to what the math predicts <em>for their actual payoff structure</em>.</li>
+    <li><strong>Audits and spot-checks.</strong> A manager deciding whether to review an employee's work, and an employee deciding whether to cut corners, form the same shape: if the manager always checks on Fridays, the employee learns to be careful only on Fridays. The unexploitable move is a genuinely randomized inspection schedule, calibrated (per the recipe above) to make cutting corners not worth the expected risk.</li>
+    <li><strong>Pricing and promotions.</strong> A retailer deciding when to run surprise discounts, against shoppers deciding when to buy, has the same tension — fully predictable sale dates get gamed by shoppers who just wait for them.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    William Spaniel's <a href="https://gametheory101.com/">Game Theory 101</a> has a dedicated mixed-strategy Nash equilibrium walkthrough using this exact game, if you want to see the algebra done a second way. Ben Polak's Yale course covers the penalty-kick evidence directly.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A manager can spot-check an employee's report (costs the manager 1 hour) or not check. The employee can submit carefully (safe, no bonus either way) or cut corners to save time. Payoffs: if the manager checks and the employee cut corners, the employee is caught (employee: −4, manager: +2, since the problem gets fixed before it ships). If the manager checks and the employee was careful, the manager wasted an hour for nothing (employee: 0, manager: −1). If the manager doesn't check and the employee cut corners, the employee saves time and gets away with it (employee: +3, manager: −3, since a bad report ships). If the manager doesn't check and the employee was careful, both are fine (employee: 0, manager: +1).
+      <br><br>
+      Build the matrix. Confirm there's no pure-strategy Nash equilibrium (check all four cells the way this lesson did for the coin game). Then set up the equation to find the manager's equilibrium checking probability — remember: you solve for the manager's mix by setting the <em>employee's</em> two expected payoffs equal.
+    </div>
+    <textarea placeholder="Build your matrix and work the algebra here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>No pure equilibrium:</strong> Same instability check as the coin game — if the manager never checks, the employee's best move is always cut corners (+3 beats 0); but if the employee always cuts corners, the manager's best move is always check (+2 beats −3); but if the manager always checks, the employee's best move is always be careful (0 beats −4); but if the employee is always careful, the manager's best move is never check (+1 beats −1) — which brings you back to the start. Every cell has someone wanting to switch, exactly like the coin game.<br><br>
+      <strong>Setting up the manager's mix:</strong> Let the manager check with probability <var>p</var>. The employee's expected payoff from cutting corners: <code>p(−4) + (1−p)(3) = 3 − 7p</code>. The employee's expected payoff from being careful: <code>p(0) + (1−p)(0) = 0</code>. Setting them equal: <code>3 − 7p = 0</code> → <var>p</var> = 3/7 ≈ 43%. The manager should check a little under half the time — not because "check often" or "check rarely" is inherently right, but because that's the exact rate that leaves the employee with no incentive to cut corners at all.<br><br>
+      If you noticed the answer isn't 50% and wondered why — that's the right instinct. 50/50 was specific to Matching Pennies' perfectly symmetric payoffs. Here the payoffs are lopsided (getting away with cutting corners is worth more to the employee than the manager's cost of a wasted check), and the equilibrium probability shifts accordingly. That asymmetry-sensitivity is exactly why the "set the opponent's payoffs equal and solve" recipe matters more than memorizing 50/50.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what probability you calculated and whether the algebra felt mechanical-but-clear or genuinely confusing. This is the first real equation-solving in the course — if it didn't click, that's exactly the kind of signal that should slow down Lesson 6 rather than plow past it.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Recognize when a situation has no stable predictable answer (check all four cells for someone wanting to switch), understand why deliberate randomization is the rational fix rather than a shrug, and calculate an equilibrium mixing probability by setting your opponent's two expected payoffs equal and solving for yours.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0004-battle-of-the-sexes.html">← Lesson 4</a>
+    <a href="./0006-stag-hunt.html">Lesson 6: Stag Hunt, Trust &amp; Risk-Dominant Equilibria →</a>
+  </p>
+
+</div>
+</body>
+</html>

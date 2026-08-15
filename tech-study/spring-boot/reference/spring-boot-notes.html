@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring Core + Spring Boot + REST Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Spring Core + Spring Boot + REST Notes</h1>
+<p class="subtitle">Topic 3 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes <a href="../../java/reference/java-notes.html">Java</a> and <a href="../../sql-jdbc/reference/sql-jdbc-notes.html">SQL &amp; JDBC</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#ioc">1. IoC &amp; DI ⭐</a> · <a href="#beans">2. Beans, Scanning &amp; Configuration</a> ·
+  <a href="#lifecycle">3. Bean Lifecycle &amp; Scopes</a> · <a href="#boot-basics">4. Spring Boot Basics</a> ·
+  <a href="#config">5. Configuration &amp; Profiles</a> · <a href="#actuator">6. Actuator</a> ·
+  <a href="#http">7. HTTP Fundamentals</a> · <a href="#rest">8. Building REST APIs ⭐</a> ·
+  <a href="#request-flow">9. Request Lifecycle</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>IoC, DI, why constructor injection wins</td><td><a href="#ioc">§1</a></td></tr>
+  <tr><td>@Component/@Service/@Repository/@Controller, stereotype meaning</td><td><a href="#beans">§2</a></td></tr>
+  <tr><td>Bean scopes: singleton vs prototype</td><td><a href="#lifecycle">§3</a></td></tr>
+  <tr><td>Auto-configuration, starters, embedded server</td><td><a href="#boot-basics">§4</a></td></tr>
+  <tr><td>REST annotations: @RestController, @*Mapping, @PathVariable/@RequestParam/@RequestBody</td><td><a href="#rest">§8</a></td></tr>
+  <tr><td>HTTP methods &amp; status codes, idempotency</td><td><a href="#http">§7</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Profiles, externalized config, @ConfigurationProperties</td><td><a href="#config">§5</a></td></tr>
+  <tr><td>Actuator health/metrics endpoints</td><td><a href="#actuator">§6</a></td></tr>
+  <tr><td>Full DispatcherServlet request flow</td><td><a href="#request-flow">§9</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>IoC + DI ⭐ → Stereotypes + Component scanning → Bean lifecycle + scopes
+  → What Spring Boot adds (auto-config, starters, embedded server)
+  → application.yml + Profiles → Actuator
+  → HTTP fundamentals → REST annotations ⭐ → Request lifecycle
+  → Spring Data JPA + Validation + Exceptions (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://docs.spring.io/spring-framework/reference/core/beans.html">Spring Framework reference — IoC container</a> — the authoritative explanation of beans, DI, and scopes</li>
+  <li><a href="https://docs.spring.io/spring-boot/reference/">Spring Boot reference docs</a> — auto-configuration, starters, Actuator, all straight from the source</li>
+  <li><a href="https://www.baeldung.com/spring-boot">Baeldung — Spring Boot</a> — concrete worked examples for everything below</li>
+</ul>
+
+<!-- ==================== 1. IOC & DI ==================== -->
+<h2 id="ioc">1. IoC &amp; Dependency Injection ⭐</h2>
+<p><strong>Inversion of Control:</strong> instead of your code creating and wiring its own dependencies (<code>new UserService(new UserRepository())</code>), you hand that responsibility to a container. The container ("Spring context") creates objects and wires them together based on configuration/annotations — control over object creation is inverted from your code to the framework.</p>
+<p><strong>Dependency Injection</strong> is the mechanism IoC uses: the container "injects" a class's dependencies into it, rather than the class constructing them itself.</p>
+
+<h3>Constructor vs field vs setter injection</h3>
+<pre class="code"><code>// Constructor injection — preferred
+@Service
+public class OrderService {
+    private final OrderRepository repository;   // can be final — immutable
+    private final PaymentClient paymentClient;
+
+    public OrderService(OrderRepository repository, PaymentClient paymentClient) {
+        this.repository = repository;
+        this.paymentClient = paymentClient;
+    }
+}
+
+// Field injection — avoid in real code
+@Service
+public class OrderService {
+    @Autowired
+    private OrderRepository repository;   // can't be final, hides dependencies, hard to test
+}</code></pre>
+<p><strong>Why constructor injection wins:</strong> dependencies are explicit in the signature (easy to see what a class needs), fields can be <code>final</code> (immutable, fail-fast if a dependency is missing), and it's trivial to unit test — just call <code>new OrderService(mockRepo, mockClient)</code> with no Spring context needed. With a single constructor, <code>@Autowired</code> is even optional — Spring infers it.</p>
+
+<!-- ==================== 2. BEANS ==================== -->
+<h2 id="beans">2. Beans, Component Scanning &amp; Configuration</h2>
+<p>A <strong>bean</strong> is any object managed by the Spring container — created, configured, and wired by Spring instead of by your own code.</p>
+<table class="ref">
+  <tr><th>Annotation</th><th>Marks</th></tr>
+  <tr><td><code>@Component</code></td><td>Generic Spring-managed bean</td></tr>
+  <tr><td><code>@Service</code></td><td>Business logic layer — semantically a @Component, signals intent</td></tr>
+  <tr><td><code>@Repository</code></td><td>Data access layer — a @Component that also translates DB exceptions into Spring's unchecked <code>DataAccessException</code> hierarchy</td></tr>
+  <tr><td><code>@Controller</code> / <code>@RestController</code></td><td>Web layer — handles HTTP requests. @RestController = @Controller + @ResponseBody on every method</td></tr>
+</table>
+<p><strong>Component scanning:</strong> Spring Boot's <code>@SpringBootApplication</code> includes <code>@ComponentScan</code>, which walks the package it's in (and sub-packages) looking for these stereotype annotations and registers each as a bean automatically.</p>
+<pre class="code"><code>@Configuration
+public class AppConfig {
+    @Bean
+    public RestTemplate restTemplate() {          // manual bean definition —
+        return new RestTemplate();                 // for 3rd-party classes you can't annotate
+    }
+}</code></pre>
+
+<!-- ==================== 3. LIFECYCLE ==================== -->
+<h2 id="lifecycle">3. Bean Lifecycle &amp; Scopes</h2>
+<h3>Lifecycle (high level)</h3>
+<pre class="code"><code>Instantiate → Populate properties (DI) → @PostConstruct / InitializingBean
+  → bean ready for use →  (container shutdown) → @PreDestroy / DisposableBean</code></pre>
+<pre class="code"><code>@Service
+public class CacheWarmer {
+    @PostConstruct
+    void warmUp() { /* runs once, right after DI is complete */ }
+
+    @PreDestroy
+    void cleanup() { /* runs on graceful shutdown */ }
+}</code></pre>
+
+<h3>Bean scopes</h3>
+<table class="ref">
+  <tr><th>Scope</th><th>Meaning</th></tr>
+  <tr><td><code>singleton</code> (default)</td><td>One shared instance per Spring container — this is why beans should generally be stateless</td></tr>
+  <tr><td><code>prototype</code></td><td>A new instance every time the bean is requested/injected</td></tr>
+  <tr><td><code>request</code></td><td>One instance per HTTP request (web apps only)</td></tr>
+  <tr><td><code>session</code></td><td>One instance per HTTP session (web apps only)</td></tr>
+</table>
+<p><strong>Interview trap:</strong> since the default is singleton, never store per-request mutable state in a plain instance field of a <code>@Service</code>/<code>@Controller</code> — every request shares that same object, so it's a concurrency bug waiting to happen. Pass state through method parameters instead.</p>
+
+<!-- ==================== 4. BOOT BASICS ==================== -->
+<h2 id="boot-basics">4. Spring Boot Basics</h2>
+<p>Spring Boot is <strong>opinionated Spring</strong> — it doesn't replace the Spring Framework, it removes the boilerplate of configuring it. Three big pieces:</p>
+<table class="ref">
+  <tr><th>Feature</th><th>What it does</th></tr>
+  <tr><td>Starters</td><td>Curated dependency bundles — <code>spring-boot-starter-web</code> pulls in Spring MVC, Jackson, and an embedded Tomcat with compatible versions, so you don't hand-pick each jar</td></tr>
+  <tr><td>Auto-configuration</td><td>Inspects what's on the classpath and configures beans accordingly — e.g. seeing a <code>DataSource</code> + JPA on the classpath auto-configures an <code>EntityManagerFactory</code>. Backed off automatically if you define your own bean of that type.</td></tr>
+  <tr><td>Embedded server</td><td>Tomcat (default), Jetty, or Undertow is bundled inside the fat jar — <code>java -jar app.jar</code> starts a running web server, no external app server / WAR deployment needed</td></tr>
+</table>
+<pre class="code"><code>@SpringBootApplication   // = @Configuration + @EnableAutoConfiguration + @ComponentScan
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</code></pre>
+<p><code>pom.xml</code> (Maven) declares dependencies via starters and uses the <code>spring-boot-maven-plugin</code> to produce an executable "fat jar" containing all dependencies.</p>
+
+<!-- ==================== 5. CONFIG ==================== -->
+<h2 id="config">5. Configuration &amp; Profiles</h2>
+<pre class="code"><code># application.yml
+spring:
+  application:
+    name: order-service
+server:
+  port: 8080
+app:
+  payment-timeout-ms: 3000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+server:
+  port: 80</code></pre>
+<pre class="code"><code>@Component
+@ConfigurationProperties(prefix = "app")
+public class AppProperties {
+    private int paymentTimeoutMs;   // bound from app.payment-timeout-ms
+    // getters/setters
+}
+
+@Value("${app.payment-timeout-ms}")   // simpler, single-value alternative
+private int timeout;</code></pre>
+<p><strong>Profiles</strong> (<code>dev</code>, <code>test</code>, <code>prod</code>) let you swap configuration per environment — activate with <code>-Dspring.profiles.active=prod</code> or the <code>SPRING_PROFILES_ACTIVE</code> env var. Properties resolve with a defined precedence: command-line args &gt; env vars &gt; profile-specific YAML &gt; base <code>application.yml</code>, so ops can override any setting without touching the jar.</p>
+
+<!-- ==================== 6. ACTUATOR ==================== -->
+<h2 id="actuator">6. Spring Boot Actuator</h2>
+<p>Actuator exposes production-ready operational endpoints out of the box — add <code>spring-boot-starter-actuator</code> and get:</p>
+<table class="ref">
+  <tr><th>Endpoint</th><th>Shows</th></tr>
+  <tr><td><code>/actuator/health</code></td><td>UP/DOWN status, including downstream checks (DB, disk space) — what load balancers/Kubernetes probe</td></tr>
+  <tr><td><code>/actuator/metrics</code></td><td>JVM memory, GC pauses, HTTP request timings, custom app metrics</td></tr>
+  <tr><td><code>/actuator/info</code></td><td>Build/version metadata you configure</td></tr>
+  <tr><td><code>/actuator/env</code></td><td>Resolved configuration properties (sensitive — lock this down in prod)</td></tr>
+</table>
+<p>Only <code>health</code> and <code>info</code> are exposed over HTTP by default; the rest must be explicitly enabled and are typically restricted to an internal network in production.</p>
+
+<!-- ==================== 7. HTTP ==================== -->
+<h2 id="http">7. HTTP Fundamentals</h2>
+<table class="ref">
+  <tr><th>Method</th><th>Purpose</th><th>Idempotent?</th><th>Safe (no side effects)?</th></tr>
+  <tr><td>GET</td><td>Read</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>POST</td><td>Create / non-idempotent action</td><td>No</td><td>No</td></tr>
+  <tr><td>PUT</td><td>Full replace (create-or-replace)</td><td>Yes</td><td>No</td></tr>
+  <tr><td>PATCH</td><td>Partial update</td><td>No (by spec, though often implemented idempotently)</td><td>No</td></tr>
+  <tr><td>DELETE</td><td>Remove</td><td>Yes</td><td>No</td></tr>
+</table>
+<p><strong>Idempotent</strong> means calling it once vs. many times with the same input leaves the system in the same state — important for safe retries over an unreliable network.</p>
+<table class="ref">
+  <tr><th>Status</th><th>Meaning</th></tr>
+  <tr><td>200 OK</td><td>Success, response body present</td></tr>
+  <tr><td>201 Created</td><td>Resource created — pair with a <code>Location</code> header</td></tr>
+  <tr><td>204 No Content</td><td>Success, no body (common for DELETE)</td></tr>
+  <tr><td>400 Bad Request</td><td>Malformed/invalid client input</td></tr>
+  <tr><td>401 Unauthorized</td><td>Not authenticated</td></tr>
+  <tr><td>403 Forbidden</td><td>Authenticated but not permitted</td></tr>
+  <tr><td>404 Not Found</td><td>Resource doesn't exist</td></tr>
+  <tr><td>409 Conflict</td><td>Request conflicts with current state (e.g. duplicate unique field)</td></tr>
+  <tr><td>422 Unprocessable Entity</td><td>Well-formed but semantically invalid (failed validation)</td></tr>
+  <tr><td>500 Internal Server Error</td><td>Unhandled server-side failure</td></tr>
+</table>
+
+<!-- ==================== 8. REST ==================== -->
+<h2 id="rest">8. Building REST APIs ⭐</h2>
+<pre class="code"><code>@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping                          // GET /users
+    public List<UserDto> getAll() {
+        return userService.findAll();
+    }
+
+    @GetMapping("/{id}")                 // GET /users/10
+    public UserDto getOne(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
+    @GetMapping(params = "role")         // GET /users?role=admin
+    public List<UserDto> getByRole(@RequestParam String role) {
+        return userService.findByRole(role);
+    }
+
+    @PostMapping                         // POST /users
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto create(@RequestBody @Valid CreateUserRequest request) {
+        return userService.create(request);
+    }
+
+    @PutMapping("/{id}")                 // PUT /users/10
+    public UserDto update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request) {
+        return userService.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")              // DELETE /users/10
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
+    }
+}</code></pre>
+<table class="ref">
+  <tr><th>Annotation</th><th>Binds</th></tr>
+  <tr><td><code>@PathVariable</code></td><td>A segment of the URL path, e.g. the <code>10</code> in <code>/users/10</code></td></tr>
+  <tr><td><code>@RequestParam</code></td><td>A query string parameter, e.g. <code>?role=admin</code> — supports defaults/optional</td></tr>
+  <tr><td><code>@RequestBody</code></td><td>Deserializes the JSON request body into a Java object via Jackson</td></tr>
+  <tr><td><code>@ResponseStatus</code></td><td>Overrides the default 200 status code for a handler</td></tr>
+</table>
+<p>Jackson (bundled by <code>spring-boot-starter-web</code>) handles JSON ⇄ Java conversion automatically for <code>@RequestBody</code>/return values — this is why a plain POJO returned from a <code>@RestController</code> method just becomes a JSON response with no manual serialization code.</p>
+
+<!-- ==================== 9. REQUEST LIFECYCLE ==================== -->
+<h2 id="request-flow">9. Request Lifecycle — What Actually Happens</h2>
+<pre class="code"><code>HTTP request
+  → Embedded Tomcat accepts the connection, hands it to the servlet container
+  → DispatcherServlet (Spring MVC's front controller) receives it
+  → HandlerMapping finds the matching @RequestMapping method
+  → Filters/Interceptors run (auth, logging, CORS)
+  → Method invoked — @RequestBody deserialized, @Valid runs validation
+  → Controller calls Service → Repository → database
+  → Return value serialized to JSON (Jackson) via HttpMessageConverter
+  → Response sent back through the same filter chain</code></pre>
+<p>Every incoming request is handled on its own thread from Tomcat's pool (default max 200) — this is why <strong>singleton beans should be stateless</strong>: many request threads call the same controller/service instance concurrently.</p>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Spring Data JPA + Validation + Exception Handling</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

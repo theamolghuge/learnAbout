@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker + CI/CD + Cloud Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Docker + CI/CD + Cloud Notes</h1>
+<p class="subtitle">Topic 8 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. How your Spring Boot jar actually gets to production.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#docker-concepts">1. Docker Concepts</a> · <a href="#dockerfile">2. Dockerfile for Spring Boot ⭐</a> ·
+  <a href="#compose">3. Docker Compose</a> · <a href="#cicd">4. CI/CD Pipeline ⭐</a> ·
+  <a href="#aws">5. AWS Basics</a> · <a href="#deployment">6. Deployment Models</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Image vs container, layers</td><td><a href="#docker-concepts">§1</a></td></tr>
+  <tr><td>Multi-stage Dockerfile for a Spring Boot jar</td><td><a href="#dockerfile">§2</a></td></tr>
+  <tr><td>What a CI/CD pipeline actually does, stage by stage</td><td><a href="#cicd">§4</a></td></tr>
+  <tr><td>EC2, S3, RDS, IAM — what each is for</td><td><a href="#aws">§5</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Docker Compose for local multi-container dev</td><td><a href="#compose">§3</a></td></tr>
+  <tr><td>Load balancer, VPC, CloudWatch basics</td><td><a href="#aws">§5</a></td></tr>
+  <tr><td>Blue-green vs rolling deployment</td><td><a href="#deployment">§6</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Image vs container → Dockerfile ⭐ (multi-stage build for Spring Boot)
+  → Docker Compose (app + Postgres locally)
+  → CI/CD pipeline stages ⭐ → GitHub Actions/Jenkins concepts
+  → AWS basics (EC2/S3/RDS/IAM/CloudWatch/VPC/LB)
+  → Deployment models (rolling, blue-green)
+  → Microservices + Kafka (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://docs.docker.com/get-started/">Docker official "Get Started" guide</a> and <a href="https://docs.docker.com/build/building/multi-stage/">multi-stage builds docs</a></li>
+  <li><a href="https://docs.github.com/en/actions">GitHub Actions documentation</a> — the most common CI/CD tool in modern Spring Boot shops</li>
+  <li><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html">AWS Overview whitepaper</a> — a concise, official map of what each core service does</li>
+</ul>
+
+<!-- ==================== 1. DOCKER CONCEPTS ==================== -->
+<h2 id="docker-concepts">1. Docker Concepts</h2>
+<table class="ref">
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td>Image</td><td>An immutable, read-only template — filesystem + metadata describing how to run an app. Built once, run many times.</td></tr>
+  <tr><td>Container</td><td>A running instance of an image — an isolated process with its own filesystem view, network, but sharing the host's kernel (unlike a VM, which virtualizes the whole OS)</td></tr>
+  <tr><td>Layer</td><td>Each Dockerfile instruction creates a cached, reusable layer — unchanged layers are reused on rebuild, which is why instruction ORDER in a Dockerfile matters for build speed</td></tr>
+  <tr><td>Registry</td><td>Where images are stored/versioned (Docker Hub, ECR, GitHub Container Registry) — `docker push`/`docker pull`</td></tr>
+</table>
+<p><strong>Container vs VM:</strong> a VM virtualizes hardware and runs a full guest OS per instance (heavy, slow to start, GBs). A container shares the host OS kernel and only isolates the process/filesystem view (lightweight, starts in ~milliseconds, MBs) — this is why you can run dozens of containers on a host that could maybe run a handful of VMs.</p>
+
+<!-- ==================== 2. DOCKERFILE ==================== -->
+<h2 id="dockerfile">2. Dockerfile for Spring Boot ⭐</h2>
+<pre class="code"><code># Multi-stage build — stage 1 builds the jar, stage 2 only ships the runtime
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:21-jre AS runtime
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
+<p><strong>Why multi-stage:</strong> the build stage needs the full JDK + Maven + source code (large). The final runtime image only needs the JRE (smaller, no compiler) and the built jar — copying just the artifact out of the build stage keeps the shipped image small and avoids bundling build tools, source code, and caches that add attack surface and size with zero runtime benefit.</p>
+<pre class="code"><code>docker build -t order-service:1.0 .
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod order-service:1.0</code></pre>
+<p><strong>Layer caching tip:</strong> copying <code>pom.xml</code> and running the dependency download <em>before</em> copying the rest of the source lets Docker reuse the cached dependency layer on rebuilds where only application code changed, not dependencies — significantly speeding up iterative builds.</p>
+
+<!-- ==================== 3. COMPOSE ==================== -->
+<h2 id="compose">3. Docker Compose</h2>
+<p>Compose defines and runs multi-container applications from one YAML file — the standard way to spin up your app plus its dependencies (database, cache) together for local development.</p>
+<pre class="code"><code># docker-compose.yml
+services:
+  app:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
+    depends_on: [db]
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_PASSWORD: secret
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+
+volumes:
+  pgdata:</code></pre>
+<p><code>docker compose up</code> starts everything together, on a shared network where services can reach each other by service name (e.g. <code>db</code> resolves to the Postgres container's IP) — no manual network wiring. <code>volumes</code> persist data (like the database) across container restarts.</p>
+
+<!-- ==================== 4. CI/CD ==================== -->
+<h2 id="cicd">4. CI/CD Pipeline ⭐</h2>
+<pre class="code"><code>git push
+  → CI triggers automatically
+  → Checkout code → mvn clean test (unit + integration tests)
+  → mvn package (build the jar)
+  → docker build (containerize) → docker push (to a registry)
+  → CD: deploy the new image to staging/production</code></pre>
+<pre class="code"><code># .github/workflows/ci.yml — GitHub Actions
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: '21', distribution: 'temurin' }
+      - run: mvn clean verify
+      - run: docker build -t myapp:${{ github.sha }} .</code></pre>
+<table class="ref">
+  <tr><th></th><th>Continuous Integration</th><th>Continuous Deployment/Delivery</th></tr>
+  <tr><td>Goal</td><td>Every push is automatically built + tested — catch integration bugs immediately</td><td>Every change that passes CI is automatically (or with one click) released</td></tr>
+  <tr><td>Failure mode it prevents</td><td>"Works on my machine" / broken main branch</td><td>Slow, risky, manual release process</td></tr>
+</table>
+<p><strong>Continuous Delivery</strong> (manual approval to release) vs <strong>Continuous Deployment</strong> (fully automatic release, no human gate) is a common point of confusion — Delivery means it's always releasable; Deployment means it actually auto-releases.</p>
+
+<!-- ==================== 5. AWS ==================== -->
+<h2 id="aws">5. AWS Basics</h2>
+<table class="ref">
+  <tr><th>Service</th><th>What it's for</th></tr>
+  <tr><td>EC2</td><td>Virtual machines — rent compute by the hour, run anything including a Spring Boot jar or Docker container directly</td></tr>
+  <tr><td>S3</td><td>Object storage — files/blobs (images, backups, logs), not a database; durable, cheap, virtually unlimited</td></tr>
+  <tr><td>RDS</td><td>Managed relational database (Postgres/MySQL/etc.) — AWS handles backups, patching, failover, so you don't run your own DB server</td></tr>
+  <tr><td>IAM</td><td>Identity and Access Management — who (users, services) can do what (permissions) on which resources; the backbone of AWS security</td></tr>
+  <tr><td>CloudWatch</td><td>Metrics, logs, and alarms — where your app's logs go, and what pages someone when error rates spike</td></tr>
+  <tr><td>VPC</td><td>Virtual Private Cloud — an isolated network you control (subnets, routing, firewall rules) that your resources live inside</td></tr>
+  <tr><td>Load Balancer (ELB/ALB)</td><td>Distributes incoming traffic across multiple app instances — enables horizontal scaling and zero-downtime deploys</td></tr>
+</table>
+<p><strong>How these fit together for a typical Spring Boot deployment:</strong> a Load Balancer sits in front of multiple EC2 instances (or containers) running the app, inside a VPC; the app connects to an RDS database; IAM roles grant the app instances only the specific permissions they need (least privilege); CloudWatch collects logs and metrics from everything.</p>
+
+<!-- ==================== 6. DEPLOYMENT MODELS ==================== -->
+<h2 id="deployment">6. Deployment Models</h2>
+<table class="ref">
+  <tr><th>Strategy</th><th>How it works</th><th>Trade-off</th></tr>
+  <tr><td>Rolling</td><td>Replace old instances with new ones a few at a time</td><td>No downtime, but old and new versions run simultaneously during rollout — requires backward-compatible changes</td></tr>
+  <tr><td>Blue-green</td><td>Deploy the new version fully alongside the old, then switch traffic all at once</td><td>Instant rollback (switch back), but needs double the infrastructure briefly</td></tr>
+  <tr><td>Canary</td><td>Route a small % of traffic to the new version first, then ramp up</td><td>Limits blast radius of a bad deploy, but needs good monitoring to catch issues early</td></tr>
+</table>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Microservices + Kafka</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

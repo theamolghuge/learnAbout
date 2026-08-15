@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 9 · Public Goods, Free-Riding &amp; the Tragedy of the Commons</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0008-ultimatum-and-dictator.html">← Lesson 8</a>
+    <span>·</span>
+    <a href="./0010-sequential-games-and-trust.html">Next: Lesson 10 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 9 · ~14 min · Level 2-3: Strategic Games (closing)</div>
+  <h1>Public Goods, Free-Riding &amp; the Tragedy of the Commons</h1>
+  <p class="subtitle">The Prisoner's Dilemma, scaled up to a group — and the two shapes it takes depending on whether people are under-giving or over-taking.</p>
+  <div class="meta">Recap: Lesson 3's Prisoner's Dilemma had two players, each with a dominant strategy to defect, landing on a Pareto-inefficient equilibrium. This lesson is that same underlying logic stretched across a whole group, in two flavors: people under-contributing to something shared (public goods / free-riding), and people over-consuming something shared (tragedy of the commons). Closes out Level 2-3's core classic games.</div>
+
+  <h2>The Public Goods Game</h2>
+
+  <p>A group of, say, 4 people each privately have ₹100. Each decides, privately and simultaneously, how much of it to put into a shared pot — anywhere from ₹0 to ₹100. Whatever ends up in the pot gets multiplied by 1.6 and then split <em>equally</em> among all 4 people, regardless of who contributed what.</p>
+
+  <table class="matrix" style="width:100%;">
+    <caption>What one player's own ₹100 contribution is worth to them, if everyone else contributes ₹0.</caption>
+    <tr><th>Your contribution</th><th>Pot after ×1.6</th><th>Your share (÷4)</th><th>Net to you</th></tr>
+    <tr><td class="cell">₹100</td><td class="cell">₹160</td><td class="cell">₹40</td><td class="cell">−₹60</td></tr>
+    <tr><td class="cell">₹0</td><td class="cell">₹0</td><td class="cell">₹0</td><td class="cell">₹0</td></tr>
+  </table>
+
+  <p>Look closely at what your own ₹100 actually returns to <em>you</em>: it becomes ₹160 in the pot, but you only get a quarter of that back — ₹40. You just turned ₹100 into ₹40 for yourself, a straight loss, even though the <em>group</em> as a whole gained (₹100 became ₹160 in total value). That's the trap: <strong>contributing ₹0 is a dominant strategy for every individual player</strong> — whatever anyone else does, you personally always come out ahead by keeping your money — yet if <em>everyone</em> reasons this way, the pot stays empty and the group gets none of the ×1.6 gain that full contribution would have created for all of them together.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">This is literally a multiplayer Prisoner's Dilemma</span>
+    Same shape as Lesson 3, just stretched across more than two players: a dominant strategy (contribute nothing / defect) that every individually rational player follows, landing the whole group on an outcome that's Pareto-inferior to "everyone contributes" — everyone would be better off at full contribution, and no individual can get there alone by unilaterally contributing, because a lone contributor just personally eats the loss shown above.
+  </div>
+
+  <h2>The free-rider problem, named</h2>
+
+  <p>The <strong>free-rider problem</strong> is the general name for what's happening here: whenever a benefit is <strong>non-excludable</strong> — you can't stop someone who didn't pay for it from enjoying it anyway — people have an individual incentive to let others pay while they enjoy the result for free. It's the mechanism <em>behind</em> the Public Goods Game's zero-contribution dominant strategy, and it shows up anywhere a shared benefit can't be fenced off from non-contributors.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. In the Public Goods Game above, why is contributing ₹0 a dominant strategy?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because the multiplier is less than 1</button>
+      <button class="quiz-choice" data-correct="true">Because your own contribution, split back among everyone, returns less than you put in</button>
+      <button class="quiz-choice">Because other players can see your contribution and punish you</button>
+      <button class="quiz-choice">Because the game only has one round</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>The mirror image: the Tragedy of the Commons</h2>
+
+  <p>Public goods are about people under-<em>giving</em> to something shared. The <strong>Tragedy of the Commons</strong> — a term from ecologist Garrett Hardin's 1968 essay of the same name — is about people over-<em>taking</em> from something shared: a resource that's <strong>rivalrous</strong> (one person's use genuinely depletes what's left for others), like a shared grazing pasture, a fishery, or a groundwater aquifer.</p>
+
+  <p>Each herder grazing an extra animal on shared land captures the <em>full</em> private benefit of that extra animal, but the cost — a slightly more depleted, degraded pasture — is spread across every herder who uses the land, so any one herder only bears a small fraction of the cost of their own extra animal. The private math favors adding one more animal, for every herder, all the way until the pasture collapses for everyone — the same "I keep 100% of my gain but only pay a fraction of my share of the cost" logic as free-riding, just running in the opposite direction (taking too much, instead of giving too little).</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Same disease, two symptoms</span>
+    Public Goods / Free-Riding and Tragedy of the Commons are the same underlying problem — a gap between what an individual privately captures and what they actually cost the group — showing up as under-contribution when the shared thing is being <em>built</em>, and over-consumption when the shared thing is being <em>used up</em>. Once you can name the mechanism, you'll recognize both variants on sight.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What's the key difference between a Public Goods problem and a Tragedy of the Commons?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">One is zero-sum, the other isn't</button>
+      <button class="quiz-choice" data-correct="true">Under-contributing to a shared benefit, vs. over-consuming a shared, depletable resource</button>
+      <button class="quiz-choice">One has a dominant strategy, the other doesn't</button>
+      <button class="quiz-choice">One is cooperative game theory, the other is non-cooperative</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it at work</h2>
+
+  <ul>
+    <li><strong>The office kitchen or shared supplies closet.</strong> Classic public goods problem — everyone benefits from a stocked, tidy shared space; restocking and tidying cost the individual who does it real time and money, split invisibly across everyone who uses it. Dominant strategy: let someone else do it.</li>
+    <li><strong>Open-source software.</strong> Millions of companies and developers benefit from projects like Linux or major JavaScript frameworks; a tiny fraction contribute code or funding back — the software is non-excludable (you can't be blocked from using it just for not contributing), so the free-rider math is exactly the Public Goods Game at internet scale.</li>
+    <li><strong>A shared team Slack channel or internal wiki.</strong> Everyone benefits from it being well-organized and current; maintaining it is a real cost borne by whoever bothers, shared as a benefit by everyone whether they bothered or not.</li>
+    <li><strong>A team's shared "credit" on a group project.</strong> Social loafing — quietly doing less than a fair share on a group deliverable — is a Tragedy-of-the-Commons-flavored version: the shared resource being over-consumed is the group's collective reputation/grade/output quality.</li>
+    <li><strong>Climate change and carbon emissions</strong> — the largest real-world Tragedy of the Commons: each actor captures the full private benefit of emitting, while the cost (a degraded shared atmosphere) is spread across everyone on the planet, present and future.</li>
+  </ul>
+
+  <h2>It isn't hopeless — what actually fixes it</h2>
+
+  <p>Three real levers, worth knowing precisely because "just ask people to be less selfish" reliably fails:</p>
+
+  <ul>
+    <li><strong>Remove the non-excludability.</strong> Turn the shared good into something contributors-only can access — a members-only tool, metered water rights, a paywalled resource. If free-riders can't actually free-ride, the dominant-strategy math changes.</li>
+    <li><strong>Make contribution visible and repeated.</strong> A one-shot, anonymous Public Goods Game reliably ends in low contribution; the same game played repeatedly, with contributions visible to the group, sees dramatically higher cooperation — reputation and social pressure doing real work. Direct preview of Level 5 (repeated games).</li>
+    <li><strong>Community-designed rules, not just top-down ones.</strong> Political economist Elinor Ostrom's research — which won her the 2009 Nobel Memorial Prize in Economic Sciences — documented real commons (irrigation systems, fisheries, forests) successfully self-governed for generations by the communities using them, using locally-designed monitoring and graduated sanctions, without either privatization or heavy external regulation. The "tragedy" in Tragedy of the Commons is a real tendency, not an iron law — Ostrom's work is the evidence it can be beaten from inside a group, not just imposed from outside it.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Garrett Hardin's original 1968 essay "The Tragedy of the Commons" (Science) coined the term. Elinor Ostrom's <em>Governing the Commons</em> is the primary source for the successful self-governance counter-evidence above.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A team of six engineers shares a single, aging staging environment for testing changes before they ship. Nobody owns cleanup — old test data and abandoned deployments pile up, occasionally causing failures. Everyone complains about the mess, but no individual has an incentive to spend an afternoon cleaning it up themselves, since the benefit of a clean environment is shared by all six regardless of who did the work.
+      <br><br>
+      Is this closer to a Public Goods problem or a Tragedy of the Commons — and does it actually matter which framing you use, or do they suggest the same kind of fix here? Propose one concrete fix drawn from the three levers above, and say specifically why it would actually change someone's incentive to act, not just "ask nicely."
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Which framing:</strong> This leans Public Goods / free-rider (under-contribution to upkeep) more than Tragedy of the Commons (over-consumption of a depletable resource) — nobody's actively "using up" the staging environment faster by adding mess, they're just failing to contribute cleanup effort. In practice the distinction matters less than the shared mechanism: either framing correctly predicts nobody volunteers, because the visible cost (an afternoon) is fully private while the benefit (a clean environment) is fully shared.<br><br>
+      <strong>A fix that actually changes incentives:</strong> "make contribution visible and repeated" is the most realistic lever here — for example, a rotating, named weekly owner (visible on the team calendar/Slack) responsible for a quick cleanup pass, with the assignment public enough that skipping it is socially costly, not private and invisible the way current non-cleanup is. This works because it removes the anonymity that made free-riding costless — it's now visibly someone's turn, not everyone's vague shared responsibility.<br><br>
+      A weaker answer, worth noticing if you gave it: "just tell people to clean up when they leave a mess." That's asking people to internalize a cost they currently don't bear — it might work briefly through goodwill, but it doesn't change the underlying incentive structure, which is exactly why "ask nicely" reliably fails as a durable fix to this shape of problem.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me which fix you proposed and whether it was one of the three structural levers or closer to "ask people to be better." If it was the latter, that's worth naming honestly — it's the single most common first-instinct answer to this exact problem, and also the one the lesson's evidence says is weakest.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Recognize a group-scale Prisoner's Dilemma whether it's dressed as under-contribution (public goods, free-riding) or over-consumption (tragedy of the commons), and reach for one of three real structural fixes — remove non-excludability, make contribution visible and repeated, or community-designed rules — instead of appealing to willpower or goodwill.
+  </div>
+
+  <h2>Level 2-3, essentially closed</h2>
+  <p>You now have the core classic-games toolkit: Prisoner's Dilemma (dominant strategy, one bad equilibrium), Battle of the Sexes (pure coordination, focal points), Matching Pennies (mixed strategies, expected value), Stag Hunt (trust, payoff- vs. risk-dominance), Chicken (anti-coordination, credible commitment), Ultimatum/Dictator (fairness breaking naive rationality), and this lesson's group-scale version of the original dilemma. One classic game from the original brief is still open — the <strong>Trust Game</strong> — which is really Stag Hunt played sequentially with a multiplier, and fits naturally as a bridge into Level 4 (Sequential Games), where backward induction — used informally in Lesson 8 already — finally gets its full formal treatment.</p>
+
+  <p class="lesson-footer">
+    <a href="./0008-ultimatum-and-dictator.html">← Lesson 8</a>
+    <a href="./0010-sequential-games-and-trust.html">Lesson 10: Game Trees, Backward Induction &amp; the Trust Game →</a>
+  </p>
+
+</div>
+</body>
+</html>

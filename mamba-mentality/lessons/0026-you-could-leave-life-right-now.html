@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You Could Leave Life Right Now — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0025-greater-than-infinity.html">Lesson 25</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 9 · Purpose · Lesson 2 · ~9 min</div>
+  <h1>You Could Leave Life Right Now</h1>
+  <p class="subtitle">A Roman emperor's private reminder to himself. It's not about dying — it's the sharpest filter this curriculum has for what actually matters.</p>
+
+  <div class="meta">
+    A short, direct lesson. Meditations has been Tier 1 since session 1 — this is the specific line Marcus Aurelius returned to as an ongoing discipline, not a one-time thought.</div>
+
+  <p>Book 2, Section 11 of <em>Meditations</em>: <strong>"You could leave life right now. Let that determine what you do and say and think."</strong> Marcus Aurelius wasn't writing this once and moving on — <strong>memento mori</strong>, "remember you will die," recurs throughout his private notebook as a practiced discipline, not a passing mood. He didn't treat death as something to fear or dwell on morbidly. He treated the fact of it as a filter: if this could genuinely be your last day, does the thing occupying your attention right now actually deserve it?</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What this practice is not</span>
+    This isn't an invitation to constant anxious rumination about dying, and used that way it would work against everything this curriculum has built. The Stoic practice is deliberate and brief — a specific check applied to a specific decision, not a permanent background hum of dread. If mortality awareness starts producing ongoing anxiety rather than occasional clarity, that's a sign to back off the practice, not a sign you're doing Stoicism correctly.
+  </div>
+
+  <h2>What this actually clarifies</h2>
+
+  <p>This is the thing that gives real stakes to nearly everything already covered. Lesson 1 asked whether you'd still pursue your craft if no one would ever find out — mortality sharpens that question further: would you still spend today on it if today might genuinely be one of the last ones you get? Lesson 15's "a thousand days to forge" only means something if the days are actually finite and actually running. Lesson 25's second-act question only has urgency if you're honest that the runway for any given chapter, including this one, isn't infinite.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    If you knew, with real certainty, that you had one year left — not as a dramatic exercise, genuinely — would the thing you're currently pouring effort into still be what you'd spend that year on? If the honest answer is no, that's worth taking seriously as data about why you're actually pursuing it, not just an interesting hypothetical to set aside.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Answer the question above honestly. If the answer is yes — good, that's real evidence for Lesson 1's mastery-orientation, not validation. If the answer is no, name specifically what you'd do instead, and what that reveals about what you're actually pursuing right now and why.</p>
+    <textarea class="journal-input" id="j26" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j26-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>Meditations</em> 2.11 (Hays translation) — and notice how often the same idea recurs across other books once you know to look for it. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If this practice brought up more anxiety than clarity, say so directly rather than pushing through it — per the caveat above, that's a real signal to back off, not something to override with more discipline.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0026:j26";
+  var ta = document.getElementById("j26");
+  var status = document.getElementById("j26-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

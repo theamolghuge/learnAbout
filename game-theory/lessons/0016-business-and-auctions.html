@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 16 · Business Competition &amp; Auctions</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0015-negotiation.html">← Lesson 15</a>
+    <span>·</span>
+    <a href="./0017-mechanism-design-and-beyond.html">Next: Lesson 17 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 16 · ~17 min · Level 9: Business Competition &amp; Auctions</div>
+  <h1>Business Competition &amp; Auctions</h1>
+  <p class="subtitle">Two more arenas where the same underlying tools — dominant strategy, credible commitment, coordination — take on new, high-stakes shapes.</p>
+  <div class="meta">Recap: this lesson mostly reuses tools you already have (Prisoner's Dilemma, Stag Hunt, dominant strategy, credible commitment), applied to two new domains. Watch for the callbacks — they're deliberate, not decoration.</div>
+
+  <h2>Part 1: Business Competition</h2>
+
+  <h3>Price wars, revisited briefly</h3>
+  <p>Lesson 3 already covered why two competitors racing to cut prices can be a Prisoner's Dilemma — cutting is individually tempting regardless of the rival's move, but both cutting leaves both worse off than holding. Worth one addition here: with just two firms competing purely on an identical, undifferentiated product, price competition can push prices all the way down toward the cost of production — sometimes called the <strong>Bertrand paradox</strong>, since even a market with only two competitors (not thousands) can behave almost as competitively as a textbook "perfect competition" market, purely from the price-undercutting dynamic. This is exactly why real companies work so hard to avoid competing on price alone.</p>
+
+  <h3>Escaping the price war: differentiation, network effects, switching costs</h3>
+  <ul>
+    <li><strong>Product differentiation</strong> breaks the "identical product" assumption that makes Bertrand competition so brutal — if your product isn't a perfect substitute for a rival's, direct price undercutting stops being as automatically effective, because some customers will pay more for the version they actually prefer.</li>
+    <li><strong>Network effects</strong> — a product that gets more valuable as more people use it (messaging apps, social platforms, marketplaces) — create a different kind of moat: even a technically-inferior competitor can be hard to unseat once a rival has enough users, because switching alone loses you access to everyone you'd be leaving behind.</li>
+    <li><strong>Switching costs</strong> — time, effort, or risk involved in leaving a product for a competitor — let a company retain customers even against a genuinely better rival offer, simply by making departure costly. This is a company deliberately engineering a form of the credible-commitment logic from Lesson 7, aimed at its own customers rather than a rival.</li>
+  </ul>
+
+  <h3>The platform "cold start" problem — a real Stag Hunt</h3>
+  <p>A two-sided platform (a ride-hailing app matching riders and drivers, a marketplace matching buyers and sellers) has value to either side only if the <em>other</em> side is already present in enough numbers. A driver only wants to be on an app with enough riders; a rider only wants an app with enough drivers. This is structurally identical to Lesson 6's Stag Hunt: both sides are individually better off jointly showing up (the payoff-dominant equilibrium — a thriving two-sided market) than both staying away (the risk-dominant, safe equilibrium — nobody shows up because nobody expects anybody else to). The common real-world fix mirrors Lesson 6's advice almost exactly: subsidize one side heavily below cost early on (free rides, waived fees) to artificially boost the payoff of "show up" until enough of a critical mass exists that the network effect becomes self-sustaining without the subsidy.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Why does a two-sided platform's early cold-start problem resemble a Stag Hunt specifically, rather than a Prisoner's Dilemma?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because platforms are always zero-sum</button>
+      <button class="quiz-choice" data-correct="true">Because both sides genuinely want the same outcome (both show up) — the problem is trust/uncertainty, not conflicting interest</button>
+      <button class="quiz-choice">Because riders and drivers have a dominant strategy to defect</button>
+      <button class="quiz-choice">Because it only involves two players total</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Case studies: real companies, analyzed as games</h2>
+  <p>Not just described — actually run through this lesson's tools, the way the original brief asked for.</p>
+
+  <h3>Apple: escaping Bertrand with differentiation and switching costs</h3>
+  <p>Apple's hardware could, in principle, be competing head-on with Android manufacturers on price and specs — a Bertrand-style race to the bottom. It largely doesn't, for two compounding reasons this lesson already named. First, real product differentiation (iOS, design, brand) means an iPhone and a comparable Android phone aren't perfect substitutes, breaking the "identical product" assumption that makes pure price competition so brutal. Second, and more deliberately strategic: Apple has built genuine switching costs into its ecosystem — iMessage's behavior with non-Apple devices, tight iCloud/App Store integration, AirDrop, cross-device continuity — each of which makes leaving the ecosystem costlier than switching a single device would otherwise be. This is Lesson 7's credible-commitment logic, aimed inward at retaining customers rather than outward at a rival: the switching cost is a moat Apple built on purpose, not a side effect.</p>
+
+  <h3>Netflix: first-mover advantage meeting differentiated second movers</h3>
+  <p>Netflix's early, aggressive move into original-content streaming is a textbook Lesson 11 first-mover play — establishing a large content library and subscriber base before rivals had committed to the category at all, shaping the market later entrants had to respond to. What's instructive is what happened next: competitors (Disney+, and others) didn't try to out-Netflix Netflix on Netflix's own terms — they entered with a differentiated asset Netflix structurally couldn't match (owned franchise IP), the same differentiation escape this lesson opened with. The resulting multi-platform streaming market, with each service undercutting on price to retain subscribers, is closer to the Bertrand-adjacent price competition Lesson 3 first flagged with a generic streaming-platform example — worth noticing that the *specific* companies changed the *content* strategy, but not the underlying price-competition shape once several close substitutes existed.</p>
+
+  <h3>Amazon Marketplace and Uber/Lyft: the cold-start problem, named</h3>
+  <p>The platform cold-start problem described earlier in this lesson is exactly what Amazon faced opening its Marketplace to third-party sellers, and what Uber and Lyft each faced launching in every new city: a real Stag Hunt, where sellers only want to list where buyers already are, and buyers only want to shop where selection already exists (symmetrically, drivers and riders for Uber/Lyft). All three companies used the same real fix this lesson already named in the abstract: heavy early subsidization — Amazon's aggressive terms for early third-party sellers, Uber and Lyft's well-documented rider discounts and driver incentives during city launches — artificially inflating the "show up" payoff until genuine network effects made the platform self-sustaining without the subsidy. Uber and Lyft's simultaneous, near-identical strategy in most cities is also a real-world instance of Lesson 3's ride-hailing price-war detective scenario playing out with actual companies, not just a hypothetical.</p>
+
+  <h2>Part 2: Auctions</h2>
+
+  <h3>First-price sealed-bid</h3>
+  <p>Every bidder submits one secret bid; the highest bidder wins and pays exactly their own bid. Bidding your true value nets you zero surplus if you win (you paid exactly what it's worth to you) — so the rational move is to <strong>shade your bid below your true value</strong>, trading some probability of winning for a better price if you do. There's a genuine tension here with no clean universal answer: bid too close to your true value and you win but barely profit; shade too aggressively and you lose to someone who shaded less.</p>
+
+  <h3>Second-price (Vickrey) auction — the elegant exception</h3>
+  <p>Same setup, one twist: the highest bidder still wins, but pays the <em>second-highest</em> bid, not their own. This single change produces a genuinely elegant result: <strong>bidding your true value is a dominant strategy</strong> — your literal best move regardless of what anyone else bids, the same concept from Lesson 3.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why truthful bidding actually is dominant here</span>
+    Since your payment is fixed by the <em>second</em>-highest bid regardless of your own, your bid only ever controls one thing: whether you win at all. Bid above your true value, and the only new outcomes you create are ones where you win at a price above what it's worth to you — pure loss, never a gain. Bid below your true value, and the only new outcomes you create are ones where you lose a sale that would have been profitable at the actual price you'd have paid — pure missed opportunity, never a gain. Bidding your exact true value is the only strategy with no downside in either direction — which is precisely what makes it dominant.
+  </div>
+
+  <p>This is exactly why "just bid what it's worth to you" — bad general advice in a first-price auction — is genuinely correct, optimal advice in a second-price one. The auction format itself changes the right strategy, holding your actual valuation completely fixed.</p>
+
+  <h3>English and Dutch auctions</h3>
+  <p>An <strong>English auction</strong> (the open, ascending kind — eBay-style bidding) is strategically close to a second-price auction in most private-value settings: the rational move is simply to keep bidding until the price passes your true value, then drop out — you end up paying close to what the second-highest bidder was willing to go to. A <strong>Dutch auction</strong> (price starts high and descends until someone accepts) is strategically close to a first-price sealed-bid auction: you have to decide, in advance, the price at which you'd rather buy now than risk someone else jumping in first — the same shading tension as first-price bidding, just experienced as a ticking clock instead of a single secret number.</p>
+
+  <h3>Private value vs. common value — and the winner's curse</h3>
+  <p>A <strong>private-value</strong> auction is one where the item is genuinely worth different amounts to different bidders (a painting you love that someone else is lukewarm on). A <strong>common-value</strong> auction is one where the item has roughly the <em>same</em> true value to everyone, but nobody knows exactly what that value is — classic example: bidding on the rights to drill an oil field, where the oil's true value is basically objective (whatever it actually turns out to hold), but every bidder is estimating it with error.</p>
+
+  <p>In a common-value auction, something counterintuitive happens: if many bidders each estimate the true value with independent random error, the <em>winner</em> is systematically the bidder whose estimate happened to be the most optimistic — not necessarily the one with the best information. Winning itself is bad news about your own estimate; this is the <strong>winner's curse</strong>. The correct response is to shade your bid down further than a naive estimate would suggest, and to shade it down <em>more</em> as the number of competing bidders grows — more bidders means a higher chance someone else's estimate was wildly optimistic, which means the winning bid (if everyone bid naively) would be more inflated, not less.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. In a second-price (Vickrey) auction, why is bidding exactly your true value the dominant strategy?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because you always pay your own bid, so honesty minimizes cost</button>
+      <button class="quiz-choice" data-correct="true">Because your bid only controls whether you win, not what you pay — so any deviation only risks a loss or a missed profitable win</button>
+      <button class="quiz-choice">Because second-price auctions have no winner's curse at all</button>
+      <button class="quiz-choice">Because it's illegal to bid below true value</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. What actually causes the winner's curse in a common-value auction?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Bidders colluding to keep prices low</button>
+      <button class="quiz-choice" data-correct="true">The winner is systematically the bidder whose valuation estimate was most optimistic, not necessarily most accurate</button>
+      <button class="quiz-choice">Second-price auctions always producing overpayment</button>
+      <button class="quiz-choice">Auctions with too few bidders</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it at work</h2>
+
+  <ul>
+    <li><strong>Online ad auctions</strong> (Google Ads and similar platforms) are, in their classic form, modified second-price auctions — advertisers are meant to bid their true value-per-click, since the mechanism is specifically designed around the Vickrey logic above.</li>
+    <li><strong>Real estate bidding wars</strong> often have real common-value elements (what's this property genuinely worth in a rising market) layered on top of private-value ones (how much you personally love this specific house) — worth separating the two components mentally, since the winner's-curse shading logic only applies to the common-value part.</li>
+    <li><strong>Freelance/procurement bidding platforms</strong> run a mirror-image auction — lowest bid wins — with the same underlying incentive logic flipped: bidders shade their price up from their true minimum in a first-price-style reverse auction, for the same reason sellers shade prices down in a normal one.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Stanford's <a href="https://online.stanford.edu/courses/soe-ycs0004-game-theory-ii-advanced-applications">Game Theory II: Advanced Applications</a> course (see <a href="../RESOURCES.md">RESOURCES.md</a>) covers auction theory and mechanism design in more formal depth than this workspace goes into.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      Eight companies submit sealed bids for the rights to an undeveloped plot of land with commercial potential. The land's true future value is roughly the same for all eight bidders (they'd all develop it similarly and sell into the same market) — but nobody knows exactly what that value is; each company has produced its own internal estimate, which vary from each other. Is this a private-value or common-value auction? Should a company bid its own internal estimate directly? What should change about their strategy specifically because there are eight bidders rather than two?
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Auction type:</strong> Common-value — the land is worth roughly the same to all eight bidders in principle; what differs is only their estimate of that shared true value, not their underlying preference for it.<br><br>
+      <strong>Should they bid their raw estimate?</strong> No — bidding your own internal estimate directly, in a common-value auction, is exactly what triggers the winner's curse: if all eight companies bid their raw estimates, the winner is disproportionately likely to be whichever company's estimate happened to be the most optimistic, not the most accurate, and could easily end up overpaying relative to the land's real value.<br><br>
+      <strong>What should change with eight bidders vs. two:</strong> shade the bid down further than you would with only two competitors. More bidders means a higher chance that at least one competitor's estimate is wildly optimistic — so the estimate that would actually win the auction, if everyone bid naively, is likely more inflated with eight bidders than with two. A rational bidder should shade more aggressively as the field gets larger, not bid closer to their raw number just because "more competition means I need to be more competitive" — that instinct, un-corrected, is exactly how the winner's curse claims its victims.
+      <br><br>
+      If your answer treated "more competitors" as a reason to bid more aggressively toward your raw estimate — that's the natural but backwards instinct this scenario is built to catch. More competitors in a common-value setting is a reason for more caution, not less.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me how much you'd shade the bid down, roughly, and whether the "more bidders means shade down more" logic felt intuitive or backwards on first read. Most people's instinct runs the wrong direction here initially — worth knowing honestly which camp you were in.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Tell apart the four major auction formats and their strategic logic, know precisely why truthful bidding is uniquely optimal in a second-price auction, and recognize a common-value auction and shade your bid down accordingly — more aggressively as the number of competing bidders grows.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0015-negotiation.html">← Lesson 15</a>
+    <a href="./0017-mechanism-design-and-beyond.html">Lesson 17: Mechanism Design, Evolutionary &amp; Behavioral Game Theory →</a>
+  </p>
+
+</div>
+</body>
+</html>

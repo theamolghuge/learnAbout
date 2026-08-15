@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Microservices + Kafka</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="microservices-kafka-notes.html#study-guide">Microservices + Kafka Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Monolith vs microservices</td><td>Simplicity vs independent scale/deploy — not "better," a trade-off</td></tr>
+  <tr><td>Service discovery</td><td>Registry + heartbeat — no hardcoded addresses (Eureka)</td></tr>
+  <tr><td>API Gateway</td><td>Routing, auth, rate limiting, logging — one edge entry point</td></tr>
+  <tr><td>Circuit breaker CLOSED</td><td>Normal — calls pass, failures counted</td></tr>
+  <tr><td>Circuit breaker OPEN</td><td>Fails fast, no call made — lets service recover</td></tr>
+  <tr><td>Circuit breaker HALF_OPEN</td><td>Test a few calls — close or re-open based on result</td></tr>
+  <tr><td>Kafka topic</td><td>Named message stream</td></tr>
+  <tr><td>Kafka partition</td><td>Ordered log within a topic — order guaranteed only per-partition</td></tr>
+  <tr><td>Kafka consumer group</td><td>Each partition → one consumer in group — parallel + once-per-group</td></tr>
+  <tr><td>Delivery semantics</td><td>At-least-once default — consumers must be idempotent</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>OpenFeign</td><td>Declarative HTTP client — interface call, real network underneath</td></tr>
+  <tr><td>Correlation/trace ID</td><td>One ID through the whole request chain — ties logs together</td></tr>
+  <tr><td>Distributed tracing</td><td>Zipkin/Jaeger — visualize the full call graph + timing</td></tr>
+  <tr><td>Kafka vs RabbitMQ</td><td>Kafka = high-throughput event log, replayable · RabbitMQ = task queue, flexible routing</td></tr>
+  <tr><td>Sync vs async calls</td><td>Sync couples availability · async (events) decouples it</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+<p><strong>Why does a partition key matter?</strong><br>
+Same key → same partition → guaranteed order for that key (e.g. all events for one orderId).</p>
+<p><strong>Why circuit breakers?</strong><br>
+Stop cascading failure — a slow downstream service shouldn't exhaust the caller's own threads too.</p>
+<p><strong>Why idempotent consumers?</strong><br>
+At-least-once delivery can redeliver a message after a crash before offset commit.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>A @FeignClient interface + a @CircuitBreaker fallback method</li>
+  <li>A KafkaTemplate producer + @KafkaListener consumer with a groupId</li>
+  <li>Explain topic/partition/offset/consumer group out loud with a concrete example</li>
+  <li>Explain why order events keyed by orderId stay in order</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="microservices-kafka-notes.html#discovery">Service Discovery ⭐</a></li>
+  <li><a href="microservices-kafka-notes.html#resilience">Circuit Breakers &amp; Resilience ⭐</a></li>
+  <li><a href="microservices-kafka-notes.html#kafka-basics">Kafka Basics ⭐</a></li>
+  <li><a href="microservices-kafka-notes.html#kafka-spring">Kafka in Spring Boot</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="microservices-kafka-notes.html">Microservices + Kafka Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

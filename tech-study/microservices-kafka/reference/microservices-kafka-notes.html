@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microservices + Kafka Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Microservices + Kafka Notes</h1>
+<p class="subtitle">Topic 9 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes <a href="../../docker-cloud/reference/docker-cloud-notes.html">Docker + CI/CD + Cloud</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#monolith-vs-micro">1. Monolith vs Microservices</a> · <a href="#communication">2. Service-to-Service Communication</a> ·
+  <a href="#discovery">3. Service Discovery ⭐</a> · <a href="#gateway">4. API Gateway</a> ·
+  <a href="#resilience">5. Circuit Breakers &amp; Resilience ⭐</a> · <a href="#observability">6. Distributed Tracing &amp; Logging</a> ·
+  <a href="#kafka-basics">7. Kafka Basics ⭐</a> · <a href="#kafka-spring">8. Kafka in Spring Boot</a> ·
+  <a href="#async">9. Async Messaging Patterns</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Monolith vs microservices trade-offs</td><td><a href="#monolith-vs-micro">§1</a></td></tr>
+  <tr><td>Service discovery, why hardcoded URLs break</td><td><a href="#discovery">§3</a></td></tr>
+  <tr><td>Circuit breaker pattern (Resilience4j)</td><td><a href="#resilience">§5</a></td></tr>
+  <tr><td>Kafka: topic, partition, offset, consumer group</td><td><a href="#kafka-basics">§7</a></td></tr>
+  <tr><td>At-least-once vs exactly-once delivery</td><td><a href="#kafka-basics">§7</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>API Gateway responsibilities</td><td><a href="#gateway">§4</a></td></tr>
+  <tr><td>OpenFeign declarative clients</td><td><a href="#communication">§2</a></td></tr>
+  <tr><td>Distributed tracing (correlation IDs)</td><td><a href="#observability">§6</a></td></tr>
+  <tr><td>Kafka vs RabbitMQ</td><td><a href="#async">§9</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Monolith vs microservices trade-offs → REST/Feign service-to-service calls
+  → Service discovery ⭐ (Eureka) → API Gateway
+  → Circuit breakers ⭐ (Resilience4j) → Distributed tracing + centralized logging
+  → Kafka ⭐ (topic → partition → offset → consumer group)
+  → Kafka in Spring Boot (producer/consumer) → Kafka vs RabbitMQ
+  → Kubernetes + System Design (next, final topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://martinfowler.com/articles/microservices.html">Martin Fowler — Microservices</a> — the canonical essay defining the pattern and its trade-offs</li>
+  <li><a href="https://kafka.apache.org/documentation/#gettingStarted">Apache Kafka official documentation</a> — the authoritative source on topics, partitions, and consumer groups</li>
+  <li><a href="https://resilience4j.readme.io/docs/circuitbreaker">Resilience4j docs — Circuit Breaker</a></li>
+</ul>
+
+<!-- ==================== 1. MONOLITH VS MICRO ==================== -->
+<h2 id="monolith-vs-micro">1. Monolith vs Microservices</h2>
+<table class="ref">
+  <tr><th></th><th>Monolith</th><th>Microservices</th></tr>
+  <tr><td>Deployment</td><td>One unit, deployed together</td><td>Independent services, deployed independently</td></tr>
+  <tr><td>Scaling</td><td>Scale the whole app, even if only one part is the bottleneck</td><td>Scale only the service that needs it</td></tr>
+  <tr><td>Tech stack</td><td>Usually one stack for everything</td><td>Each service can pick its own stack/language</td></tr>
+  <tr><td>Failure isolation</td><td>A bug can bring down the whole app</td><td>One service failing doesn't necessarily take down others (with proper resilience)</td></tr>
+  <tr><td>Complexity</td><td>Simpler operationally — one thing to deploy/monitor</td><td>Network calls, distributed transactions, service discovery, more moving parts</td></tr>
+  <tr><td>Team structure</td><td>Works fine for one team</td><td>Enables multiple teams to own/deploy services independently</td></tr>
+</table>
+<p><strong>Interview framing:</strong> microservices aren't strictly "better" — they trade simplicity for independent scalability/deployability, and that trade only pays off once a monolith's team size or scaling needs actually justify the added operational complexity. Starting with a monolith and extracting services later is a common, defensible strategy.</p>
+
+<!-- ==================== 2. COMMUNICATION ==================== -->
+<h2 id="communication">2. Service-to-Service Communication</h2>
+<pre class="code"><code>// OpenFeign — declarative HTTP client, looks like calling a local interface
+@FeignClient(name = "inventory-service")
+public interface InventoryClient {
+    @GetMapping("/inventory/{sku}")
+    InventoryDto getStock(@PathVariable String sku);
+}
+
+@Service
+public class OrderService {
+    private final InventoryClient inventoryClient;   // injected like any bean
+
+    public void placeOrder(Order order) {
+        InventoryDto stock = inventoryClient.getStock(order.getSku());   // looks like a normal method call
+        // ... but it's a real HTTP call under the hood, with all the failure modes that implies
+    }
+}</code></pre>
+<p>Feign turns an HTTP call into a plain interface method call — no manual <code>RestTemplate</code>/<code>WebClient</code> boilerplate. But the network is still there: it can time out, the other service can be down, or return an error — which is exactly why resilience patterns (§5) matter for every inter-service call.</p>
+
+<!-- ==================== 3. SERVICE DISCOVERY ==================== -->
+<h2 id="discovery">3. Service Discovery ⭐</h2>
+<p>In a dynamic environment (containers restart, autoscaling adds/removes instances), a hardcoded URL like <code>http://10.0.1.5:8080</code> breaks the moment that instance dies or a new one spins up elsewhere. <strong>Service discovery</strong> solves this: services register themselves with a central registry on startup, and callers look up "give me a healthy instance of inventory-service" instead of a fixed address.</p>
+<pre class="code"><code>@EnableEurekaServer   // the registry itself, a separate small Spring Boot app
+public class DiscoveryServerApplication { ... }
+
+@EnableDiscoveryClient   // on every microservice — registers itself with Eureka on startup
+public class InventoryServiceApplication { ... }</code></pre>
+<p><strong>Eureka</strong> (Netflix, part of Spring Cloud) is the classic example: each service instance periodically sends a heartbeat; if heartbeats stop, Eureka removes it from the registry, so clients naturally stop being routed to dead instances. Kubernetes has this built in via its own Service/DNS abstraction (see the final topic), which is why many newer stacks skip Eureka entirely when running on k8s.</p>
+
+<!-- ==================== 4. API GATEWAY ==================== -->
+<h2 id="gateway">4. API Gateway</h2>
+<p>A single entry point that sits in front of all microservices, routing external requests to the right internal service. Consolidates cross-cutting concerns so individual services don't each reimplement them:</p>
+<table class="ref">
+  <tr><th>Responsibility</th><th>Why centralize it</th></tr>
+  <tr><td>Routing</td><td>Client calls one host; gateway routes <code>/orders/**</code> to order-service, <code>/users/**</code> to user-service</td></tr>
+  <tr><td>Authentication</td><td>Validate the JWT once at the edge, not redundantly in every service</td></tr>
+  <tr><td>Rate limiting</td><td>Protect all backend services from being overwhelmed, in one place</td></tr>
+  <tr><td>Request logging/metrics</td><td>One place to observe all external traffic</td></tr>
+</table>
+<p>Spring Cloud Gateway is the common Spring-ecosystem choice. Internal service-to-service calls (order-service → inventory-service) typically bypass the gateway entirely and go direct (via service discovery), since the gateway is for external/edge traffic.</p>
+
+<!-- ==================== 5. RESILIENCE ==================== -->
+<h2 id="resilience">5. Circuit Breakers &amp; Resilience ⭐</h2>
+<p>In a distributed system, a slow or failing downstream service is far more common than in a monolith — every network call can fail. Without protection, one struggling service can cause cascading failures as callers pile up waiting on it, exhausting their own thread pools.</p>
+<pre class="code"><code>@CircuitBreaker(name = "inventoryService", fallbackMethod = "fallbackStock")
+public InventoryDto getStock(String sku) {
+    return inventoryClient.getStock(sku);
+}
+
+public InventoryDto fallbackStock(String sku, Throwable t) {
+    return InventoryDto.unknown(sku);   // graceful degradation instead of an error/hang
+}</code></pre>
+<table class="ref">
+  <tr><th>State</th><th>Behavior</th></tr>
+  <tr><td>CLOSED</td><td>Normal — requests pass through, failures are counted</td></tr>
+  <tr><td>OPEN</td><td>Failure rate exceeded threshold — requests fail fast immediately (fallback), no call to the struggling service at all, giving it room to recover</td></tr>
+  <tr><td>HALF_OPEN</td><td>After a wait period, lets a few test requests through to see if the service has recovered — closes again if they succeed, re-opens if not</td></tr>
+</table>
+<p><strong>Resilience4j</strong> is the modern standard (replacing the now-deprecated Netflix Hystrix), providing circuit breakers, rate limiters, retries, bulkheads, and timeouts as composable annotations/decorators.</p>
+
+<!-- ==================== 6. OBSERVABILITY ==================== -->
+<h2 id="observability">6. Distributed Tracing &amp; Centralized Logging</h2>
+<p>A single user request in a microservices architecture can fan out across many services — debugging "why was this request slow" requires stitching together logs/timing from all of them.</p>
+<table class="ref">
+  <tr><th>Concept</th><th>Purpose</th></tr>
+  <tr><td>Correlation / trace ID</td><td>A unique ID generated at the edge (API Gateway) and passed through every downstream call (often via an HTTP header), so all logs for one user request can be grepped together across services</td></tr>
+  <tr><td>Distributed tracing (e.g. Zipkin, Jaeger)</td><td>Visualizes the full call graph and timing of a single request across every service it touched — shows exactly which hop was slow</td></tr>
+  <tr><td>Centralized logging (e.g. ELK stack)</td><td>Ships every service's logs to one searchable place, instead of SSH-ing into N different machines/pods to piece together what happened</td></tr>
+</table>
+
+<!-- ==================== 7. KAFKA BASICS ==================== -->
+<h2 id="kafka-basics">7. Kafka Basics ⭐</h2>
+<p>Kafka is a distributed, durable, append-only log — producers write messages, consumers read them, and messages persist for a configurable retention period (not deleted once read, unlike a traditional queue).</p>
+<table class="ref">
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td>Topic</td><td>A named stream of messages — e.g. "order-placed"</td></tr>
+  <tr><td>Partition</td><td>A topic is split into ordered partitions for parallelism — each partition is an append-only log with sequential offsets. Order is only guaranteed WITHIN a partition, not across the whole topic.</td></tr>
+  <tr><td>Offset</td><td>A message's position within its partition — consumers track which offset they've processed up to</td></tr>
+  <tr><td>Producer</td><td>Writes messages to a topic — chooses (or lets Kafka choose) which partition based on a key</td></tr>
+  <tr><td>Consumer</td><td>Reads messages from a topic, tracking its own offset progress</td></tr>
+  <tr><td>Consumer group</td><td>A set of consumers sharing the work of a topic — each partition is consumed by exactly one consumer within a group, enabling parallel processing while each message is still processed once per group</td></tr>
+</table>
+<p><strong>Partition key matters:</strong> messages with the same key always land on the same partition (hash of the key), which guarantees ordering for that key — e.g. keying by <code>orderId</code> guarantees all events for one order are processed in order, even though the topic overall is unordered across partitions.</p>
+<p><strong>Delivery semantics:</strong> Kafka defaults to <strong>at-least-once</strong> delivery — a consumer might reprocess a message if it crashes after processing but before committing its offset, so consumer logic should be idempotent. Exactly-once semantics are possible with Kafka transactions but add complexity and are used more selectively.</p>
+
+<!-- ==================== 8. KAFKA IN SPRING BOOT ==================== -->
+<h2 id="kafka-spring">8. Kafka in Spring Boot</h2>
+<pre class="code"><code>@Service
+public class OrderEventProducer {
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+
+    public void publish(OrderPlacedEvent event) {
+        kafkaTemplate.send("order-placed", event.orderId(), event);   // key = orderId
+    }
+}
+
+@Service
+public class InventoryConsumer {
+    @KafkaListener(topics = "order-placed", groupId = "inventory-service")
+    public void onOrderPlaced(OrderPlacedEvent event) {
+        inventoryService.reserve(event.items());   // must be idempotent — could be redelivered
+    }
+}</code></pre>
+<p><code>spring-kafka</code> wraps the raw Kafka client with Spring-friendly abstractions: <code>KafkaTemplate</code> for producing, <code>@KafkaListener</code> for consuming. The <code>groupId</code> on the listener determines which consumer group it belongs to — running multiple instances of the same service with the same groupId automatically load-balances partitions across them.</p>
+
+<!-- ==================== 9. ASYNC PATTERNS ==================== -->
+<h2 id="async">9. Async Messaging Patterns</h2>
+<table class="ref">
+  <tr><th></th><th>Kafka</th><th>RabbitMQ</th></tr>
+  <tr><td>Model</td><td>Distributed log — messages retained, can be replayed</td><td>Traditional message queue/broker — message typically removed once acknowledged</td></tr>
+  <tr><td>Throughput</td><td>Very high — built for high-volume event streaming</td><td>Lower, but very flexible routing (exchanges, routing keys)</td></tr>
+  <tr><td>Ordering</td><td>Guaranteed per-partition</td><td>Guaranteed per-queue</td></tr>
+  <tr><td>Use case fit</td><td>Event streaming, event sourcing, high-volume analytics pipelines, multiple independent consumers replaying the same events</td><td>Task queues, complex routing, RPC-style request/reply patterns</td></tr>
+</table>
+<p><strong>Why go async at all:</strong> synchronous REST calls between services couple their availability — if inventory-service is down, a synchronous call from order-service fails immediately. Publishing an event to Kafka instead decouples them: order-service publishes "order placed" and moves on; inventory-service processes it whenever it's able to, even if it was briefly down when the event was published.</p>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Kubernetes + System Design</a> — the final topic. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

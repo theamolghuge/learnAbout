@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Java</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="java-notes.html">Java Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#oop">OOP</a> ·
+  <a href="#interfaces">Interfaces</a> ·
+  <a href="#exceptions">Exceptions</a> ·
+  <a href="#collections">Collections</a> ·
+  <a href="#generics">Generics</a> ·
+  <a href="#java8">Java 8+</a> ·
+  <a href="#concurrency">Concurrency</a> ·
+  <a href="#jvm">JVM</a> ·
+  <a href="#misc">Misc</a>
+</nav>
+
+<!-- ===== OOP ===== -->
+<h2 id="oop">OOP</h2>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between overloading and overriding?</p>
+  <p class="qa-a">Overloading is having multiple methods with the same name but different parameter lists in the same class — resolved at compile time based on argument types. Overriding is a subclass redefining a superclass method with the same signature — resolved at runtime based on the actual object type (dynamic dispatch).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why must you override <code>hashCode()</code> whenever you override <code>equals()</code>?</p>
+  <p class="qa-a">The contract requires that equal objects produce equal hash codes. If you only override <code>equals()</code>, two "equal" objects can land in different HashMap buckets — a <code>HashSet.contains()</code> or <code>HashMap.get()</code> call will silently fail to find an object that should be considered present.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is the difference between <code>this</code> and <code>super</code>?</p>
+  <p class="qa-a"><code>this</code> refers to the current instance — used to disambiguate fields from parameters or to chain constructors (<code>this(...)</code>). <code>super</code> refers to the immediate parent class — used to call a parent constructor (<code>super(...)</code>, must be first line) or an overridden parent method (<code>super.method()</code>).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is <code>String</code> immutable in Java?</p>
+  <p class="qa-a">Security (can't be altered after being passed to trusted code like a filename or SQL string), safety for use as a HashMap key (hash code can be cached once), thread-safety (shareable across threads with no locking), and to enable the string pool, which saves memory by reusing literal instances.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can a constructor be private? Why would you do that?</p>
+  <p class="qa-a">Yes — commonly used for the Singleton pattern (control the one instance via a static factory method) or utility classes with only static members (prevent instantiation entirely).</p>
+</div>
+
+<!-- ===== INTERFACES ===== -->
+<h2 id="interfaces">Interfaces &amp; Abstract Classes</h2>
+
+<div class="qa">
+  <p class="qa-q">When would you choose an abstract class over an interface?</p>
+  <p class="qa-a">When several closely related classes need to share actual field state or a chunk of concrete implementation, and single inheritance is acceptable — e.g. a base <code>Shape</code> class holding a common <code>color</code> field and a shared <code>describe()</code> method, with each subclass only implementing <code>area()</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What are default methods on interfaces for?</p>
+  <p class="qa-a">Introduced in Java 8 to let interfaces evolve without breaking every existing implementer — e.g. <code>List.sort()</code> was added as a default method so old <code>List</code> implementations kept compiling. They also let an interface provide reusable behavior on top of its abstract methods.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can a class implement two interfaces that both have the same default method?</p>
+  <p class="qa-a">It's a compile error unless the class explicitly overrides the method and resolves the conflict — e.g. by calling <code>InterfaceA.super.method()</code> to pick one, or providing its own logic.</p>
+</div>
+
+<!-- ===== EXCEPTIONS ===== -->
+<h2 id="exceptions">Exception Handling</h2>
+
+<div class="qa">
+  <p class="qa-q">Checked vs unchecked exceptions — which should a Spring service layer throw?</p>
+  <p class="qa-a">Checked exceptions must be caught or declared (<code>throws</code>); unchecked (<code>RuntimeException</code> subclasses) don't require that. Most Spring codebases favor unchecked exceptions for business errors (e.g. <code>UserNotFoundException extends RuntimeException</code>) — it keeps service method signatures clean and lets a global <code>@ControllerAdvice</code> handle them centrally instead of forcing every caller to catch.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Does code in a <code>finally</code> block always run?</p>
+  <p class="qa-a">Almost always — even if the try or catch block returns, or throws a new exception. The only exceptions: the JVM exits (<code>System.exit()</code>) or the thread is killed while inside the try block.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does try-with-resources do, and what's required for a class to use it?</p>
+  <p class="qa-a">It automatically calls <code>close()</code> on the resource once the block exits, even on exception — equivalent to an implicit finally. The resource must implement <code>AutoCloseable</code>. Common in JDBC (<code>Connection</code>, <code>Statement</code>, <code>ResultSet</code> all implement it).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What happens if an exception is thrown in both the try block and the finally block?</p>
+  <p class="qa-a">The exception from <code>finally</code> wins and propagates; the original exception from <code>try</code> is suppressed (though it's still retrievable via <code>getSuppressed()</code> if using try-with-resources).</p>
+</div>
+
+<!-- ===== COLLECTIONS ===== -->
+<h2 id="collections">Collections</h2>
+
+<div class="qa">
+  <p class="qa-q">Walk through what happens internally when you call <code>hashMap.put("a", 1)</code>.</p>
+  <p class="qa-a">Java computes <code>"a".hashCode()</code>, spreads/masks it to pick a bucket index in the internal array. If the bucket is empty, a new entry (node) is placed there. If occupied (collision), Java walks the chain using <code>equals()</code> to check for an existing matching key — replacing its value if found, else appending (as a linked list, or a red-black tree if the chain exceeds 8 entries). If the map is now over 75% full (load factor), the whole table doubles in size and rehashes.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">ArrayList vs LinkedList — which do you default to and why?</p>
+  <p class="qa-a">ArrayList by default — O(1) random access and better cache locality (contiguous array) make it faster for the vast majority of use cases including iteration and appending. LinkedList only wins for frequent insert/delete at the head or a known middle node, which is rare; <code>ArrayDeque</code> is usually a better choice than LinkedList even for queue/stack use.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does a HashSet guarantee no duplicates?</p>
+  <p class="qa-a">It's backed internally by a HashMap where each element is stored as a key (with a shared dummy value). <code>add()</code> is really <code>map.put(element, DUMMY)</code> — if <code>hashCode()</code>+<code>equals()</code> find an existing equal key, the "add" is a no-op and returns false.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What breaks if you put a mutable object into a HashSet and then mutate a field its <code>hashCode()</code> depends on?</p>
+  <p class="qa-a">The object becomes "lost" — it's still physically in some bucket, but future lookups recompute the hash from its new state and search the wrong bucket, so <code>contains()</code> returns false even though the object is in the set. Prefer immutable keys/elements.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between <code>Comparable</code> and <code>Comparator</code>?</p>
+  <p class="qa-a"><code>Comparable</code> is implemented by the class itself to define one natural ordering (<code>compareTo</code>). <code>Comparator</code> is a separate object (often a lambda) passed in to define an ordering externally — useful when you need multiple different sort orders for the same class without modifying it.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Is a HashMap thread-safe? What would you use instead in a multithreaded Spring service?</p>
+  <p class="qa-a">No — concurrent modification can corrupt its internal structure or cause an infinite loop in older JVMs. Use <code>ConcurrentHashMap</code>, which locks at a fine granularity (per bucket/segment) instead of the whole map, giving much better throughput than wrapping a HashMap with <code>Collections.synchronizedMap()</code>.</p>
+</div>
+
+<!-- ===== GENERICS ===== -->
+<h2 id="generics">Generics</h2>
+
+<div class="qa">
+  <p class="qa-q">What is type erasure and why does it matter?</p>
+  <p class="qa-a">Generic type information exists only at compile time for type checking; the compiler erases it and inserts casts, so at runtime <code>List&lt;String&gt;</code> and <code>List&lt;Integer&gt;</code> are both just <code>List</code>. It matters because you can't do <code>new T()</code>, can't check <code>instanceof List&lt;String&gt;</code>, and can't overload methods that differ only by generic type parameter.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain PECS.</p>
+  <p class="qa-a">"Producer Extends, Consumer Super" — use <code>&lt;? extends T&gt;</code> for a structure you only read from (it produces T values for you), and <code>&lt;? super T&gt;</code> for one you only write to (it consumes T values from you). This maximizes API flexibility while staying type-safe.</p>
+</div>
+
+<!-- ===== JAVA 8+ ===== -->
+<h2 id="java8">Java 8+</h2>
+
+<div class="qa">
+  <p class="qa-q">Are streams lazy or eager? What does that mean in practice?</p>
+  <p class="qa-a">Lazy — intermediate operations (<code>filter</code>, <code>map</code>, <code>sorted</code>) just build a pipeline description and don't run anything. Nothing executes until a terminal operation (<code>collect</code>, <code>forEach</code>, <code>reduce</code>, <code>count</code>) is called, at which point the whole pipeline runs element-by-element in one pass. This also means a stream with no terminal operation does nothing at all.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Can you reuse a Java Stream after calling a terminal operation on it?</p>
+  <p class="qa-a">No — a stream is consumed exactly once. Calling another operation on an already-consumed stream throws <code>IllegalStateException</code>. You'd need to create a fresh stream from the source collection.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What problem does Optional solve, and how should it NOT be used?</p>
+  <p class="qa-a">It makes "this might not have a value" explicit in a method's return type, forcing the caller to handle absence instead of risking a NullPointerException from a returned null. It should not be used as a field type, constructor/method parameter, or inside a collection — it's designed specifically for return types.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between <code>map()</code> and <code>flatMap()</code> on a stream?</p>
+  <p class="qa-a"><code>map()</code> transforms each element one-to-one, possibly producing a stream of streams if the mapper returns a collection. <code>flatMap()</code> transforms each element into a stream and then flattens all of them into a single stream — used when each input maps to zero or more outputs, e.g. turning a <code>List&lt;List&lt;String&gt;&gt;</code> into a flat <code>List&lt;String&gt;</code>.</p>
+</div>
+
+<!-- ===== CONCURRENCY ===== -->
+<h2 id="concurrency">Concurrency</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a race condition, and how does <code>synchronized</code> prevent it?</p>
+  <p class="qa-a">A race condition happens when multiple threads read and write shared state without coordination, and the outcome depends on timing — e.g. <code>count++</code> is really read-modify-write, and two interleaved threads can both read the same old value and lose an update. <code>synchronized</code> makes a method or block acquire the object's intrinsic lock, so only one thread can execute it at a time, making the compound operation atomic.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When is <code>volatile</code> enough, and when do you need <code>synchronized</code> instead?</p>
+  <p class="qa-a"><code>volatile</code> only guarantees visibility — every thread sees the latest write, with no caching/reordering. It does NOT make compound operations atomic. Use it for simple flags (e.g. a shutdown signal read by multiple threads). Use <code>synchronized</code> (or an atomic type) when the operation is read-modify-write or involves multiple related fields that must change together.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why prefer <code>ExecutorService</code> over creating raw <code>Thread</code> objects?</p>
+  <p class="qa-a">Raw threads are expensive to create and give you no control over concurrency limits — spawning one per task can exhaust memory/OS resources under load. An <code>ExecutorService</code> manages a bounded pool of reusable threads, provides backpressure via task queues, and gives you <code>Future</code>/<code>CompletableFuture</code> for results and composition — this is effectively how Spring/Tomcat handle incoming requests under the hood.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does ConcurrentHashMap achieve better concurrency than a synchronized HashMap?</p>
+  <p class="qa-a">A synchronized HashMap locks the entire map for every operation — only one thread can touch it at all, at any time. ConcurrentHashMap locks at a much finer granularity (per bucket, using CAS operations where possible), so unrelated reads/writes to different buckets can proceed in parallel.</p>
+</div>
+
+<!-- ===== JVM ===== -->
+<h2 id="jvm">JVM</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between JDK, JRE, and JVM?</p>
+  <p class="qa-a">JVM executes bytecode and manages memory/GC. JRE is the JVM plus the standard class libraries needed to run compiled Java programs. JDK is the JRE plus development tools (compiler <code>javac</code>, debugger, etc.) — what you install to build software, as opposed to just run it.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain generational garbage collection at a high level.</p>
+  <p class="qa-a">Most objects die young, so the heap is split into a Young generation (frequently, cheaply collected) and an Old generation (rarely collected, more expensive). Objects start in Young (Eden space); survivors get copied between Survivor spaces and eventually promoted to Old once they've lived through enough collection cycles. This generational split avoids repeatedly scanning long-lived objects.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What makes an object eligible for garbage collection?</p>
+  <p class="qa-a">When it's no longer reachable from any GC root — thread stacks, static fields, active local variables. There's no manual free(); the collector periodically traces reachability from roots and reclaims anything not reached. Circular references between two otherwise-unreachable objects are still collected, unlike simple reference counting.</p>
+</div>
+
+<!-- ===== MISC ===== -->
+<h2 id="misc">Misc</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a Java record, and when would you use one?</p>
+  <p class="qa-a">A record (Java 16+) is a compact, immutable data carrier — the compiler auto-generates the constructor, accessors, <code>equals()</code>, <code>hashCode()</code>, and <code>toString()</code> from its declared fields. Ideal for DTOs, value objects, and API request/response shapes where you just need to carry data with no extra behavior.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is <code>Integer a = 127; Integer b = 127; a == b</code> true, but the same with 200 is false?</p>
+  <p class="qa-a">Java caches boxed <code>Integer</code> values from -128 to 127 (the "Integer cache") for autoboxing, so both variables point to the same cached object in that range. Outside the range, autoboxing creates new distinct objects, so <code>==</code> (reference comparison) returns false. Always use <code>.equals()</code> for wrapper value comparison.</p>
+</div>
+
+<p class="footer-note"><a href="java-notes.html">Java Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

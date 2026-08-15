@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don't Watch Yourself Do It — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0018-what-adversity-actually-does.html">Lesson 18</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 7 · Performance · Lesson 1 · ~10 min</div>
+  <h1>Don't Watch Yourself Do It</h1>
+  <p class="subtitle">Choking isn't a failure of nerve. Often, it's a failure of exactly where you point your attention.</p>
+
+  <div class="meta">
+    Opens Stage 7 — executing under pressure. Complements Stage 3's physiological composure work (cyclic sighing) with the cognitive failure mode pressure actually causes.
+  </div>
+
+  <p>Psychologist Sian Beilock's research on "choking under pressure" identifies a specific mechanism: <strong>explicit monitoring</strong>. A skill you've genuinely mastered runs as a procedure — encoded in a form that doesn't need step-by-step conscious oversight to execute. Under pressure, people instinctively try to control the outcome by paying closer attention to their own mechanics — and that closer attention is exactly what disrupts a procedure that was supposed to run without it.</p>
+
+  <p>In one of her experiments, skilled golfers putting under pressure choked — but the choking was eliminated by <strong>self-consciousness training</strong> (practicing while watched, building tolerance to the exact pressure that causes over-monitoring) and was <em>not</em> affected by dual-task training (adding a second mental task to occupy spare attention). That result specifically implicates conscious attention to your own mechanics as the mechanism — not just generic distraction or nerves.</p>
+
+  <h2>Two different failure modes, two different fixes</h2>
+
+  <p>Later research from Beilock and colleagues found choking actually has more than one route, depending on the task. Well-learned motor skills (like a putt) are vulnerable to <strong>explicit monitoring</strong> — thinking too hard about mechanics that should be automatic. More cognitively demanding tasks are vulnerable to plain <strong>distraction</strong> — task-irrelevant worry eating the attention the task actually needs. These call for different responses: a well-drilled physical skill needs you to trust the automaticity and keep attention external (on the target, the outcome, anything but your own joints and mechanics); a demanding cognitive task needs you to actively manage the worry itself, not just "focus harder."</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The practical takeaway</span>
+    For a skill you've genuinely drilled through Stage 5's deliberate practice, the pressure-day fix usually isn't "concentrate harder on doing it right" — that's the trap. It's closer to the opposite: trust the automaticity you built over a thousand days, and put your attention on the target or the outcome instead of your own mechanics. And per Beilock's actual finding, the way to build that trust isn't avoiding pressure in practice — it's deliberately practicing <em>under</em> pressure, with an audience, until being watched stops triggering the over-monitoring response.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of a specific time you choked — not just underperformed, but visibly fell apart under pressure on something you could normally do fine. Which failure mode was it, honestly: did you start consciously narrating your own mechanics mid-task ("keep my elbow in," "don't rush this"), or did your mind go somewhere else entirely — worry about the outcome, what people would think? Those are different problems with different fixes, and most people misdiagnose which one they actually have.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Describe the choking moment above in detail. Based on this lesson, name which failure mode it actually was, and one specific way you could practice under simulated pressure before the next high-stakes moment, rather than only practicing the skill in comfortable conditions.</p>
+    <textarea class="journal-input" id="j19" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j19-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Beilock, S. & Carr, T. (2001), "On the Fragility of Skilled Performance: What Governs Choking Under Pressure?" and the follow-up, Beilock et al. (2011), "Choking Under Pressure: Multiple Routes to Skill Failure." Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If "just trust the automaticity" sounds easier said than done — it is. Say specifically where it breaks down for you; the gap between knowing the mechanism and actually not narrating your own mechanics under real pressure is exactly the kind of thing worth troubleshooting concretely.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0019:j19";
+  var ta = document.getElementById("j19");
+  var status = document.getElementById("j19-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

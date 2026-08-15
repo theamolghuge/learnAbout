@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision — HTML &amp; CSS</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision — HTML &amp; CSS</h1>
+<p class="subtitle">Tiers in <a href="html-css-notes.html#study-guide">HTML &amp; CSS Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>DOCTYPE + viewport</td><td>Standards mode · width=device-width for mobile</td></tr>
+  <tr><td>Semantic HTML</td><td>header, nav, main, article, section, footer, button</td></tr>
+  <tr><td>label + for</td><td>Every input needs associated label</td></tr>
+  <tr><td>alt on img</td><td>Descriptive or empty for decorative</td></tr>
+  <tr><td>box-sizing</td><td>border-box — width includes padding+border</td></tr>
+  <tr><td>Flexbox</td><td>justify-content (main) · align-items (cross) · gap</td></tr>
+  <tr><td>Grid</td><td>grid-template-columns · fr · grid-area</td></tr>
+  <tr><td>position</td><td>relative parent + absolute child for overlays</td></tr>
+  <tr><td>Specificity</td><td>inline > id > class > element</td></tr>
+  <tr><td>Mobile-first</td><td>Base mobile · min-width media queries</td></tr>
+</table>
+
+<h2>Comparison tables</h2>
+
+<h3>Flexbox vs Grid</h3>
+<table class="ref">
+  <tr><th>Flexbox</th><th>Grid</th></tr>
+  <tr><td>1D — row or column</td><td>2D — rows and columns</td></tr>
+  <tr><td>Nav, centering, toolbars</td><td>Page layout, dashboards</td></tr>
+  <tr><td>Content-driven</td><td>Track-driven</td></tr>
+</table>
+
+<h3>Block vs Inline</h3>
+<table class="ref">
+  <tr><th>Block</th><th>Inline</th></tr>
+  <tr><td>New line, full width</td><td>In flow, content width</td></tr>
+  <tr><td>div, p, h1</td><td>span, a, strong</td></tr>
+</table>
+
+<h3>display: none vs visibility: hidden</h3>
+<table class="ref">
+  <tr><th></th><th>none</th><th>hidden</th></tr>
+  <tr><td>Layout space</td><td>Removed</td><td>Kept</td></tr>
+  <tr><td>Focusable</td><td>No</td><td>No (usually)</td></tr>
+</table>
+
+<h3>rem vs em vs px</h3>
+<table class="ref">
+  <tr><th>Unit</th><th>Relative to</th></tr>
+  <tr><td>px</td><td>Fixed pixels</td></tr>
+  <tr><td>rem</td><td>Root font size</td></tr>
+  <tr><td>em</td><td>Parent font size</td></tr>
+</table>
+
+<h3>CSS approaches (React projects)</h3>
+<table class="ref">
+  <tr><th>Approach</th><th>Note</th></tr>
+  <tr><td>CSS Modules</td><td>Scoped · co-located</td></tr>
+  <tr><td>Tailwind</td><td>Utilities · design tokens</td></tr>
+  <tr><td>BEM</td><td>.block__elem--mod</td></tr>
+</table>
+
+<h2>Center a div (memorize)</h2>
+<pre class="code"><code>/* Flex */
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Grid */
+.parent {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}</code></pre>
+
+<h2>30-second answers</h2>
+
+<p><strong>Box model?</strong><br>
+Content, padding, border, margin. Use border-box so width includes padding and border.</p>
+
+<p><strong>Flexbox vs Grid?</strong><br>
+Flex: one axis, components. Grid: two axes, page layouts. Often used together.</p>
+
+<p><strong>Semantic HTML?</strong><br>
+Elements that describe meaning — better SEO, a11y, maintenance than div soup.</p>
+
+<p><strong>Accessible form?</strong><br>
+Labels linked to inputs, fieldset for groups, correct types, keyboard works, errors not color-only.</p>
+
+<h2>Revision order</h2>
+<ol>
+  <li><a href="html-css-notes.html#semantic">Semantic HTML + Forms</a></li>
+  <li><a href="html-css-notes.html#flex">Flexbox ⭐</a> + <a href="html-css-notes.html#grid">Grid ⭐</a></li>
+  <li><a href="html-css-notes.html#box">Box model</a> + <a href="html-css-notes.html#specificity">Specificity</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="html-css-notes.html">HTML &amp; CSS Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

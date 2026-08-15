@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why This Kept Asking You To Write — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0031-an-ultimate-concern.html">Lesson 31</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 6 (extension) · ~9 min</div>
+  <h1>Why This Kept Asking You To Write</h1>
+  <p class="subtitle">Every lesson so far has ended with a journal prompt instead of a summary. That wasn't a style choice.</p>
+
+  <div class="meta">
+    Extends Stage 5, closing a real gap: memory was explicitly named in your original brief and never covered directly — including the fact that this curriculum has been using the research the whole time without saying so.
+  </div>
+
+  <p>Henry Roediger and Jeffrey Karpicke's 2006 research compared two ways of studying the same material: rereading it, or trying to recall it from memory and then checking. A week later, the students who'd practiced recall retained 61% of the passage. The students who'd reread it retained 40% — despite both groups spending identical time on the material, and despite the rereaders often <em>feeling</em> more confident going in. This is the <strong>testing effect</strong>: retrieving information strengthens memory more than re-exposure to it does, because reconstructing a memory from partial cues does something rereading can't — it forces the brain to actually rebuild the retrieval pathway, not just re-recognize the words.</p>
+
+  <p>In a landmark review of ten common study techniques, testing (retrieval practice) and spacing (distributing practice over time rather than cramming) were the only two rated "high utility." Rereading, highlighting, and summarizing — probably the three most commonly used study methods — all rated lower, despite their popularity.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What this curriculum has actually been doing</span>
+    Every lesson in this curriculum has ended with a journal prompt asking you to write your own answer — not a "here's the summary" recap. Lesson 28 asked you to compress all ten operating-system principles into your own one-line answers, from memory, before Lesson 29 turned them into your Manifesto. That wasn't a reflection gimmick. It's retrieval practice, applied deliberately, per the design philosophy this whole workspace runs on: compressing something into your own words is evidence you've actually learned it, and doing that compression is itself what makes it stick.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Be honest about your actual pattern: when you come back to this curriculum in a month to check something, will you default to rereading the lesson — which will feel productive and mostly won't be — or will you try to recall it first, from memory, and only check afterward? Most people default to rereading because it feels like progress. The research says it mostly isn't.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Do it right now — don't scroll up first.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">From memory: what's the difference between mastery-orientation and validation-orientation (Lesson 1)? What's the dichotomy of control (Lesson 2)? Pick one more concept from anywhere in this curriculum and state it in your own words. Only check your answers against the actual lessons after you've written something — that gap between attempt and check is the entire mechanism.</p>
+    <textarea class="journal-input" id="j38" placeholder="Start writing from memory..."></textarea>
+    <div class="journal-status" id="j38-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Roediger, H. & Karpicke, J. (2006), "The Power of Testing Memory," <em>Perspectives on Psychological Science</em>. Dunlosky, J. et al. (2013), "Improving Students' Learning With Effective Learning Techniques," for the comparative ranking of study strategies. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If retrieval practice felt uncomfortable just now — harder and less satisfying than rereading would have been — that discomfort is actually the mechanism working, per the research, not a sign you're doing it wrong. Say so if it's still not sitting right.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Back to <a href="./0031-an-ultimate-concern.html">Stage 5</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0038:j38";
+  var ta = document.getElementById("j38");
+  var status = document.getElementById("j38-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

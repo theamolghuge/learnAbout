@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 17 · Mechanism Design, Evolutionary &amp; Behavioral Game Theory</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0016-business-and-auctions.html">← Lesson 16</a>
+    <span>·</span>
+    <a href="./0018-bayesian-reasoning.html">Next: Lesson 18 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 17 · ~18 min · Level 10: Mechanism Design, Evolutionary &amp; Behavioral Game Theory</div>
+  <h1>Mechanism Design, Evolutionary &amp; Behavioral Game Theory</h1>
+  <p class="subtitle">The capstone: flipping the whole question around, then honestly confronting where the classical model stops matching real people.</p>
+  <div class="meta">Recap: every lesson so far took the rules of a game as given and asked what rational players would do inside them. This lesson does two new things — asks how to <em>design</em> the rules so good outcomes happen automatically, and then steps back to be precise about where the rational-player assumption itself breaks, which every earlier lesson has been quietly flagging since Lesson 2.</div>
+
+  <h2>The flip: mechanism design</h2>
+
+  <p>Sixteen lessons of game theory have asked one question: <strong>given the rules, what will rational players do?</strong> Mechanism design asks the reverse: <strong>given the outcome you want, what rules would make rational, self-interested players produce it anyway — without needing them to be honest, generous, or cooperative on purpose?</strong></p>
+
+  <p>You've already seen a real mechanism, without the name: Lesson 16's second-price (Vickrey) auction. It wasn't luck that truthful bidding turned out to be a dominant strategy — it was <em>designed</em> that way. The auction format is a mechanism specifically engineered so that each bidder's own self-interested best response happens to coincide with what the auction designer wants (truthful revelation of value). A mechanism with this property is called <strong>incentive-compatible</strong>: honest, desired behavior isn't something you have to ask for — it falls out of the rules themselves.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">This reframes Lesson 13's fixes too</span>
+    Lesson 13's solutions to moral hazard (aligned incentives, performance-based pay) and adverse selection (screening menus) are mechanism design, retroactively — a compensation structure is a mechanism an employer designs so that an employee's own self-interested choice happens to align with good-faith effort, precisely because unmonitored trust wasn't reliable. The <strong>principal-agent problem</strong> is the formal name for the employer/employee (or client/contractor, shareholder/executive) version of this: a principal wants an agent to act in the principal's interest, can't fully observe the agent's effort, and has to design a contract that makes good behavior the agent's own best move.</span>
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What makes a mechanism "incentive-compatible"?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">It requires players to act altruistically</button>
+      <button class="quiz-choice" data-correct="true">Honest or desired behavior is each player's own self-interested best response</button>
+      <button class="quiz-choice">It only works if players trust each other</button>
+      <button class="quiz-choice">It eliminates all asymmetric information</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Real mechanism design at work</h2>
+
+  <ul>
+    <li><strong>Medical residency matching.</strong> The algorithm that matches new doctors to hospital residency programs (the deferred-acceptance approach behind work that won Alvin Roth and Lloyd Shapley the 2012 Nobel Memorial Prize) was specifically redesigned to be stable and strategy-proof for one side — meaning applicants can't benefit from strategically misrepresenting their true preferences, which earlier, badly-designed matching systems actually allowed.</li>
+    <li><strong>School choice systems.</strong> Several major cities redesigned how students are assigned to schools specifically to remove incentives for parents to strategically misstate their true preferences — a direct, deliberate mechanism-design fix to a previously gameable system.</li>
+    <li><strong>Sales compensation design</strong> is a live mechanism-design problem every company solving it faces: commission structures, quotas, and equity vesting schedules are all attempts to make an individual salesperson's or executive's self-interested choices line up with the company's actual goals, rather than relying on trust alone.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">An honest limit, so this doesn't oversell the idea</span>
+    Mechanism design isn't unlimited. Voting systems are a classic example of hitting a real wall: Kenneth Arrow's impossibility theorem shows that no voting system with more than two candidates can simultaneously satisfy several individually reasonable fairness criteria at once — some tradeoff is mathematically unavoidable, not just a design failure waiting to be solved with enough cleverness. Worth knowing precisely because it's the kind of honest limit Lesson 21 of the original brief this workspace was built from explicitly asked for: game theory (and mechanism design with it) is a reasoning tool, not a guarantee that a perfect system always exists.
+  </div>
+
+  <h2>Evolutionary game theory: strategies that survive, without anyone calculating</h2>
+
+  <p>Every game so far assumed players consciously reason toward a best response. <strong>Evolutionary game theory</strong> drops that assumption entirely — it asks which <em>behaviors</em> persist and spread through a population over time, purely because they succeed more often than the alternatives, with no individual actually thinking strategically at all. This is what lets game theory explain animal behavior, entrenched social norms, and organizational habits that nobody is consciously optimizing.</p>
+
+  <h3>The Hawk-Dove Game</h3>
+  <p>Two animals contest a resource. A <strong>Hawk</strong> strategy always escalates to a real fight; a <strong>Dove</strong> strategy displays but retreats rather than risk injury. Two Hawks meeting means a costly, damaging fight. Two Doves meeting means the resource gets shared without harm. A Hawk meeting a Dove means the Hawk takes the resource and the Dove retreats unharmed.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">You've already solved this game — it's Chicken, restated</span>
+    Compare this payoff shape to Lesson 7's Chicken directly: mutual escalation is worst for both (the crash / the costly fight), one side backing down while the other doesn't is unequal but survivable, and mutual backing down is a modest, safe outcome for both. Same anti-coordination structure, same mixed-strategy logic — a population where everyone plays purely Hawk pays constant fighting costs against itself and isn't stable; a population where everyone plays purely Dove is stable against nothing (a rare Hawk mutant cleans up every encounter). The stable outcome is a specific mix — either a mixed population of some Hawks and some Doves, or every individual playing Hawk with a specific calculable probability — found using exactly Lesson 5's recipe (set the alternative strategy's expected payoff equal, solve). This mix is called an <strong>evolutionarily stable strategy (ESS)</strong>: a population-level strategy that a rare alternative can't successfully invade.
+  </div>
+
+  <p>The reframe worth keeping: Nash equilibrium (Lesson 3) describes what a rational individual should do; an evolutionarily stable strategy describes what a population settles into through pure differential success, no reasoning required — and in games like this one, they land on the same mathematical answer. That's not a coincidence; it's a genuine, well-established connection between two very differently-motivated ideas arriving at the same equilibrium condition.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What does an evolutionarily stable strategy (ESS) describe, that a Nash equilibrium doesn't require?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">A strategy that maximizes total group welfare</button>
+      <button class="quiz-choice" data-correct="true">A population-level outcome that persists through differential success, without any individual consciously reasoning toward it</button>
+      <button class="quiz-choice">A strategy only possible in cooperative games</button>
+      <button class="quiz-choice">A strategy that never involves any cost or risk</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Behavioral game theory: where the classical model quietly breaks</h2>
+
+  <p>This closes the loop this course opened in Lesson 2, when rationality was introduced as "a modeling assumption you should watch for breaking, not a fact about people." By now you've seen it break, specifically and repeatedly:</p>
+
+  <ul>
+    <li><strong>Loss aversion</strong> (from Daniel Kahneman and Amos Tversky's prospect theory, work that won Kahneman the 2002 Nobel Memorial Prize): losses are felt roughly twice as painfully as equivalent gains feel good. This is a real force behind Lesson 8's Ultimatum rejections (a low offer registers partly as a loss relative to a fair expectation, not just a smaller-than-ideal gain) and behind negotiators (Lesson 15) who resist "fair" price cuts because they anchor on what they already effectively "have."</li>
+    <li><strong>Bounded rationality</strong> (Herbert Simon, another Nobel laureate in this tradition): real people don't compute full game-theoretic optimal solutions — they use workable shortcuts and stop at "good enough," not because they're careless, but because full optimization is often genuinely too costly to compute in real time.</li>
+    <li><strong>Fairness and reciprocity preferences</strong>, already precisely demonstrated by Lesson 8's Ultimatum and Dictator Game results — real payoffs routinely include a term for fairness that a naive money-only model leaves out entirely.</li>
+    <li><strong>Overconfidence</strong> — a direct contributor to Lesson 16's winner's curse in practice: bidders who are overconfident in the precision of their own common-value estimates shade their bids less than the math recommends, and pay for it.</li>
+    <li><strong>Anchoring</strong> — Kahneman and Tversky's original finding, already put to direct practical use in Lesson 15's negotiation framework.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">The line this whole course has been building toward</span>
+    <strong>Game theory is a framework for reasoning about strategic interactions, not a magic formula for predicting human behavior.</strong> The classical rational-agent model is a genuinely useful floor to reason from — it tells you what a purely self-interested calculator would do, which is often close to right and always a clarifying starting point. But real people layer fairness, loss aversion, bounded attention, and overconfidence on top of it, sometimes barely, sometimes enormously. The actual skill this course has been training, lesson after lesson, isn't memorizing the classical prediction — it's knowing how much to trust it in a given real situation, and reaching for the right behavioral correction when it's likely to be wrong.
+  </div>
+
+  <h2>Game Theory Detective — a capstone</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A company is redesigning its sales compensation plan. It's considering two structures: (a) a high fixed base salary with a small bonus, or (b) a low fixed base with a large, uncapped commission tied directly to sales closed. Using this lesson's tools plus earlier ones — mechanism design/incentive compatibility, moral hazard (Lesson 13), signaling/screening (Lessons 13-14), and loss aversion (this lesson) — analyze: which structure better addresses the moral hazard problem of unobservable sales effort? What does a candidate's willingness to accept structure (b) signal about them, and is that signal credible by Lesson 14's test? How might framing the bonus as "at-risk pay you lose if you miss target" rather than "a bonus you gain if you hit it" change behavior, given loss aversion?
+    </div>
+    <textarea placeholder="Write your analysis here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Moral hazard:</strong> structure (b) is the stronger mechanism-design fix — tying pay directly to sales closed makes strong effort each individual rep's own self-interested best response, rather than something a manager has to monitor and hope for, which is exactly the incentive-compatible logic from earlier in this lesson.<br><br>
+      <strong>Signaling/screening:</strong> a candidate's willingness to accept the low-base, high-commission structure (b) is a genuine, differentially-costly signal by Lesson 14's test — a candidate confident in their own selling ability finds this relatively cheap to accept (they expect to earn more overall); a weaker or more risk-averse candidate finds the same structure relatively more costly (higher downside risk relative to their expected close rate). The compensation structure itself functions as a screening menu, similar to Lesson 13's insurance-deductible example — different types self-select into different options.<br><br>
+      <strong>Loss aversion framing:</strong> framing the variable portion as "at-risk pay you lose by missing target" rather than "a bonus you gain by hitting it" leverages loss aversion directly — since losses are felt more sharply than equivalent gains, the same dollar amount, reframed as avoidable loss rather than optional gain, is predicted to motivate harder effort, a real and commonly used practice in sales-management design, not just theory.
+      <br><br>
+      If you treated all three of these as unrelated tips rather than manifestations of the same handful of tools (mechanism design, signaling, behavioral correction) taught across this entire course, that's worth noticing — the point of this capstone scenario was specifically to show they're not separate insights, but one lens applied three times.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me how you connected the three pieces, and if you have a real compensation, incentive, or mechanism-design question of your own — from work, a business, or anywhere else — bring it. This is the last built lesson in the current curriculum; from here on, applying this toolkit to your own situations is exactly what the mission this workspace opened with was built for.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Flip a strategic problem around and ask how you'd design the rules, not just predict behavior inside existing ones; recognize when a stable real-world pattern (a social norm, an organizational habit) might be an evolutionarily stable equilibrium rather than anyone's conscious choice; and know specifically which behavioral correction (loss aversion, bounded rationality, fairness, overconfidence) is most likely to make the classical prediction wrong in a given real situation.
+  </div>
+
+  <h2>The full course, in one line</h2>
+  <p>You started at Lesson 1 asking "who are the players, what are their actions, payoffs, information, and rules." Seventeen lessons later, that question hasn't changed — what's changed is everything you now know to ask <em>after</em> it: is there a dominant strategy or do you need Nash equilibrium; is this simultaneous or sequential; one-shot or repeated; is information symmetric; what's actually being signaled; what's your BATNA; what mechanism would fix the incentives; and how much should you trust the "rational" prediction versus a behavioral correction. That's not a checklist to memorize — by now, it should be closer to how you already look at things. One more lesson (Lesson 18) puts an exact number on what a piece of evidence should do to a belief, then the <a href="../reference/decision-framework.html">one-page Decision Framework</a> compresses all of it onto a single page for quick reference going forward.</p>
+
+  <p class="lesson-footer">
+    <a href="./0016-business-and-auctions.html">← Lesson 16</a>
+    <a href="./0018-bayesian-reasoning.html">Lesson 18: Bayesian Reasoning, Beliefs &amp; Risk vs. Uncertainty →</a>
+  </p>
+
+</div>
+</body>
+</html>

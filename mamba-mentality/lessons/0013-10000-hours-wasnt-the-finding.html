@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10,000 Hours Wasn't The Finding — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0012-the-plan-for-not-feeling-like-it.html">Lesson 12</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 1 · ~11 min</div>
+  <h1>10,000 Hours Wasn't The Finding</h1>
+  <p class="subtitle">The study behind the famous number has since been re-run. It's more useful now that it's messier.</p>
+
+  <div class="meta">
+    Opens Stage 5 — becoming exceptional at a craft. Builds on Stage 4's discipline mechanics: those get you to show up; this stage is about what you actually do once you're there.
+  </div>
+
+  <p>"It takes 10,000 hours to master anything" is one of the most repeated claims in self-improvement, sourced (loosely) to Anders Ericsson's research and popularized by Malcolm Gladwell's <em>Outliers</em>. Ericsson himself objected to this in the book that's Tier 1 in this curriculum, <em>Peak</em>: 10,000 was an average from one study, not a threshold, and Gladwell conflated ordinary performing with deliberate practice — two very different activities that happen to both involve an instrument.</p>
+
+  <h2>What deliberate practice actually means</h2>
+
+  <p>The real definition, precisely: deliberate practice requires specific goals for the session (not "get better," but a defined target), full attention on the task, immediate feedback on whether you're doing it right, and a deliberate push past your current level of ability. Repetition alone — playing through a piece you already know, running drills you've already mastered — doesn't count, no matter how many hours it accumulates. This is the actual distinction the "10,000 hours" shorthand erases.</p>
+
+  <h2>The honest complication</h2>
+
+  <p>The number itself comes from Ericsson, Krampe & Tesch-Römer's 1993 study of violin students at the Berlin Music Academy, split into "best," "good," and "teacher" tiers. The best group had accumulated roughly 10,000 hours of deliberate practice by age 20 — about 2,500 more than the "good" group, 5,000 more than the "teacher" group — and the paper concluded that accumulated deliberate practice largely explained the differences in skill.</p>
+
+  <p>In 2019, Brooke Macnamara and Megha Maitra ran a careful replication, published in <em>Royal Society Open Science</em>, with tighter methodology (including double-blind procedures the original lacked). They found deliberate practice explained about 26% of the variance in performance — a real, substantial effect, but well under the original's 48%. More striking: they found <strong>no significant difference in accumulated solo practice between the "best" and "good" violinists</strong> — directly contradicting the clean, monotonic story the original number is famous for.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What this actually means for you</span>
+    This isn't a case for giving up on deliberate practice — 26% of the variance in elite musical performance, from one measurable variable, is a large effect in a domain shaped by dozens of factors. It's a case against treating hours as a metric that does the work by itself. The honest picture: deliberate practice matters enormously, and it is not the whole story, and nobody — including Ericsson's own original data, once re-checked — actually knows the full list of what fills the rest. Chasing an hours count is close to Lesson 1's validation-orientation wearing a stopwatch: a number you can show someone, standing in for the thing that actually matters, which is what happened inside each of those hours.</p>
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think about your actual practice sessions in whatever you're trying to master. Are you tracking hours, streaks, or session counts as something you could report to someone — a number that feels like proof of effort? Or does each session have a specific target, a way to know within minutes whether you did it right, and a deliberate stretch past what you could already do? Answer for your last real session, not your ideal one.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Describe your actual feedback loop right now: who or what tells you, during or immediately after a session, whether what you did was right — and what specifically you're pushing past your current ability on. If you can't answer either half clearly, that's diagnostic: it likely means naive repetition, not deliberate practice, however many hours it logs.</p>
+    <textarea class="journal-input" id="j13" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j13-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>Peak</em> (Ericsson & Pool) for the working definition. For the honest research history: Ericsson, Krampe & Tesch-Römer (1993) and its 2019 replication by Macnamara & Maitra, <em>Royal Society Open Science</em> — read them in that order, the replication only makes sense against the original. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If 26% of variance sounds small rather than large to you, say so — reasonable people read effect sizes differently, and the honest answer is that "how big is 26%" depends partly on what else you'd expect to explain something as complex as elite musical skill.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0013:j13";
+  var ta = document.getElementById("j13");
+  var status = document.getElementById("j13-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

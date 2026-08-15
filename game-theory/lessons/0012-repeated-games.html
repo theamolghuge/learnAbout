@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 12 · Repeated Games, Reputation &amp; Tit-for-Tat</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0011-commitment-and-entry-games.html">← Lesson 11</a>
+    <span>·</span>
+    <a href="./0013-asymmetric-information.html">Next: Lesson 13 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 12 · ~16 min · Level 5: Repeated Games</div>
+  <h1>Repeated Games, Reputation &amp; Tit-for-Tat</h1>
+  <p class="subtitle">What is rational once can become irrational forever — the single idea that finally lets the Prisoner's Dilemma and the Trust Game escape their own traps.</p>
+  <div class="meta">Recap: Lessons 3, 10, and 11 each found a Pareto-better outcome that rational players couldn't reach in a one-shot game — and each time, this lesson's territory was gestured at as the eventual fix. This is that fix, made precise: what changes when the same players face the same game not once, but over and over.</div>
+
+  <h2>The shadow of the future</h2>
+
+  <p>Political scientist Robert Axelrod's phrase for the core mechanism: when today's game isn't the last one, today's choice can be rewarded or punished tomorrow. That single fact changes the incentive math entirely. Defecting in Lesson 3's Prisoner's Dilemma was individually rational because there was no tomorrow to answer for. Add a tomorrow, and defecting today can cost you cooperation — or invite retaliation — for every round that follows. <strong>The dominant strategy from the one-shot game isn't automatically still dominant once the game repeats.</strong></p>
+
+  <h2>The trap inside "repeated": finite vs. indefinite</h2>
+
+  <p>Here's the part almost every casual treatment of this topic gets wrong, and it follows directly from Level 4's backward induction. Suppose two players know, with certainty, that they'll play the Prisoner's Dilemma exactly 10 times, then never again. Solve it by backward induction, the way Lesson 10 taught you to:</p>
+
+  <ul>
+    <li><strong>Round 10 (the last round):</strong> there's no future left to protect — it's a plain one-shot Prisoner's Dilemma. Rational players defect, exactly as Lesson 3 predicted.</li>
+    <li><strong>Round 9, knowing Round 10:</strong> since both players already know Round 10 will be defection no matter what happens in Round 9, there's nothing left to protect by cooperating in Round 9 either. Defect.</li>
+    <li>This unravels <strong>all the way back to Round 1.</strong> A known, finite, common-knowledge end date destroys the shadow of the future entirely — the formal prediction for a finitely repeated Prisoner's Dilemma, with a known endpoint, is defection in every single round.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">So what actually sustains cooperation?</span>
+    Cooperation becomes sustainable specifically when the game's end isn't a fixed, commonly-known date — either it genuinely continues forever, or (far more realistically) each round continues with some probability, so no one ever knows for certain which round is the last. Most real ongoing relationships — coworkers, repeat customers, business partners — work exactly this way: there's no scheduled final interaction, so the shadow of the future never fully evaporates. This is precisely why Lesson 10's Trust Game and Lesson 11's entry-deterrence reputation both pointed here: they need <em>this</em> kind of repetition to work, not just "doing it more than once."
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Why does a Prisoner's Dilemma repeated a known, fixed 10 times still predict defection every round?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because 10 rounds isn't enough to build trust</button>
+      <button class="quiz-choice" data-correct="true">Backward induction from the known last round unravels cooperation all the way back to round 1</button>
+      <button class="quiz-choice">Because the payoffs change with each round</button>
+      <button class="quiz-choice">Because Tit-for-Tat only works in one-shot games</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Two strategies for the indefinitely repeated game</h2>
+
+  <p>Once the end date is uncertain, specific strategies can sustain cooperation as a genuine equilibrium — not just an aspiration. Two of the best-known:</p>
+
+  <ul>
+    <li><strong>Grim Trigger:</strong> cooperate every round, until the other player defects even once — then defect forever after, no matter what they do next. Simple and maximally harsh: one betrayal, permanent punishment. Effective as a deterrent if the threat is credible (and by Lesson 10's SPE logic, it genuinely is credible here, since defecting forever really is your best response once trust is permanently broken) — but it can't recover from a single mistake or misread signal.</li>
+    <li><strong>Tit-for-Tat:</strong> cooperate on the first round, then simply copy whatever the other player did on the <em>previous</em> round. Cooperate if they cooperated last time; defect if they defected last time.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Why Tit-for-Tat is the famous one</span>
+    Robert Axelrod ran a series of computer tournaments in the early 1980s, inviting game theorists to submit strategies for a repeated Prisoner's Dilemma, competing round-robin against each other. Tit-for-Tat — one of the simplest strategies submitted, just a few lines of code — won both tournaments outright, beating many far more complex, deceptive, and "clever" entries. Axelrod's analysis credited four properties: it's <strong>nice</strong> (never defects first), <strong>retaliatory</strong> (punishes defection immediately, so it can't be exploited for long), <strong>forgiving</strong> (returns to cooperation the instant the other player does, unlike Grim Trigger's permanent grudge), and <strong>clear</strong> (simple enough that an opponent can recognize the pattern and learn that cooperating is genuinely rewarded).
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What's the key practical difference between Grim Trigger and Tit-for-Tat?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Grim Trigger cooperates first; Tit-for-Tat defects first</button>
+      <button class="quiz-choice">Tit-for-Tat only works in finitely repeated games</button>
+      <button class="quiz-choice" data-correct="true">Grim Trigger punishes a single defection forever; Tit-for-Tat forgives and returns to cooperation immediately</button>
+      <button class="quiz-choice">Grim Trigger requires more computing power to run</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it at work</h2>
+
+  <ul>
+    <li><strong>Coworkers and managers, most of the time.</strong> An ordinary working relationship has no announced end date — which is exactly what makes reputation, reliability, and "I'll cover for you if you cover for me" sustainable as genuine equilibrium behavior, not just niceness.</li>
+    <li><strong>Repeat suppliers and customers.</strong> A vendor who quietly cuts quality on a one-off sale might get away with it; a vendor expecting a long relationship has a real, calculable incentive not to, because the shadow of future orders is real money, not just goodwill.</li>
+    <li><strong>Online marketplace reputation systems.</strong> Buyer/seller ratings function as a public, collective Grim-Trigger-like mechanism — one bad-enough episode, visible to future counterparties, can effectively end a seller's ability to transact at all, which is exactly the threat structure that deters bad behavior in the first place.</li>
+    <li><strong>The "known-departure" problem, watch for this one specifically.</strong> An employee who has announced they're leaving in a month, or a consultant on their final contract, is — in the strict logic of this lesson — approaching a known final round. Predictably, the shadow of the future shortens fast: effort, favors, and discretionary cooperation with that specific team often visibly drop off in exactly the pattern backward induction predicts, even from people who were reliably cooperative before the end date was known.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Robert Axelrod's <em>The Evolution of Cooperation</em> (1984) is the primary source for the tournament results and the four properties above. Ben Polak's Yale course covers finite-vs-infinite repetition and the backward-induction unraveling argument directly.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A teammate on your project just announced they're leaving the company in four weeks. Before the announcement, they were reliably cooperative — covering for teammates, sharing credit fairly, flagging problems early. Using this lesson's logic: what should you predict about their behavior over the next four weeks, and why, precisely (not just "people slack off when leaving" — trace it to the actual mechanism)? Then propose one real factor that could partially counteract the predicted shift — something that genuinely changes their incentive, not just an appeal to professionalism.
+    </div>
+    <textarea placeholder="Write your prediction, mechanism, and counteracting factor here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>The prediction and mechanism:</strong> the announced end date converts what was an indefinitely repeated relationship (where cooperation was a sustainable equilibrium, protected by an uncertain future) into a game with a known final round with this specific team. By the same backward-induction logic as the 10-round Prisoner's Dilemma, the shadow of the future here has a hard, known edge — so cooperative effort specifically aimed at protecting this team relationship should be predicted to decline as the date approaches, not because the person has become a worse colleague, but because the structural incentive that was sustaining the extra effort has genuinely been removed.<br><br>
+      <strong>A real counteracting factor:</strong> the departing teammate's reputation doesn't actually end when their employment does — future employers, industry contacts, and the possibility of needing a reference or running into these same colleagues again (a small industry, a shared professional network like LinkedIn) extend a version of the shadow of the future beyond the literal last day. This isn't a guaranteed fix, but it's a real, structurally-grounded reason cooperative behavior might persist anyway — worth distinguishing from "just ask them to keep trying," which appeals to goodwill rather than incentive.
+      <br><br>
+      If you predicted no change in behavior at all — worth reconsidering against the backward-induction logic above; if you predicted a change but attributed it purely to attitude ("they've checked out mentally") rather than to the actual structural loss of future consequences, that's a common near-miss — the mechanism matters because it's what tells you whether anything (like reputation portability) could realistically counteract it.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what you predicted and whether you traced it to the backward-induction mechanism or just to a vaguer "people disengage" intuition. If you've actually seen this pattern play out with a real departing colleague, that's worth comparing against the model directly — reputation-portability effects are genuinely inconsistent in practice, and your real observation is better evidence than the generic prediction above.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Tell the difference between a repeated relationship that genuinely sustains cooperation (indefinite, uncertain end) and one that's secretly a finite game heading toward backward-induction unraveling (known end date) — and recognize Tit-for-Tat's nice/retaliatory/forgiving pattern as a real, empirically-successful strategy, not just an intuitive nice idea.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0011-commitment-and-entry-games.html">← Lesson 11</a>
+    <a href="./0013-asymmetric-information.html">Lesson 13: Asymmetric Information, Adverse Selection &amp; the Market for Lemons →</a>
+  </p>
+
+</div>
+</body>
+</html>

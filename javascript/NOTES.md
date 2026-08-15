@@ -6,6 +6,11 @@
 - [System Design](reference/system-design.html)
 - [Implement from Memory](reference/implement-from-memory.html)
 
+### HTML & CSS (3 files)
+1. [HTML & CSS Notes](html-css/reference/html-css-notes.html)
+2. [Interview Q&A](html-css/reference/interview-qa.html)
+3. [Quick Revision](html-css/reference/quick-revision.html)
+
 ### JavaScript (3 files)
 1. [JavaScript Notes](javascript/reference/javascript-notes.html)
 2. [Interview Q&A](javascript/reference/interview-qa.html)
@@ -32,10 +37,11 @@
 3. [Quick Revision](nextjs/reference/quick-revision.html)
 
 ## Study order
-1. **JavaScript** → **TypeScript**
-2. **Node.js** (Event Loop ⭐, Streams ⭐)
-3. **React.js** (useEffect ⭐, React Query) → **Next.js** (RSC, caching ⭐, Server Actions)
-4. **System Design** + **Implement from Memory** before mocks
+1. **HTML & CSS** — semantics, flexbox ⭐, grid ⭐, responsive, a11y
+2. **JavaScript** → **TypeScript**
+3. **Node.js** (Event Loop ⭐, Streams ⭐)
+4. **React.js** (useEffect ⭐, React Query) → **Next.js** (RSC, caching ⭐)
+5. **System Design** + **Implement from Memory** before mocks
 
 ## How to study
 1. Read each topic's **Notes** — follow tier guides (#study-guide)

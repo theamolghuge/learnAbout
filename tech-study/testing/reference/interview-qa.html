@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Testing</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="testing-notes.html">Testing Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#pyramid">Test Pyramid</a> ·
+  <a href="#junit">JUnit</a> ·
+  <a href="#mockito">Mockito</a> ·
+  <a href="#slices">Spring Test Slices</a>
+</nav>
+
+<h2 id="pyramid">Test Pyramid</h2>
+
+<div class="qa">
+  <p class="qa-q">Why should most of your tests be plain unit tests instead of @SpringBootTest?</p>
+  <p class="qa-a">Starting a full Spring application context is slow — doing it for every test scenario makes the suite slow to run, which discourages running tests frequently. A plain unit test with mocked dependencies runs in milliseconds and still verifies the business logic just as thoroughly. @SpringBootTest is reserved for a smaller number of true end-to-end checks that verify wiring and integration, not every edge case.</p>
+</div>
+
+<h2 id="junit">JUnit</h2>
+
+<div class="qa">
+  <p class="qa-q">Difference between @BeforeEach and @BeforeAll?</p>
+  <p class="qa-a">@BeforeEach runs before every single test method, giving each test fresh, isolated state — the standard choice. @BeforeAll runs once for the whole test class (must be static) — used for expensive setup that's safe to share across tests, like starting a shared resource, though shared mutable state between tests is a common source of flaky tests if you're not careful.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you test that a method throws a specific exception in JUnit 5?</p>
+  <p class="qa-a"><code>assertThrows(SpecificException.class, () -> methodUnderTest())</code> — it runs the lambda and asserts the given exception type is thrown; if no exception (or the wrong type) is thrown, the test fails. Cleaner and more explicit than a manual try/catch with a fail() call in the try block.</p>
+</div>
+
+<h2 id="mockito">Mockito</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between @Mock and @InjectMocks?</p>
+  <p class="qa-a">@Mock creates a fake implementation of a dependency with all methods stubbed to no-op defaults until you configure them. @InjectMocks creates a real instance of the class under test and injects the @Mock-annotated fields into it (via constructor if one exists, otherwise field/setter injection) — so you're testing real logic in the class under test, with fake collaborators around it.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between when(...).thenReturn(...) and verify(...)?</p>
+  <p class="qa-a">when/thenReturn is stubbing — it configures what a mock returns when called, controlling the test's inputs. verify is behavior verification — it asserts a mock method WAS actually called (and how many times, with what arguments) after the code under test ran. You stub to set up the scenario; you verify to check the code under test did the right thing with its dependencies.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When would you use @Spy instead of @Mock?</p>
+  <p class="qa-a">A @Spy wraps a real object — calls go to the real implementation unless you explicitly stub a specific method. It's useful when you want mostly-real behavior with one method overridden for the test, but it's used sparingly; needing it often signals the class under test has too many responsibilities and should be split up.</p>
+</div>
+
+<h2 id="slices">Spring Test Slices</h2>
+
+<div class="qa">
+  <p class="qa-q">What does @WebMvcTest load, and what do you have to provide yourself?</p>
+  <p class="qa-a">It loads only the web/MVC layer — controllers, filters, @ControllerAdvice, and the MockMvc test infrastructure — without starting the full application context or a real database. Any service or repository the controller depends on isn't wired up, so you register a Mockito fake for it with @MockBean and stub its behavior.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why use @DataJpaTest instead of just mocking the repository in every test?</p>
+  <p class="qa-a">Mockito mocking a repository only proves your service calls the repository correctly — it can't verify a custom @Query or derived query method actually returns correct results, since there's no real query execution happening. @DataJpaTest runs your repository against a real (typically embedded) database, which is the only way to actually test query correctness.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why might Testcontainers catch bugs that an in-memory H2 database misses?</p>
+  <p class="qa-a">H2 doesn't perfectly replicate every SQL dialect quirk, function, or constraint behavior of the production database (e.g. Postgres-specific functions, case sensitivity, certain constraint enforcement). Testcontainers runs tests against the actual database engine in a disposable Docker container, so dialect-specific bugs that H2 would silently accept get caught before production.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">You need to test that a controller returns 400 with a specific error message when validation fails. Which test type is appropriate?</p>
+  <p class="qa-a">@WebMvcTest with MockMvc — it exercises the real @RequestMapping, @Valid validation, and @ControllerAdvice exception handling without needing a database or the full application context, making it the fastest test that still verifies the actual HTTP status code and JSON error body.</p>
+</div>
+
+<p class="footer-note"><a href="testing-notes.html">Testing Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

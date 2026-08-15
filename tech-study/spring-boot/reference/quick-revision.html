@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Spring Core + Boot + REST</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="spring-boot-notes.html#study-guide">Spring Core + Boot + REST Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>IoC</td><td>Container creates/wires objects, not your code</td></tr>
+  <tr><td>DI</td><td>Container injects dependencies — constructor injection preferred</td></tr>
+  <tr><td>@Component/@Service/@Repository</td><td>All beans · @Repository also does exception translation</td></tr>
+  <tr><td>@Controller/@RestController</td><td>RestController = Controller + @ResponseBody everywhere</td></tr>
+  <tr><td>Singleton scope (default)</td><td>One shared instance — beans must be stateless</td></tr>
+  <tr><td>prototype scope</td><td>New instance every injection/request</td></tr>
+  <tr><td>@SpringBootApplication</td><td>@Configuration + @EnableAutoConfiguration + @ComponentScan</td></tr>
+  <tr><td>Auto-configuration</td><td>Classpath-driven defaults · backs off if you define your own bean</td></tr>
+  <tr><td>Starters</td><td>Curated dependency bundles, version-compatible</td></tr>
+  <tr><td>Embedded server</td><td>Tomcat bundled in jar · no external app server</td></tr>
+  <tr><td>@PathVariable</td><td>URL path segment — /users/{id}</td></tr>
+  <tr><td>@RequestParam</td><td>Query string — ?role=admin</td></tr>
+  <tr><td>@RequestBody</td><td>JSON body → Java object (Jackson)</td></tr>
+  <tr><td>Idempotent methods</td><td>GET, PUT, DELETE — safe to retry</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>@PostConstruct/@PreDestroy</td><td>Bean lifecycle hooks — after DI / before shutdown</td></tr>
+  <tr><td>Profiles</td><td>Env-specific config · activate via spring.profiles.active</td></tr>
+  <tr><td>Property precedence</td><td>CLI args &gt; env vars &gt; profile YAML &gt; base YAML</td></tr>
+  <tr><td>Actuator /health</td><td>UP/DOWN incl. downstream checks — what k8s probes</td></tr>
+  <tr><td>Actuator /metrics</td><td>JVM, GC, HTTP timing, custom app metrics</td></tr>
+  <tr><td>@ConfigurationProperties</td><td>Bind a whole prefix to a POJO, vs single @Value</td></tr>
+</table>
+
+<h2>HTTP status cheat sheet</h2>
+<table class="ref">
+  <tr><th>Code</th><th>Meaning</th></tr>
+  <tr><td>200 / 201 / 204</td><td>OK / Created / No Content</td></tr>
+  <tr><td>400 / 401 / 403 / 404 / 409 / 422</td><td>Bad request / Not authenticated / Not permitted / Missing / Conflict / Failed validation</td></tr>
+  <tr><td>500</td><td>Unhandled server error</td></tr>
+</table>
+
+<h2>Request lifecycle (30-second answer)</h2>
+<pre class="code"><code>Tomcat → DispatcherServlet → HandlerMapping finds @RequestMapping
+  → Filters/Interceptors → deserialize @RequestBody + @Valid
+  → Controller → Service → Repository → DB
+  → Serialize response (Jackson) → back through filter chain</code></pre>
+
+<h2>30-second answers</h2>
+<p><strong>Constructor vs field injection?</strong><br>
+Constructor: explicit, final fields, fail-fast, easy to test with plain new(). Field: hidden deps, needs reflection, harder to test.</p>
+<p><strong>401 vs 403?</strong><br>
+401 = not authenticated at all. 403 = authenticated but not allowed.</p>
+<p><strong>Why is default singleton scope risky for state?</strong><br>
+One instance shared by every concurrent request thread — mutable instance fields race.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Full CRUD @RestController: GET all/one, POST, PUT, DELETE with correct status codes</li>
+  <li>A @Configuration class with a manual @Bean for a 3rd-party client</li>
+  <li>application.yml with a custom @ConfigurationProperties-bound class</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="spring-boot-notes.html#ioc">IoC &amp; DI ⭐</a></li>
+  <li><a href="spring-boot-notes.html#beans">Beans, Scanning &amp; Configuration</a></li>
+  <li><a href="spring-boot-notes.html#boot-basics">Spring Boot Basics</a></li>
+  <li><a href="spring-boot-notes.html#rest">Building REST APIs ⭐</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="spring-boot-notes.html">Spring Core + Boot + REST Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

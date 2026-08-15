@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Operating System — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0027-what-it-was-always-for.html">Lesson 27</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 10 · Integration · Lesson 1 · ~14 min</div>
+  <h1>The Operating System</h1>
+  <p class="subtitle">Ten principles. No new material — just twenty-seven lessons, compressed to what you're actually going to carry.</p>
+
+  <div class="meta">
+    Opens Stage 10, the final stage. This lesson introduces nothing new — it's a retrieval exercise, walking the ten principles your original brief named and pointing each back to where it was actually built. Compressing what you've learned into short, usable answers is itself evidence you've learned it. The next lesson turns your answers here into the Manifesto.
+  </div>
+
+  <p>For each principle below: a short reminder of where it came from in this curriculum, then a one-line answer for you to write in your own words — not a summary of the lesson, your actual working answer, the kind you could recall under pressure without looking anything up.</p>
+
+  <h2>1. Responsibility — what do I control?</h2>
+  <p>Epictetus's dichotomy of control (Stage 1): own the "up to us" half completely — effort, preparation, response. Release the rest, without treating that release as guilt or indifference.</p>
+
+  <h2>2. Mastery — how do I become world-class at something?</h2>
+  <p>Deliberate practice, honestly qualified (Stage 5): specific goals, real feedback, a push past your edge — sustained over a timeframe measured in years, not weeks. A thousand days to forge, not to master.</p>
+
+  <h2>3. Discipline — what do I do when I don't feel like it?</h2>
+  <p>Not willpower (Stage 4): a stable context cue that fires regardless of motivation, an if-then plan decided in advance, and a fixed, unemotional response to a missed day.</p>
+
+  <h2>4. Focus — what deserves my attention?</h2>
+  <p>The mastery-vs-validation test from Lesson 1, plus your <a href="../MISSION.md">attention</a> workspace's vital-few work: what you'd still do with zero audience, sustained across your actual "few things," not scattered across everything available.</p>
+
+  <h2>5. Failure — how do I interpret it?</h2>
+  <p>Not proof of your worth (Stage 6): data, run through an actual review protocol — what happened, what was up to you, what it reveals, the next action. Meaning found through the response, not through the failure itself being secretly good.</p>
+
+  <h2>6. Pressure — how do I behave when stakes are high?</h2>
+  <p>A rehearsed sequence, not an in-the-moment scramble (Stage 7): physical reset, attention on the target rather than your own mechanics, comparison converted to information rather than a verdict.</p>
+
+  <h2>7. Ego — how do I stay ambitious without becoming arrogant?</h2>
+  <p>The same test, every time (Stage 8): what happens when you're challenged or fall short. Defensiveness and harshness are the tell, regardless of how confident the surface looks.</p>
+
+  <h2>8. Adversity — how do I convert suffering into growth?</h2>
+  <p>Carefully, not automatically (Stage 6 and 8): meaning is chosen, not guaranteed by the suffering itself; pain tolerance is a conscious, named risk, not damage absorbed on autopilot.</p>
+
+  <h2>9. Time — years and decades, not days?</h2>
+  <p>A thousand days to forge, twenty-seven years to refine (Stage 5); dharma that changes across a life's chapters, not one fixed role forever (Stage 9).</p>
+
+  <h2>10. Death — how does mortality change how I live?</h2>
+  <p>A deliberate, occasional filter (Stage 9), not a constant dread: would today's effort survive the question "would I still spend today on this if today were one of the last ones"?</p>
+
+  <div class="journal">
+    <div class="journal-prompt">Write your ten working answers.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">One line each, numbered 1–10, matching the principles above. Short enough to actually remember. This is the raw material the next lesson turns into your Manifesto.</p>
+    <textarea class="journal-input" id="j28" placeholder="1. Responsibility: ...&#10;2. Mastery: ...&#10;3. Discipline: ...&#10;(and so on)" style="min-height:14em;"></textarea>
+    <div class="journal-status" id="j28-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Before you move to the Manifesto</span>
+    Read back what you just wrote. Is there a principle where your one-liner is something you think you're <em>supposed</em> to say, rather than something you actually, currently live by? Mark it honestly to yourself — the Manifesto works only if it's a description of what you actually believe, not an aspirational performance for an audience of one.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If any principle's one-line summary above doesn't match what you actually took from that stage, override it — write the version that's true for you, not the version printed here.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Next: <a href="../lessons/0029-the-manifesto.html">Lesson 29 — The Manifesto</a>, the final lesson of this curriculum's core arc.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0028:j28";
+  var ta = document.getElementById("j28");
+  var status = document.getElementById("j28-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

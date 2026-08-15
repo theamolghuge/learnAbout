@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Spring Security + JWT</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="spring-security-notes.html#study-guide">Spring Security + JWT Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Authentication</td><td>Who are you? · fail = 401</td></tr>
+  <tr><td>Authorization</td><td>What can you do? · fail = 403</td></tr>
+  <tr><td>SecurityFilterChain</td><td>Filters run before DispatcherServlet · current config style, not WebSecurityConfigurerAdapter</td></tr>
+  <tr><td>STATELESS session policy</td><td>No HttpSession — required for scalable JWT auth</td></tr>
+  <tr><td>BCrypt</td><td>Slow + auto-salted · never SHA-256/MD5 for passwords</td></tr>
+  <tr><td>JWT structure</td><td>header.payload.signature — payload is encoded, NOT encrypted</td></tr>
+  <tr><td>JWT signature guarantees</td><td>Integrity (not tampered), not confidentiality</td></tr>
+  <tr><td>Stateless validation</td><td>Recompute signature + check expiry — no DB/session lookup</td></tr>
+  <tr><td>CORS protects</td><td>The server — which origins can call it via JS</td></tr>
+  <tr><td>CSRF protects</td><td>The user — stops forged requests riding on cookies</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Access token</td><td>Short-lived, sent every request</td></tr>
+  <tr><td>Refresh token</td><td>Long-lived, only sent to /auth/refresh, revocable</td></tr>
+  <tr><td>Refresh rotation</td><td>New refresh token each use · reuse of old one = theft signal</td></tr>
+  <tr><td>Role vs authority</td><td>Role = authority with ROLE_ prefix, usually bundles authorities</td></tr>
+  <tr><td>@PreAuthorize</td><td>Method-level check · needs @EnableMethodSecurity</td></tr>
+  <tr><td>OAuth2 roles</td><td>Resource Owner (user) · Client (your app) · Auth Server · Resource Server</td></tr>
+  <tr><td>Authorization Code flow</td><td>Code via browser redirect → token exchanged server-to-server</td></tr>
+  <tr><td>Disable CSRF for JWT</td><td>Safe only if JWT is in header, NOT if stored in a cookie</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+<p><strong>Why is JWT auth "stateless"?</strong><br>
+Every request self-validates via signature + expiry — no server-side session store needed.</p>
+<p><strong>Why two tokens (access + refresh)?</strong><br>
+Short access token limits leak damage; refresh token renews it without re-login.</p>
+<p><strong>401 vs 403, one more time?</strong><br>
+401 = not authenticated. 403 = authenticated, not permitted.</p>
+
+<h2>End-to-end flow</h2>
+<pre class="code"><code>POST /auth/register → hash password (BCrypt) → save → 201
+POST /auth/login → verify hash → issue access + refresh tokens → 200
+GET /users/profile
+  Authorization: Bearer <token>
+  → JwtAuthFilter validates → SecurityContext populated
+  → authorizeHttpRequests / @PreAuthorize check → 200 or 401/403</code></pre>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>A SecurityFilterChain bean: permitAll /auth/**, authenticated everything else, stateless session</li>
+  <li>JWT issue + validate (sign with secret, check expiry)</li>
+  <li>@PreAuthorize("hasRole('ADMIN')") on a controller method</li>
+  <li>Explain refresh token rotation out loud in 30 seconds</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="spring-security-notes.html#filter-chain">Security Filter Chain ⭐</a></li>
+  <li><a href="spring-security-notes.html#jwt">JWT ⭐</a></li>
+  <li><a href="spring-security-notes.html#refresh">Refresh Tokens</a></li>
+  <li><a href="spring-security-notes.html#cors-csrf">CORS &amp; CSRF</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="spring-security-notes.html">Spring Security + JWT Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

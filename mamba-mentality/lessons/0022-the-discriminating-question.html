@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Discriminating Question — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0021-your-pre-performance-routine.html">Lesson 21</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 8 · Character · Lesson 1 · ~11 min</div>
+  <h1>The Discriminating Question</h1>
+  <p class="subtitle">Two people can work identical hours with identical effort. Research can still tell them apart.</p>
+
+  <div class="meta">
+    Opens Stage 8 — the stage this curriculum has been building toward since Stage 1, where the dark side gets real weight, not a disclaimer paragraph. Starts giving you actual frameworks for the two questions Stage 5 and Stage 6 deliberately left open.
+  </div>
+
+  <p>Psychologist Wilmar Schaufeli's research compares <strong>work engagement</strong> (high vigor, dedication, and absorption in what you do) against <strong>workaholism</strong> — and the finding that matters is this: the two overlap heavily on effort and hours. What separates them isn't how hard someone works. Schaufeli found a real correlation between engagement and working <em>excessively</em>, but not between engagement and working <em>compulsively</em> — compulsion is specifically what discriminates workaholic behavior from genuine engagement. Put plainly: engaged people work hard because it's challenging and they enjoy it. Workaholics work hard because of an inner compulsion they feel they cannot resist, whether or not they're enjoying it at all.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The actual test</span>
+    A question that operationalizes the research: if you decided, today, not to do the work — a real, deliberate choice, nothing preventing you — what would actually happen? Engagement produces some disappointment, maybe restlessness, and then genuine okay-ness. Compulsion produces real anxiety or guilt that doesn't go away just because you decided it was fine. This is also the line between Stage 4's tapas (disciplined effort, chosen, sustainable even though it involves friction) and compulsion (effort you can't actually choose to stop, regardless of what it's costing you).
+  </div>
+
+  <h2>A case study: David Goggins</h2>
+
+  <p>Goggins's <em>Can't Hurt Me</em> is in this curriculum's resource list specifically for this lesson, not as inspiration. Critics and psychological analyses of his approach describe a pattern that Psychology Today has termed "toxic resilience" — ignoring emotional needs for the sake of performance, which can produce anxiety, depression, and physical harm rather than genuine strength. The specific critique: Goggins measures success through pain endured and limits conquered, in a pattern that reads less like enjoyment of a hard challenge and more like an inability to stop, possibly rooted in unresolved trauma being redirected into an endless pursuit of physical punishment. Applying Schaufeli's actual test: this reads as compulsion, not engagement — effort that can't be chosen to stop, not effort chosen because it's rewarding.</p>
+
+  <h2>Returning to the open questions</h2>
+
+  <p>Stage 5's 4am Olympics story and Stage 6's Achilles free-throw decision were both left deliberately unresolved. Here's what this framework actually allows you to say about them, honestly — including its limits:</p>
+
+  <p>The 4am story: the corroborating detail (specific, targeted extra training during a defined high-stakes preparation period, not an undifferentiated daily pattern) leans toward engagement rather than compulsion — but this framework is built for sustained patterns of work investment, and a genuinely honest answer requires admitting we can't fully verify someone else's internal motivational state from the outside. That limitation is real, not a dodge.</p>
+
+  <p>The Achilles decision: this doesn't cleanly fit the engagement-vs-workaholism frame at all — it was a single, roughly ten-second decision under acute pressure, not a sustained pattern of daily work investment. Forcing this framework onto it would be a misapplication, not an insight. Some real distinctions from this curriculum simply don't transfer to every case, and pretending otherwise would undercut the honesty this curriculum has tried to maintain throughout.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Now apply it to yourself</span>
+    Take the actual test from above, for real, about your own current practice: if you decided, today, not to do it — genuinely decided, not just imagined skipping and immediately felt guilty about imagining it — what would actually happen in your body and mind? Not what you think a disciplined person is supposed to feel. What would actually happen.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Answer the question above as specifically as you can. Based on Schaufeli's actual discriminating factor — compulsion — is your current relationship to your pursuit closer to engagement or to workaholism? If you're not sure, say what makes it genuinely hard to tell.</p>
+    <textarea class="journal-input" id="j22" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j22-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Schaufeli, W. et al., "The differences between workaholism and work engagement" — see <a href="../RESOURCES.md">RESOURCES.md</a> for the full citation and link. For the case study, read <em>Can't Hurt Me</em> alongside the critical review already flagged in Tier 3 — reading only the book risks absorbing the framing uncritically.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you think this lesson was too quick to diagnose Goggins from the outside using secondhand critique — that's a fair objection to raise. Psychological diagnosis-by-media-critique has real limits, and it's worth being skeptical of this lesson's own confidence here, not just applying that skepticism to the subjects being discussed.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0022:j22";
+  var ta = document.getElementById("j22");
+  var status = document.getElementById("j22-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

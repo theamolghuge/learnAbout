@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Marshmallow Wasn't The Whole Story — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0012-the-plan-for-not-feeling-like-it.html">Lesson 12</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 4 · Discipline · Lesson 4 (extension) · ~11 min</div>
+  <h1>The Marshmallow Wasn't The Whole Story</h1>
+  <p class="subtitle">One of psychology's most famous studies, and a replication ten times its size that complicated the popular version considerably.</p>
+
+  <div class="meta">
+    Extends Stage 4, closing a real gap: delayed gratification was named explicitly in your original brief and never covered. It also completes this curriculum's recurring pattern of correcting a famous popular claim against the actual research.
+  </div>
+
+  <p>Walter Mischel's marshmallow experiments, run at Stanford from the late 1960s, sat a child alone with a treat and a choice: eat it now, or wait about 15 minutes and get two. Children who waited longer, followed up years later, tended to show better academic and life outcomes — a finding that became one of psychology's most famous, usually summarized as "a four-year-old's willpower predicts their future."</p>
+
+  <h2>The replication that complicated it</h2>
+
+  <p>In 2018, Tyler Watts, Greg Duncan, and Haonan Quan ran a much larger, more demographically diverse replication — roughly ten times the original sample. The bivariate correlation between waiting and later outcomes was about half the size originally reported. More significantly, once the researchers controlled for family background, early cognitive ability, and home environment, the effect shrank by roughly two-thirds. A large share of what looked like "delay of gratification predicts success" tracked much more closely with the child's socioeconomic circumstances than with an individual trait separable from them.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">A genuine, live disagreement — not a clean debunking</span>
+    Angela Duckworth (Lesson 31's Grit research) and others pushed back on Watts's specific approach: some of the controls used — early cognitive ability, home environment — might themselves partly reflect self-control, not just confounds around it, meaning the "corrected" effect could understate the real one. This is an active, unresolved methodological debate, not a settled case of one study being simply wrong. What both sides do agree on: the original finding's predictive power was substantially overstated in its popular retelling. That much isn't contested.
+  </div>
+
+  <h2>What this means for how you actually use the concept</h2>
+
+  <p>The honest version isn't "delayed gratification doesn't matter" — it's that treating it as a pure, isolated character trait, separable from someone's actual circumstances, oversimplifies real research into a tidier story than the data supports. Mischel's own broader research program pointed toward a more useful, less deterministic takeaway anyway: children who waited longer weren't relying on raw willpower so much as specific attentional strategies — looking away from the treat, distracting themselves, reframing what they were looking at. That's the same theme this curriculum has built since Stage 4 began: Lesson 10's context cues and Lesson 12's implementation intentions are exactly this kind of strategy — structural workarounds for a limited resource, not proof that some people simply have more of it.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Have you ever judged yourself, or someone else, as simply lacking willpower or discipline — a fixed trait, present or absent — in a situation where circumstances (resources, stress, competing demands) were doing real, unacknowledged work? What would change about that judgment if you treated the capacity as strategy-dependent and context-dependent rather than a fixed measure of character?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name one specific situation where you delay gratification reliably, and one where you consistently don't. What's actually different about the strategy or the circumstances in each — not the amount of willpower you're bringing to it?</p>
+    <textarea class="journal-input" id="j33" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j33-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Watts, T., Duncan, G. & Quan, H. (2018), "Revisiting the Marshmallow Test," <em>Psychological Science</em> — read alongside Duckworth's 2019 methodological response for the fuller live debate. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you find Duckworth's counter-argument (that Watts's controls may have overcorrected) more persuasive than the headline "marshmallow test debunked" framing, say so — this lesson deliberately presents both sides as live rather than picking a winner, and it's fine to land somewhere specific rather than staying neutral.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Back to <a href="./0012-the-plan-for-not-feeling-like-it.html">Stage 4</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0033:j33";
+  var ta = document.getElementById("j33");
+  var status = document.getElementById("j33-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 6 · Stag Hunt: Trust &amp; Risk-Dominant Equilibria</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0005-matching-pennies.html">← Lesson 5</a>
+    <span>·</span>
+    <a href="./0007-chicken.html">Next: Lesson 7 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 6 · ~13 min · Level 2-3: Strategic Games</div>
+  <h1>Stag Hunt: Trust &amp; Risk-Dominant Equilibria</h1>
+  <p class="subtitle">Two Nash equilibria again — but this time, everyone agrees which one is better, and groups still get stuck on the worse one.</p>
+  <div class="meta">Recap: Battle of the Sexes (Lesson 4) had two equilibria that differed in <em>whose preference wins</em>. This game has two equilibria that differ in something more consequential: one is strictly better for everyone, and people still avoid it — for a reason worth naming precisely, because it's the reason ambitious joint projects stall even when everyone privately wants them to succeed.</div>
+
+  <h2>The story</h2>
+
+  <p>Two hunters can jointly hunt a stag — a large, valuable catch, but one that genuinely requires both of them working together to bring down. Or each can individually hunt hare — a smaller, guaranteed catch that doesn't need the other person at all. If one hunter commits to the stag and the other bails to chase hare instead, the stag hunter gets nothing (a solo hunter can't catch a stag) while the hare hunter still gets their hare.</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <caption>Both hunters' payoffs shown, amber first, blue second. Both circled cells are Nash equilibria.</caption>
+      <tr>
+        <th></th>
+        <th>Hunter B: Stag</th>
+        <th>Hunter B: Hare</th>
+      </tr>
+      <tr>
+        <th>Hunter A: Stag</th>
+        <td class="cell ne"><span class="payoff-a">4</span>, <span class="payoff-b">4</span></td>
+        <td class="cell"><span class="payoff-a">0</span>, <span class="payoff-b">2</span></td>
+      </tr>
+      <tr>
+        <th>Hunter A: Hare</th>
+        <td class="cell"><span class="payoff-a">2</span>, <span class="payoff-b">0</span></td>
+        <td class="cell ne"><span class="payoff-a">2</span>, <span class="payoff-b">2</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Confirming both are Nash equilibria</h2>
+
+  <p>(Stag, Stag) at (4, 4): if Hunter A switches to Hare alone, they drop from 4 to 2 — worse (their partner is still off chasing the stag and catches nothing without them, but A's own hare only nets 2 either way — check the matrix: A-Hare/B-Stag gives A a 2, still less than 4). No incentive to switch. Stable.</p>
+
+  <p>(Hare, Hare) at (2, 2): if Hunter A switches to Stag alone, they drop from 2 to 0 (a lone stag hunter catches nothing). No incentive to switch either. <em>Also</em> stable — even though it's worse for both hunters than (Stag, Stag).</p>
+
+  <h2>Two new names for two different kinds of "better"</h2>
+
+  <p>This is where the vocabulary needs to get more precise than "better" and "worse":</p>
+
+  <ul>
+    <li><strong>Payoff-dominant equilibrium:</strong> the one that gives every player a strictly higher payoff than the other equilibrium. Here, (Stag, Stag) — 4 beats 2 for both hunters, no ambiguity.</li>
+    <li><strong>Risk-dominant equilibrium:</strong> the one that's the safer bet when you're <em>not certain</em> what the other player will do. Here, (Hare, Hare) — hare guarantees you 2 no matter what your partner does, while stag risks a 0 if they don't show up.</li>
+  </ul>
+
+  <p>In the Prisoner's Dilemma and Battle of the Sexes, this distinction didn't matter — either there was one clear equilibrium, or the two equilibria only differed in whose preference won, not in riskiness. Here, the two properties point at <em>different</em> outcomes, and that split is the entire lesson.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why groups get stuck on the worse outcome</span>
+    Going for the stag is only rational if you're confident your partner will too — and that confidence is exactly what's often missing, especially with a new or untested partner. Nobody here is being selfish or irrational by playing it safe; hare is the individually sound response to <em>uncertainty about someone else's commitment</em>, not to a bad relationship or bad incentives. That's what makes this different from the Prisoner's Dilemma's tragedy: there's no temptation to exploit your partner here, only a fear of being left exposed if they don't show up.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What makes (Stag, Stag) the "payoff-dominant" equilibrium?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">It's the only equilibrium that actually exists</button>
+      <button class="quiz-choice" data-correct="true">It gives both players a strictly higher payoff than the other equilibrium</button>
+      <button class="quiz-choice">It requires no trust between the players</button>
+      <button class="quiz-choice">It's the equilibrium reached through dominant strategies</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. Why is (Hare, Hare) called "risk-dominant" instead of just "safe"?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because hare hunting has no actual risk of injury</button>
+      <button class="quiz-choice" data-correct="true">Because it's the best response when you're uncertain what your partner will do</button>
+      <button class="quiz-choice">Because it gives a higher payoff than stag hunting</button>
+      <button class="quiz-choice">Because only one player can choose it at a time</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it outside literal hunting</h2>
+
+  <ul>
+    <li><strong>Startup co-founders deciding whether to go all-in on an ambitious pivot.</strong> If both commit fully, the big outcome is reachable; if one quietly hedges by keeping a safety-net side project, and the other goes all-in, the all-in founder is exposed with nothing to show if the pivot needed both. Founders who don't yet trust each other's commitment predictably drift toward the safer, smaller, individually-hedged path — even when both privately know the ambitious version would be better if they could trust each other to fully show up.</li>
+    <li><strong>Two departments co-investing in a shared internal tool.</strong> Big payoff if both commit real resources; wasted, unusable investment if one commits and the other quietly under-resources it. Both departments building their own smaller, mediocre workaround is the risk-dominant fallback — safe, individually rational, and worse for the company than either would admit.</li>
+    <li><strong>Early trust-building in any new working relationship.</strong> Small, low-stakes joint commitments that succeed are how people move each other from "hare" confidence to "stag" confidence over time — which is a direct preview of why Level 5 (repeated games) exists: this game, played once, gets stuck at risk-dominance far more often than the same game played repeatedly with a track record building up.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    The Stag Hunt is originally attributed to Jean-Jacques Rousseau's writing on the origins of cooperation and society. Ben Polak's Yale course covers the payoff-dominant/risk-dominant distinction directly, with the same hunting framing.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      Two engineers on a team could either (a) both commit to rebuilding a fragile shared system properly, which takes real short-term effort from both but removes a recurring source of bugs for good, or (b) both keep individually patching around the fragile system as issues come up, which is less effort per-person and doesn't require trusting the other to follow through.
+      <br><br>
+      Identify which outcome is payoff-dominant and which is risk-dominant. Then answer the harder question: name one concrete, low-stakes first step that could move this team from the risk-dominant equilibrium toward the payoff-dominant one — something smaller than "just commit to the full rebuild," since asking people to leap straight to the risky equilibrium is usually what fails.
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Payoff-dominant:</strong> both commit to the proper rebuild — strictly better for both once it's done, same shape as (Stag, Stag).<br><br>
+      <strong>Risk-dominant:</strong> both keep individually patching — safe regardless of what the other engineer does, same shape as (Hare, Hare). Neither engineer looks unreasonable choosing this; it's the sound response to not being fully sure the other will actually follow through on the harder path.<br><br>
+      <strong>A real first step:</strong> something that lets each engineer test the other's commitment at low stakes before wagering the full effort — for example, both agreeing to rebuild just the smallest, most isolated piece of the fragile system first, as a trial. If that small joint commitment holds, it directly raises each engineer's confidence in the other's follow-through for the next, bigger piece — nudging the risk-dominant fallback point upward over repeated small rounds, rather than trying to jump straight to full trust in one leap. This is the Stag Hunt version of what Level 5 will formalize: repeated small games building the trust a single big one can't manufacture on its own.
+      <br><br>
+      A common near-miss answer here is "get management to mandate the rebuild" — that does solve the coordination problem, but notice it works by removing the choice entirely (changing the rules of the game, per Lesson 1's "rules" category) rather than by building the trust that lets the engineers choose stag voluntarily. Both are real solutions in practice; they're just different tools, and it's worth being able to tell them apart.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what small trust-building step you proposed. If your instinct was "just talk it through and commit" rather than a genuinely small, testable first step, that's worth flagging to me — it's the single most common real-world mistake people make trying to escape a risk-dominant equilibrium, and it's exactly why this scenario asked for something smaller.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Spot when a stalled joint effort isn't a Prisoner's-Dilemma-style conflict of interest but a Stag Hunt — everyone agrees the ambitious path is better, and it's stuck purely on trust/uncertainty about follow-through — and reach for a small, testable commitment rather than either a hard sell or a top-down mandate.
+  </div>
+
+  <h2>Level 2-3, three games in</h2>
+  <p>You now have three structurally distinct classic games under you: Prisoner's Dilemma (one equilibrium via dominance, individually-rational-but-jointly-bad), Battle of the Sexes (two equilibria, pure coordination, no conflict of interest once together), and Stag Hunt (two equilibria, one better for everyone, stuck on trust rather than preference). Matching Pennies added the mixed-strategy toolkit for when there's no pure equilibrium at all. That's the working core of "strategic games" — later lessons (Chicken, Ultimatum, Trust, Public Goods, Tragedy of the Commons) will mostly be new payoff shapes wearing these same underlying mechanics, plus a few genuinely new ideas (credible threats in Chicken, fairness norms in Ultimatum, collective action in Public Goods).</p>
+
+  <p class="lesson-footer">
+    <a href="./0005-matching-pennies.html">← Lesson 5</a>
+    <a href="./0007-chicken.html">Lesson 7: Chicken, Credible Threats &amp; Brinkmanship →</a>
+  </p>
+
+</div>
+</body>
+</html>

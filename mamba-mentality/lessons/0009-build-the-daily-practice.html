@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build The Daily Practice — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0008-composure-is-a-technique.html">Lesson 8</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 3 · Self-Mastery · Lesson 3 (closing) · ~9 min</div>
+  <h1>Build The Daily Practice</h1>
+  <p class="subtitle">Two ideas, so far, have stayed theoretical. Today they become a specific thing you actually do.</p>
+
+  <div class="meta">
+    Closes Stage 3. Combines Lesson 7's twin mechanism (abhyasa + vairagya) and Lesson 8's physiological reset (cyclic sighing) into one concrete daily practice — then honestly exposes what it can't do yet, which is exactly what Stage 4 (Discipline) exists to fix.
+  </div>
+
+  <p>You've now got two real tools: a mental-discipline mechanism (show up consistently, release the grip on outcome — abhyasa and vairagya, together) and a physiological reset (cyclic sighing, for when your body reacts before your mind does). Both are still, at this point, ideas you understand rather than things you do. This lesson closes that gap.</p>
+
+  <h2>Build it now</h2>
+  <p>Fill this in for real — a specific practice, a specific time, and a specific phrase you'll actually use. Vague answers produce vague practices.</p>
+
+  <div class="practice-form">
+    <div>
+      <label for="pf-practice">The practice (specific — tied to your actual vital few, not generic "self-improvement")</label>
+      <input type="text" id="pf-practice" placeholder="e.g. 20 minutes of focused work on [the specific thing]">
+    </div>
+    <div>
+      <label for="pf-time">When, daily</label>
+      <input type="time" id="pf-time">
+    </div>
+    <div>
+      <label for="pf-phrase">Your release phrase — said before you start, out loud or silently (the vairagya half)</label>
+      <input type="text" id="pf-phrase" placeholder="e.g. I control the effort, not the outcome">
+    </div>
+    <button class="quiz-btn" id="pf-save" type="button" style="align-self:flex-start;">Save my practice</button>
+  </div>
+
+  <div class="practice-display" id="pf-display">
+    <div class="pd-row"><span class="pd-label">Practice</span><div class="pd-value" id="pd-practice"></div></div>
+    <div class="pd-row"><span class="pd-label">Time</span><div class="pd-value" id="pd-time"></div></div>
+    <div class="pd-row"><span class="pd-label">Release phrase</span><div class="pd-value" id="pd-phrase"></div></div>
+  </div>
+
+  <p>The structure itself is the point, not novelty: same time, same specific action, a spoken reminder that releases your grip on the outcome before you start. If your body spikes mid-session — frustration, tunnel vision, the urge to quit or force it — that's cyclic sighing's job: two inhales through the nose, one long exhale through the mouth, then continue.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Now be honest about what you just built</span>
+    You designed this practice right now — calm, reflective, reasonably motivated. Picture your worst day in the next month: exhausted, behind on something else, genuinely not wanting to. Will you actually do what you just wrote down? If your honest answer is "probably not," you haven't built a system yet — you've written a wish with good intentions. That's not a failure of this lesson. It's the honest starting point for Stage 4, which exists specifically because motivation is not a reliable fuel source and never was.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">On your worst day this month, what's actually going to make you do the practice above — or what's going to make you skip it? Don't answer with willpower. If willpower is your only answer, say that plainly; it's the truest possible answer at this point in the curriculum.</p>
+    <textarea class="journal-input" id="j9" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j9-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What Stage 3 gave you, and what it didn't</span>
+    Stage 3 gave you the mechanism of mental discipline (abhyasa + vairagya) and one tool for the body under acute pressure (cyclic sighing). It did not give you a way to keep doing any of this when motivation is simply gone — on a Tuesday, six weeks in, for no dramatic reason. That's a different problem, with its own research and its own techniques, and it's exactly what Stage 4 is for.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If naming a practice out loud felt harder than it should have — you didn't have a clear "vital few" candidate to plug in — say so directly rather than filling in something generic just to complete the exercise.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Stage 3 complete — 3 lessons.</span>
+    <span>Next: Stage 4 — Discipline. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0009:";
+  var practice = document.getElementById("pf-practice");
+  var time = document.getElementById("pf-time");
+  var phrase = document.getElementById("pf-phrase");
+  var display = document.getElementById("pf-display");
+
+  function render() {
+    var p = localStorage.getItem(key + "practice");
+    var t = localStorage.getItem(key + "time");
+    var ph = localStorage.getItem(key + "phrase");
+    if (p || t || ph) {
+      document.getElementById("pd-practice").textContent = p || "—";
+      document.getElementById("pd-time").textContent = t || "—";
+      document.getElementById("pd-phrase").textContent = ph || "—";
+      display.classList.add("show");
+    }
+  }
+  practice.value = localStorage.getItem(key + "practice") || "";
+  time.value = localStorage.getItem(key + "time") || "";
+  phrase.value = localStorage.getItem(key + "phrase") || "";
+  render();
+
+  document.getElementById("pf-save").addEventListener("click", function () {
+    localStorage.setItem(key + "practice", practice.value);
+    localStorage.setItem(key + "time", time.value);
+    localStorage.setItem(key + "phrase", phrase.value);
+    render();
+  });
+
+  var jkey = "mamba-mentality:0009:j9";
+  var ta = document.getElementById("j9");
+  var status = document.getElementById("j9-status");
+  var saved = localStorage.getItem(jkey);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(jkey, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

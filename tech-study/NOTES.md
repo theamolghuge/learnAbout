@@ -1,5 +1,14 @@
 # Notes
 
+## Track B — Java + Spring Boot (5 YOE backend readiness)
+User pasted a full 22-section Java/Spring/DevOps curriculum and asked to be taught it in order. Pacing turned out flexible — first asked for topics one at a time, then "continue and finish 2, 3, 4, 5", then "next 5 as well" to finish the rest. Batch however asked; don't assume one-topic-at-a-time is fixed.
+
+**All 10 topics complete** as of this session — full roadmap and links in [MISSION.md](MISSION.md). Folders: `java/`, `sql-jdbc/`, `spring-boot/` (Core+Boot+REST), `spring-data-jpa/` (+Validation+Exceptions), `spring-security/` (+JWT), `testing/`, `devtools/` (Git+Maven+API tools), `docker-cloud/` (+CI/CD), `microservices-kafka/`, `system-design/` (+Kubernetes). Same 3-file format as Track A throughout (Notes / Interview Q&A / Quick Revision).
+
+Track B is now in maintenance mode: no more new topics to build from the original curriculum. Future work here is likely revision, deeper dives into a specific subtopic, or mock-interview-style drilling — not new reference docs, unless the user names something the original list missed.
+
+## Track A — JavaScript Stack
+
 ## Structure (9 files, 3 topics)
 
 ### JavaScript

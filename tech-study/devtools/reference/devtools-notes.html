@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git + Maven/Gradle + API Tools Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Git + Maven/Gradle + API Tools Notes</h1>
+<p class="subtitle">Topic 7 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. The daily-driver tooling around everything built so far.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#git-basics">1. Git Basics</a> · <a href="#git-branching">2. Branching &amp; Merging ⭐</a> ·
+  <a href="#git-rebase">3. Rebase vs Merge</a> · <a href="#git-workflow">4. PR Workflow &amp; Conflicts</a> ·
+  <a href="#maven">5. Maven ⭐</a> · <a href="#gradle">6. Gradle (brief)</a> ·
+  <a href="#postman">7. Postman</a> · <a href="#openapi">8. Swagger / OpenAPI</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Branch, merge, rebase — what each does to history</td><td><a href="#git-branching">§2</a>, <a href="#git-rebase">§3</a></td></tr>
+  <tr><td>Resolving a merge conflict</td><td><a href="#git-workflow">§4</a></td></tr>
+  <tr><td>pom.xml structure, dependencies, build lifecycle</td><td><a href="#maven">§5</a></td></tr>
+  <tr><td>Dependency scopes (compile/provided/test/runtime)</td><td><a href="#maven">§5</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Gradle vs Maven trade-offs</td><td><a href="#gradle">§6</a></td></tr>
+  <tr><td>OpenAPI/Swagger — generating docs from code</td><td><a href="#openapi">§8</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Git basics (clone/add/commit/push/pull) → Branching ⭐
+  → Rebase vs merge → PR workflow + resolving conflicts
+  → Maven ⭐ (pom.xml → dependency scopes → build lifecycle)
+  → Gradle (know the trade-offs, brief)
+  → Postman (manual API testing) → Swagger/OpenAPI (auto-generated docs)
+  → Docker + CI/CD + Cloud (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://git-scm.com/book/en/v2">Pro Git (free official book)</a> — the definitive reference on branching, merging, and rebase internals</li>
+  <li><a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html">Maven — Introduction to the POM</a> — the official reference for pom.xml structure and scopes</li>
+  <li><a href="https://swagger.io/docs/specification/about/">OpenAPI/Swagger specification docs</a></li>
+</ul>
+
+<!-- ==================== 1. GIT BASICS ==================== -->
+<h2 id="git-basics">1. Git Basics</h2>
+<pre class="code"><code>git clone <url>              # copy a remote repo locally
+git status                    # what's changed, staged vs unstaged
+git add file.java             # stage a change
+git commit -m "message"       # snapshot staged changes
+git push origin main          # send local commits to the remote
+git pull                       # fetch + merge remote changes into current branch
+git log --oneline --graph     # visualize commit history</code></pre>
+<p>Git tracks content as a series of <strong>commits</strong> — immutable snapshots, each pointing to its parent(s), forming a directed acyclic graph. A <strong>branch</strong> is just a movable pointer to a commit; <code>HEAD</code> is a pointer to whichever branch (or commit) you currently have checked out.</p>
+
+<!-- ==================== 2. BRANCHING ==================== -->
+<h2 id="git-branching">2. Branching &amp; Merging ⭐</h2>
+<pre class="code"><code>git checkout -b feature/add-login    # create + switch to a new branch
+git switch main                       # newer syntax for switching branches
+git merge feature/add-login           # merge feature branch into current branch</code></pre>
+<table class="ref">
+  <tr><th>Merge type</th><th>When it happens</th><th>History shape</th></tr>
+  <tr><td>Fast-forward</td><td>Target branch has no new commits since the feature branched off</td><td>Linear — target pointer just moves forward, no merge commit</td></tr>
+  <tr><td>3-way merge</td><td>Both branches have diverged (new commits on each)</td><td>A new merge commit with two parents, preserving both histories</td></tr>
+</table>
+
+<!-- ==================== 3. REBASE ==================== -->
+<h2 id="git-rebase">3. Rebase vs Merge</h2>
+<pre class="code"><code>git checkout feature/add-login
+git rebase main             # replays feature's commits on top of main's latest tip</code></pre>
+<table class="ref">
+  <tr><th></th><th>merge</th><th>rebase</th></tr>
+  <tr><td>History</td><td>Preserves exact history, adds a merge commit</td><td>Rewrites commits — replays them onto a new base, linear history</td></tr>
+  <tr><td>Commit hashes</td><td>Unchanged</td><td>Changed — every replayed commit gets a new hash</td></tr>
+  <tr><td>Safe on shared branches?</td><td>Yes, always</td><td>Never rebase commits already pushed/shared — rewrites history other people have, breaking their local copies</td></tr>
+  <tr><td>Common use</td><td>Merging a finished feature branch into main</td><td>Cleaning up your own local feature branch before opening a PR (squash noisy WIP commits, catch up with main)</td></tr>
+</table>
+<p><strong>Golden rule:</strong> never rebase (or force-push) a branch other people have already pulled from — it rewrites commit history, and their local branch will diverge irreconcilably from the rewritten one.</p>
+
+<!-- ==================== 4. PR WORKFLOW ==================== -->
+<h2 id="git-workflow">4. PR Workflow &amp; Resolving Conflicts</h2>
+<pre class="code"><code>git checkout -b feature/x
+# ...make commits...
+git push -u origin feature/x
+# open a Pull Request on GitHub/GitLab → code review → merge</code></pre>
+<p>A <strong>merge conflict</strong> happens when two branches changed the same lines (or one edited a file the other deleted) and Git can't automatically reconcile them.</p>
+<pre class="code"><code>git merge main
+# CONFLICT (content): Merge conflict in OrderService.java
+
+<<<<<<< HEAD
+double total = price * 1.08;
+=======
+double total = price * quantity * 1.08;
+>>>>>>> main
+
+# Manually edit the file to keep the correct code, then:
+git add OrderService.java
+git commit          # completes the merge</code></pre>
+<p>Code review on a PR typically checks correctness, test coverage, and design — not just "does it work." Small, focused PRs get reviewed faster and more thoroughly than large ones.</p>
+
+<!-- ==================== 5. MAVEN ==================== -->
+<h2 id="maven">5. Maven ⭐</h2>
+<pre class="code"><code><project>
+  <groupId>com.example</groupId>
+  <artifactId>order-service</artifactId>
+  <version>1.0.0</version>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.0</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>   <!-- packages the executable fat jar -->
+      </plugin>
+    </plugins>
+  </build>
+</project></code></pre>
+<table class="ref">
+  <tr><th>Scope</th><th>Available at</th><th>Packaged in final jar?</th></tr>
+  <tr><td><code>compile</code> (default)</td><td>Compile, test, runtime</td><td>Yes</td></tr>
+  <tr><td><code>provided</code></td><td>Compile, test</td><td>No — assumes the runtime environment provides it (e.g. servlet API on an external app server)</td></tr>
+  <tr><td><code>runtime</code></td><td>Test, runtime — not compile</td><td>Yes — e.g. a JDBC driver, needed to run but not to compile against</td></tr>
+  <tr><td><code>test</code></td><td>Test only</td><td>No</td></tr>
+</table>
+<h3>Build lifecycle — each phase runs everything before it</h3>
+<pre class="code"><code>mvn validate → compile → test → package → verify → install → deploy
+
+mvn clean       # deletes the target/ build output directory
+mvn test        # compiles + runs tests
+mvn package     # produces the jar/war in target/
+mvn clean install   # full clean build, installs the jar to your local ~/.m2 repo</code></pre>
+<p>The <strong>parent POM</strong> pattern (<code>spring-boot-starter-parent</code>) centrally manages compatible dependency versions — this is why you usually don't specify a version on individual Spring Boot starter dependencies; the parent's dependency management picks a tested, compatible version for you.</p>
+
+<!-- ==================== 6. GRADLE ==================== -->
+<h2 id="gradle">6. Gradle (brief)</h2>
+<pre class="code"><code>// build.gradle
+plugins { id 'org.springframework.boot' version '3.3.0' }
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}</code></pre>
+<table class="ref">
+  <tr><th></th><th>Maven</th><th>Gradle</th></tr>
+  <tr><td>Config format</td><td>XML (pom.xml)</td><td>Groovy or Kotlin DSL (build.gradle) — more concise</td></tr>
+  <tr><td>Build speed</td><td>Slower — less caching by default</td><td>Faster — incremental builds, build cache, daemon process</td></tr>
+  <tr><td>Flexibility</td><td>Convention over configuration, more rigid lifecycle</td><td>More programmable/scriptable — also a double-edged sword (harder to reason about)</td></tr>
+  <tr><td>Prevalence</td><td>Still the majority in enterprise Java/Spring shops</td><td>Common in Android and newer projects</td></tr>
+</table>
+<p>Interview-level knowledge here is usually: know the syntax looks different, know Gradle is generally faster due to incremental builds/caching, and be able to read a <code>build.gradle</code> even if you mainly use Maven day to day.</p>
+
+<!-- ==================== 7. POSTMAN ==================== -->
+<h2 id="postman">7. Postman</h2>
+<p>A GUI client for manually constructing and sending HTTP requests — used to exercise an API during development before (or instead of) writing automated tests, inspect raw responses/headers/status codes, and share request collections with a team. Supports environment variables (swap base URLs between dev/staging/prod), pre-request scripts (e.g. fetch an auth token), and collection-level test assertions written in JavaScript.</p>
+
+<!-- ==================== 8. OPENAPI ==================== -->
+<h2 id="openapi">8. Swagger / OpenAPI</h2>
+<p><strong>OpenAPI</strong> is a specification format (JSON/YAML) for describing a REST API's endpoints, request/response shapes, and auth requirements. <strong>Swagger UI</strong> is the most common tool that renders an OpenAPI spec as interactive, browsable documentation.</p>
+<pre class="code"><code>// pom.xml — springdoc generates the spec automatically from your controllers
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version>
+</dependency>
+
+// annotate for richer docs (optional — a baseline spec is generated with none of this)
+@Operation(summary = "Get a user by id")
+@ApiResponse(responseCode = "404", description = "User not found")
+@GetMapping("/{id}")
+public UserDto getUser(@PathVariable Long id) { ... }</code></pre>
+<p>With <code>springdoc-openapi</code> on the classpath, Spring Boot auto-generates the spec from your <code>@RestController</code> classes and serves interactive docs at <code>/swagger-ui.html</code> — consumers of your API (frontend team, other services) can browse and even try requests directly from the browser, without needing separately-maintained documentation that drifts out of sync with the code.</p>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Docker + CI/CD + Cloud</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

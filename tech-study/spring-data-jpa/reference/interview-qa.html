@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Spring Data JPA + Validation + Exception Handling</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="spring-data-jpa-notes.html">Spring Data JPA Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#jpa">JPA/Hibernate</a> ·
+  <a href="#relationships">Relationships</a> ·
+  <a href="#repos">Repositories</a> ·
+  <a href="#loading">Lazy/Eager &amp; N+1</a> ·
+  <a href="#transactions">Transactions</a> ·
+  <a href="#validation">Validation</a> ·
+  <a href="#exceptions">Exceptions</a>
+</nav>
+
+<h2 id="jpa">JPA / Hibernate</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the relationship between JPA, Hibernate, and Spring Data JPA?</p>
+  <p class="qa-a">JPA is a specification for ORM in Java — interfaces and annotations, no implementation. Hibernate is the most widely used implementation of that spec, doing the actual SQL generation and object mapping. Spring Data JPA sits on top of both, eliminating boilerplate by generating repository implementations from interface method signatures.</p>
+</div>
+
+<h2 id="relationships">Relationships</h2>
+
+<div class="qa">
+  <p class="qa-q">What does "owning side" mean in a bidirectional @OneToMany/@ManyToOne relationship?</p>
+  <p class="qa-a">The owning side is the entity that holds the foreign key column and is annotated with @JoinColumn — it's the side JPA actually looks at to persist/update the relationship. The other side uses mappedBy to declare itself as the inverse, read-only view. In a Customer↔Order relationship, Order is the owning side (it has customer_id), so setting the relationship only on the Customer side without updating Order won't persist correctly.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does @ManyToOne default to EAGER while @OneToMany defaults to LAZY?</p>
+  <p class="qa-a">JPA assumes a "many" side entity typically needs its single related "one" (e.g. an Order usually needs its Customer), while a collection (@OneToMany) could be arbitrarily large and expensive to load unconditionally. In practice, most teams override both to LAZY by default and fetch explicitly per-query to avoid both N+1 problems and unexpectedly large loads.</p>
+</div>
+
+<h2 id="repos">Repositories</h2>
+
+<div class="qa">
+  <p class="qa-q">How does a method like <code>findByEmailAndActiveTrue(String email)</code> work without you writing a query?</p>
+  <p class="qa-a">Spring Data JPA parses the method name at startup using its keyword convention — "findBy" + property names joined by "And"/"Or", with optional suffixes like "True", "After", "Containing" — and generates the equivalent JPQL query automatically, creating a proxy implementation of the repository interface.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When would you write a @Query instead of relying on a derived method name?</p>
+  <p class="qa-a">When the logic is too complex to express cleanly as a method name (multiple joins, conditional filters, aggregations), or when you need a native SQL feature JPQL doesn't support (window functions, DB-specific syntax). Derived methods are best for simple, single-purpose lookups.</p>
+</div>
+
+<h2 id="loading">Lazy/Eager &amp; N+1</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the N+1 query problem with an example.</p>
+  <p class="qa-a">You fetch a list of N parent entities with one query, then access a LAZY collection on each one inside a loop — each access triggers its own separate query to fetch that entity's related rows, resulting in 1 (parents) + N (one per parent's lazy collection) queries instead of a single joined query. It's a very common accidental performance bug in ORMs.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How do you fix an N+1 problem in Spring Data JPA?</p>
+  <p class="qa-a">Use JOIN FETCH in a JPQL query to pull the related entities in the same query, or the equivalent @EntityGraph annotation for a more declarative approach. For less predictable access patterns, @BatchSize groups the N individual queries into fewer batched IN(...) queries instead of eliminating them entirely.</p>
+</div>
+
+<h2 id="transactions">Transactions</h2>
+
+<div class="qa">
+  <p class="qa-q">Does @Transactional roll back on every exception?</p>
+  <p class="qa-a">No — by default it only rolls back on unchecked exceptions (RuntimeException and its subclasses). A checked exception thrown inside the method does NOT trigger a rollback unless you explicitly configure <code>rollbackFor = Exception.class</code>. This is a common source of bugs when checked exceptions are used for business errors inside transactional methods.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does calling an @Transactional method from another method in the same class not apply the transaction?</p>
+  <p class="qa-a">Spring implements @Transactional via an AOP proxy wrapped around the bean. External callers go through the proxy, which starts the transaction before delegating to the real method. A call from within the same class goes directly to "this" — bypassing the proxy entirely — so the transactional behavior silently doesn't apply. The fix is to move the transactional method to a separate bean/class, or inject a self-reference.</p>
+</div>
+
+<h2 id="validation">Validation</h2>
+
+<div class="qa">
+  <p class="qa-q">What happens when @Valid fails on a @RequestBody parameter?</p>
+  <p class="qa-a">Spring throws a MethodArgumentNotValidException before the controller method body ever executes — the handler code never runs. That exception carries a BindingResult with every field error, which a global @ExceptionHandler typically catches to build a structured 400 response listing all the validation failures.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Difference between @NotNull, @NotEmpty, and @NotBlank?</p>
+  <p class="qa-a">@NotNull only rejects null — an empty string or empty list still passes. @NotEmpty additionally rejects empty (size 0) — works on Strings and collections. @NotBlank is String-specific and additionally rejects whitespace-only strings. For a required text field, @NotBlank is almost always the right one.</p>
+</div>
+
+<h2 id="exceptions">Exception Handling</h2>
+
+<div class="qa">
+  <p class="qa-q">What does @ControllerAdvice/@RestControllerAdvice do?</p>
+  <p class="qa-a">It defines a global, cross-cutting handler for exceptions thrown by any @Controller/@RestController in the app — instead of every controller needing its own try/catch, one class centralizes the mapping from exception type to HTTP status and response body. @RestControllerAdvice additionally applies @ResponseBody to every handler method, so responses are serialized as JSON directly.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">If you have handlers for both UserNotFoundException and the generic Exception, which one runs when a UserNotFoundException is thrown?</p>
+  <p class="qa-a">The most specific matching handler — @ExceptionHandler resolution prefers the closest type match in the exception's class hierarchy, so the UserNotFoundException-specific handler runs, not the generic Exception catch-all.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why should the catch-all Exception handler never return the raw exception message or stack trace to the client?</p>
+  <p class="qa-a">It can leak internal implementation details (class names, SQL, file paths) useful to an attacker, and it's a poor experience for legitimate clients who get an unstructured, unstable message. Log the full exception server-side, and return a generic, stable error code/message to the client.</p>
+</div>
+
+<p class="footer-note"><a href="spring-data-jpa-notes.html">Spring Data JPA Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

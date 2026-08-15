@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Kubernetes + System Design</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="system-design-notes.html">Kubernetes + System Design Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#k8s">Kubernetes</a> ·
+  <a href="#scalability">Scalability</a> ·
+  <a href="#caching">Caching</a> ·
+  <a href="#dbscaling">DB Scaling</a> ·
+  <a href="#cap">CAP</a> ·
+  <a href="#ratelimit">Rate Limiting</a>
+</nav>
+
+<h2 id="k8s">Kubernetes</h2>
+
+<div class="qa">
+  <p class="qa-q">Why does Kubernetes need a Service object in front of Pods instead of clients just talking to Pod IPs directly?</p>
+  <p class="qa-a">Pods are ephemeral — when one crashes or is rescheduled, its replacement gets a brand new IP address. A Service provides a stable DNS name/IP that doesn't change, and load-balances traffic across whichever Pods currently match its label selector, so clients never need to track individual Pod lifecycles.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the relationship between a Deployment and its Pods?</p>
+  <p class="qa-a">A Deployment declares the desired state — which image, how many replicas — and Kubernetes continuously reconciles actual cluster state to match it. If a Pod crashes or is deleted, the Deployment's controller notices the replica count has dropped below the desired number and creates a replacement automatically.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Are Secrets in Kubernetes actually encrypted?</p>
+  <p class="qa-a">Not by default — Secret values are only base64-encoded, which is trivially reversible, not real encryption. Genuine protection requires enabling encryption-at-rest for the cluster's etcd store or using an external secrets manager (e.g. AWS Secrets Manager, HashiCorp Vault) — a common interview trap is assuming "Secret" implies encryption on its own.</p>
+</div>
+
+<h2 id="scalability">Scalability</h2>
+
+<div class="qa">
+  <p class="qa-q">Why is horizontal scaling generally preferred over vertical scaling for web backends?</p>
+  <p class="qa-a">Vertical scaling (a bigger machine) hits a hard hardware ceiling and typically requires downtime to resize. Horizontal scaling (more machines) has effectively no ceiling and can add/remove capacity without downtime — the cost is that your application must be stateless (or externalize state) so any instance can serve any request, which is why "stateless services" is a recurring theme from the Spring Core topic onward.</p>
+</div>
+
+<h2 id="caching">Caching</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the cache-aside pattern.</p>
+  <p class="qa-a">The application checks the cache first; on a miss, it reads from the database, then populates the cache with that result before returning it. It's the most common caching pattern because it's simple and only caches data that's actually requested, but entries can go stale until the next miss or a TTL expiry, so it's best paired with a TTL or explicit invalidation for data that changes.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the trade-off of write-through caching versus cache-aside?</p>
+  <p class="qa-a">Write-through updates the cache at the same moment as the database write, so the cache is never stale for that entry — at the cost of added latency on every write, since two systems must be updated. Cache-aside only touches the cache on reads (populating it lazily), keeping writes fast but allowing a window where the cache can be stale relative to the database.</p>
+</div>
+
+<h2 id="dbscaling">Database Scaling</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between a read replica and sharding, and when would you reach for each?</p>
+  <p class="qa-a">A read replica is a full copy of the database that serves read-only traffic, offloading the primary — good when read volume is the bottleneck and write volume is manageable on one primary. Sharding splits the data itself across multiple databases by some key, scaling both reads and writes but introducing real complexity (cross-shard queries and joins become hard). The general order is: index properly, add read replicas, cache aggressively, and only shard once a single primary genuinely can't handle write volume.</p>
+</div>
+
+<h2 id="cap">CAP Theorem</h2>
+
+<div class="qa">
+  <p class="qa-q">What does the CAP theorem actually say, and what's a common misconception about it?</p>
+  <p class="qa-a">During a network partition, a distributed system must choose between Consistency (every read reflects the latest write, or errors) and Availability (every request gets a response, possibly stale). The common misconception is treating it as "pick any 2 of C, A, P at all times" — partition tolerance isn't optional for a real distributed system, since networks do fail. The actual choice is only forced between C and A, and only during an actual partition; most of the time, systems provide both.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Give an example of a system that favors CP and one that favors AP.</p>
+  <p class="qa-a">A traditional relational database used for banking transactions favors CP — it would rather return an error than risk showing a stale/incorrect balance. DNS and many NoSQL stores like Cassandra or DynamoDB in their default configuration favor AP — they'd rather keep serving requests (possibly with slightly stale data) than go down, using eventual consistency as the trade-off.</p>
+</div>
+
+<h2 id="ratelimit">Rate Limiting</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the problem with a naive fixed-window rate limiter, and how does token bucket address it?</p>
+  <p class="qa-a">A fixed window (e.g. "100 requests per minute, resetting on the minute") allows a burst of up to double the limit right around a window boundary — 100 requests in the last second of one window plus 100 in the first second of the next. Token bucket refills tokens at a steady rate and allows a request only if a token is available, smoothing enforcement into a consistent average rate while still permitting some controlled burstiness up to the bucket's capacity.</p>
+</div>
+
+<h2>General approach</h2>
+
+<div class="qa">
+  <p class="qa-q">You're asked an open-ended system design question with no further detail. What's your first move?</p>
+  <p class="qa-a">Clarify requirements before designing anything — both functional (what must the system actually do) and non-functional (expected scale, read/write ratio, latency requirements). Jumping straight to a diagram without pinning down scale is a common mistake; the right design for 1,000 users and for 100 million users can look completely different.</p>
+</div>
+
+<p class="footer-note"><a href="system-design-notes.html">Kubernetes + System Design Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

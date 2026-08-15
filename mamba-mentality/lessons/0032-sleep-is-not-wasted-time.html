@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sleep Is Not Wasted Time — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0009-build-the-daily-practice.html">Lesson 9</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 3 · Self-Mastery · Lesson 4 (extension) · ~10 min</div>
+  <h1>Sleep Is Not Wasted Time</h1>
+  <p class="subtitle">Some grind narratives treat minimal sleep as proof of commitment. The evidence says it's closer to sabotage.</p>
+
+  <div class="meta">
+    Extends Stage 3, closing a real gap: "recovery" was on your original list of traits, and sleep specifically was named as a modern-psychology topic to cover. It never got a lesson.
+  </div>
+
+  <p>A recurring thread in hustle culture — and in some distorted readings of "Mamba Mentality" itself — treats minimal sleep as a signal of dedication: the person who needs the least rest is the most committed. The actual research runs the other way on nearly every measure this curriculum has covered.</p>
+
+  <h2>The direct performance evidence</h2>
+
+  <p>A Stanford study tracked the men's varsity basketball team through several weeks of habitual sleep, then several weeks extending sleep toward 10 hours a night. Total sleep time increased by nearly two hours a night on average — and measured athletic performance improved concretely: 282-foot sprint times dropped from 16.2 to 15.5 seconds, and both free-throw and three-point shooting accuracy rose. This isn't a claim that sleep helps in some vague, general sense — it's a documented, specific performance gain from added sleep alone, no other training change.</p>
+
+  <h2>What sleep is actually doing underneath</h2>
+
+  <p>Two mechanisms connect directly to earlier stages. First, sleep deprivation measurably amplifies amygdala reactivity to negative experiences while weakening its connectivity to the prefrontal cortex — the brain regions involved in emotional regulation and judgment. In plain terms: chronic sleep debt makes you more emotionally reactive and less able to regulate that reactivity, undermining Stage 3's composure work and Stage 7's pressure management before either technique even gets a chance to run. Second, memory consolidation — turning practiced skill into durable capability — depends on both the deep and REM stages of sleep. Lesson 15's "thousand days to forge" isn't only happening during the practice sessions. Part of the forging happens afterward, while you're asleep.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Where this fits the dark side checklist</span>
+    Treating sleep as a variable to sacrifice for more practice time is a specific, concrete instance of two rows from the <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a>: work ethic sliding into workaholism (Lesson 22), and sacrifice sliding into self-destruction. The test from that checklist applies directly here — does cutting sleep leave you more or less able to keep doing the work six months from now? For nearly everyone, the honest answer is less.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Be specific: what's your actual average sleep during your highest-intensity weeks — not your ideal, your real number? Is treating that number as negotiable a deliberate, examined choice, or is it just neglect that's gone unexamined because it looks like commitment from the outside?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Your actual average sleep this week, honestly. One specific, concrete change you could make this week that would move it — not an aspiration, an actual schedule change.</p>
+    <textarea class="journal-input" id="j32" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j32-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Mah, C. et al. (2011), "The Effects of Sleep Extension on the Athletic Performance of Collegiate Basketball Players," <em>Sleep</em>. Yoo, S. et al. on amygdala reactivity and sleep deprivation, <em>Journal of Neuroscience</em>/Current Biology. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If your actual constraint on sleep isn't willpower or values but genuine external circumstances — a newborn, shift work, caregiving — say so. This lesson's confront question assumes sleep is a choice being made; that's not always true, and it's worth naming when it isn't rather than absorbing guilt this lesson didn't intend to assign.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Back to <a href="./0009-build-the-daily-practice.html">Stage 3</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0032:j32";
+  var ta = document.getElementById("j32");
+  var status = document.getElementById("j32-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

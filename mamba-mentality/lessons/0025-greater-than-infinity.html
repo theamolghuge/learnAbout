@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greater Than Infinity — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0024-ten-lines-and-a-checklist.html">Lesson 24</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 9 · Purpose · Lesson 1 · ~9 min</div>
+  <h1>Greater Than Infinity</h1>
+  <p class="subtitle">What happens when the thing you built your entire identity around ends — while you're still very much alive?</p>
+
+  <div class="meta">
+    Opens Stage 9 — what the excellence is ultimately for. Returns to Stage 2's dharma with a question it raised but didn't resolve: what happens when your current duty runs its course?</div>
+
+  <p>In November 2015, Kobe Bryant announced his retirement in a letter titled "Dear Basketball." Two years later, he turned it into an animated short film — written and narrated by him, directed by Disney animator Glen Keane — which won the 2018 Academy Award for Best Animated Short Film. He was the first NBA player in history to win an Oscar.</p>
+
+  <p>The film came out of Granity Studios, the production company he founded for it. He named the company by combining letters from "greater than infinity" — his own stated description of the ambition behind the venture. This is worth sitting with plainly: someone who spent two decades building total mastery of one specific craft, at the highest level that craft has, chose not to spend his remaining life managing that legacy from a distance. He started over, deliberately, at something he had no prior mastery in at all.</p>
+
+  <h2>What this actually tests</h2>
+
+  <p>Stage 2 introduced the Gita's dharma — your duty in a given situation — without dwelling on an uncomfortable implication: dharma isn't fixed for life. Krishna's counsel to Arjuna is about fulfilling the duty in front of you now, not clinging to a role once its season has passed. Aristotle's eudaimonia, too, is judged "in a complete life" — which necessarily includes more than one chapter for anyone who lives long enough to have chapters at all.</p>
+
+  <p>Kobe also spent his final years coaching his daughter Gianna's AAU basketball team — a much smaller, more private register of purpose than an Oscar. No cameras, no audience beyond a youth gym. Set against Stage 8's checklist, that's close to a clean pass on the mastery-without-audience test: it's hard to construct a validation-driven reason to coach a youth team that nobody outside the gym is watching.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    What's your version of a second act? Is the pursuit you've been journaling through this entire curriculum the only chapter you can currently imagine — or do you already have some sense of what comes after it's fulfilled? If you genuinely can't picture anything past it, ask yourself honestly whether that's focus, or whether your identity has fused so completely with one role that there'd be nothing left of you without it. Those look identical from the outside and are very different from the inside.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Answer the question above directly. If you can't picture a second act, don't force one — instead, write honestly about whether that's because this pursuit still has years of genuine runway left, or because you haven't let yourself consider what's past it.</p>
+    <textarea class="journal-input" id="j25" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j25-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    "Dear Basketball" (2017 short film, and Kobe's original 2015 retirement letter it's based on). Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If picturing a life after your current pursuit feels premature, or even counterproductive — like it would sap commitment to the thing you're doing now — say so. That's a reasonable objection to this lesson's framing, worth working through directly rather than accepting the "always have a second act in mind" advice at face value.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0025:j25";
+  var ta = document.getElementById("j25");
+  var status = document.getElementById("j25-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

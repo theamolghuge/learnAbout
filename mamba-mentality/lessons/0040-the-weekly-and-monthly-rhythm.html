@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Weekly and Monthly Rhythm — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0029-the-manifesto.html">Lesson 29</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 10 · Integration · Lesson 3 (extension) · ~9 min</div>
+  <h1>The Weekly and Monthly Rhythm</h1>
+  <p class="subtitle">A daily practice got built in Lesson 9. Decades don't run on daily alone.</p>
+
+  <div class="meta">
+    Extends Stage 10, closing the last structural gap: your original brief asked for daily, weekly, <em>and</em> monthly practices, plus "ways to maintain the philosophy for decades." Only the daily layer got built.
+  </div>
+
+  <p>Lesson 9 gave you a daily practice. What's been missing is the layer above it — the checkpoints that catch what a single day's practice can't see: whether the daily habit is quietly drifting, whether last week had a setback or a win that never got actually processed, whether the Manifesto you wrote in Lesson 29 still describes someone real six months later, or a version of you that's moved on without updating the document.</p>
+
+  <h2>Weekly: a short structured check</h2>
+  <p>Once a week, run three quick questions — not a long session, five minutes is enough: Did anything happen this week that deserves Lesson 18's failure-review protocol or Lesson 37's success-review, and did you actually run it, or did it just pass unprocessed? Where are you, honestly, on the <a href="../reference/dark-side-checklist.html">Dark Side Checklist</a> right now — closer to the healthy side or the corrosive one, on any row? Is your Lesson 9 daily practice's cue (Lesson 10) still firing reliably, or has it quietly gone stale?</p>
+
+  <h2>Monthly: reread the Manifesto</h2>
+  <p>Once a month, reread Lesson 29's Manifesto in full, out loud if you can. Revise anything that no longer feels true rather than leaving it as a record of who you were when you wrote it. A Manifesto that never changes for years is either a rare case of genuinely settled conviction, or a document nobody's actually checking against reality anymore — worth being honest with yourself about which one it is.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this is what "decades" actually requires</span>
+    Lesson 15 gave you Musashi's timeframe — a thousand days to forge, ten thousand to refine. No single day's motivation survives that span intact; per Lesson 10's own research, nothing that relies on sustained motivation does. What actually survives a multi-year timeframe is a system with scheduled correction points — weekly enough to catch drift before it compounds, monthly enough to catch whether the whole direction still makes sense. This rhythm is that system, not a new idea on top of everything else.
+  </div>
+
+  <h2>Schedule it now — not "when it feels right"</h2>
+  <p>Per Lesson 10, a practice without a real context cue doesn't survive a normal week. This one gets the same treatment as Lesson 9's daily practice.</p>
+
+  <div class="practice-form">
+    <div>
+      <label for="pf6-weekly">Weekly review — specific day and time</label>
+      <input type="text" id="pf6-weekly" placeholder="e.g. Sunday evening, right after dinner">
+    </div>
+    <div>
+      <label for="pf6-monthly">Monthly Manifesto reread — specific trigger (a date, a recurring event)</label>
+      <input type="text" id="pf6-monthly" placeholder="e.g. the first Sunday of every month">
+    </div>
+    <button class="quiz-btn" id="pf6-save" type="button" style="align-self:flex-start;">Save my rhythm</button>
+  </div>
+
+  <div class="practice-display" id="pf6-display">
+    <div class="pd-row"><span class="pd-label">Weekly review</span><div class="pd-value" id="pd6-weekly"></div></div>
+    <div class="pd-row"><span class="pd-label">Monthly Manifesto reread</span><div class="pd-value" id="pd6-monthly"></div></div>
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Before you close this</span>
+    You've now built four separate scheduled commitments across this curriculum — Lesson 9's daily practice, Lesson 12's if-then plans, and the two above. Be honest: how many of the earlier ones are you actually still running? If the answer is "none," that's not a reason to skip building this one too — it's information about what this curriculum can't do for you, which is show up on your behalf.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If weekly and monthly both feel like too much on top of the daily practice, cut one rather than committing to a system you already suspect you won't run — a smaller rhythm you actually keep beats a complete one you abandon by week three.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Curriculum core arc, gap-filling passes, and structural extensions complete — 40 lessons.</span>
+    <span>Back to the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0040:";
+  var fields = ["weekly", "monthly"];
+  function render() {
+    var any = false;
+    fields.forEach(function (f) {
+      var v = localStorage.getItem(key + f);
+      if (v) any = true;
+      document.getElementById("pd6-" + f).textContent = v || "—";
+    });
+    if (any) document.getElementById("pf6-display").classList.add("show");
+  }
+  fields.forEach(function (f) {
+    document.getElementById("pf6-" + f).value = localStorage.getItem(key + f) || "";
+  });
+  render();
+  document.getElementById("pf6-save").addEventListener("click", function () {
+    fields.forEach(function (f) {
+      localStorage.setItem(key + f, document.getElementById("pf6-" + f).value);
+    });
+    render();
+  });
+})();
+</script>
+</body>
+</html>

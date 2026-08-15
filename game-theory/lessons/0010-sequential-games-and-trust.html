@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 10 · Game Trees, Backward Induction &amp; the Trust Game</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0009-public-goods-and-commons.html">← Lesson 9</a>
+    <span>·</span>
+    <a href="./0011-commitment-and-entry-games.html">Next: Lesson 11 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 10 · ~15 min · Level 4: Sequential Games</div>
+  <h1>Game Trees, Backward Induction &amp; the Trust Game</h1>
+  <p class="subtitle">Every game so far assumed simultaneous moves. Most of real life doesn't work that way — and the fix is to reason from the end backward.</p>
+  <div class="meta">Recap: Lesson 8 used backward reasoning informally to predict the Ultimatum Game. This lesson formalizes it — game trees, backward induction by name, and its output, subgame perfect equilibrium — through the Trust Game, which is Stag Hunt's trust problem (Lesson 6) played sequentially instead of simultaneously.</div>
+
+  <h2>Why simultaneous-game tools aren't enough</h2>
+
+  <p>A payoff matrix assumes both players choose at once, in ignorance of each other's move. But in a huge share of real strategic situations — negotiations, hiring, market entry, most conversations — one party moves, the other <em>sees that move</em>, and responds. That visibility changes the analysis completely: you can no longer just ask "what's my best move," you have to ask "what will they do <em>in response to</em> each of my possible moves, and which of those responses do I actually want to trigger."</p>
+
+  <h2>The Trust Game</h2>
+
+  <p>An Investor starts with ₹10. They can <strong>Keep</strong> it (guaranteed ₹10 for them, ₹0 for the other player), or <strong>Send</strong> it to a Trustee — sending triples the money to ₹30 in the Trustee's hands. If sent, the Trustee then chooses: <strong>Return Half</strong> (₹15 back to the Investor, ₹15 kept) or <strong>Return Nothing</strong> (keep all ₹30).</p>
+
+  <div class="tree">
+    <div class="tree-node">
+      <strong>Investor moves first:</strong> Keep, or Send ₹10 (tripling to ₹30)
+      <div class="tree-branch">
+        <div class="tree-edge">Keep →</div>
+        <div class="tree-leaf">Payoffs: Investor = ₹10, Trustee = ₹0</div>
+      </div>
+      <div class="tree-branch">
+        <div class="tree-edge">Send →</div>
+        <div class="tree-node">
+          <strong>Trustee moves next:</strong> Return Half, or Return Nothing
+          <div class="tree-branch">
+            <div class="tree-edge">Return Half →</div>
+            <div class="tree-leaf">Payoffs: Investor = ₹15, Trustee = ₹15</div>
+          </div>
+          <div class="tree-branch">
+            <div class="tree-edge">Return Nothing →</div>
+            <div class="tree-leaf spe">Payoffs: Investor = ₹0, Trustee = ₹30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Backward induction, formally</h2>
+
+  <p><strong>Backward induction</strong> means solving a sequential game from the last decision backward to the first — exactly what Lesson 8 did informally. Start at the Trustee's decision, since it comes last: a purely self-interested Trustee compares ₹15 (Return Half) to ₹30 (Return Nothing) — and keeps everything. That's the highlighted leaf above.</p>
+
+  <p>Now step back to the Investor's decision, knowing what the Trustee will actually do. Sending no longer leads to the tempting ₹15,₹15 outcome — it leads to ₹0 for the Investor, because a rational Trustee will always take the ₹30. Comparing Keep (₹10, guaranteed) to Send (₹0, given what actually happens next), the rational Investor should <strong>Keep</strong>. The final predicted outcome: (₹10, ₹0) — the same as if trust were never on the table at all.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The mutually-better outcome is never reached — and it's not a matrix problem this time</span>
+    (₹15, ₹15) is strictly better for <em>both</em> players than (₹10, ₹0) — a genuine Pareto improvement, just like Lesson 3's Prisoner's Dilemma and Lesson 6's Stag Hunt. But here the reason it's unreachable isn't dominance or risk-aversion under uncertainty — it's that the Trustee has <strong>no way to credibly commit</strong> to reciprocating once the money has already arrived. By the time the Trustee decides, the Investor's trust has already been extended and can't be taken back — and a purely self-interested Trustee has zero remaining incentive to reward it. This is Lesson 7's credible commitment idea, now showing up as a structural feature of the game tree itself.
+  </div>
+
+  <h2>Subgame perfect equilibrium — Nash equilibrium's sequential-game upgrade</h2>
+
+  <p>The outcome backward induction finds has a formal name: <strong>subgame perfect equilibrium (SPE)</strong> — a strategy for each player that remains a best response at <em>every</em> decision point in the tree, not just along the path actually taken. This matters because of something Lesson 7 named informally: a threat or promise that isn't actually the best move if that point in the tree were reached is a <strong>non-credible threat</strong> — and subgame perfection is the formal test for credibility. "I'll return half if you send it" is exactly this kind of non-credible promise if the Trustee has no other reason to follow through: it sounds fine in advance, but check whether it's still the Trustee's best move once the money has actually arrived. If it isn't, backward induction — and any player reasoning correctly — sees through it.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Backward induction solves a sequential game by...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Checking every possible combination of moves at once</button>
+      <button class="quiz-choice" data-correct="true">Solving the last decision first, then working back to the first</button>
+      <button class="quiz-choice">Assuming both players move simultaneously</button>
+      <button class="quiz-choice">Averaging every possible outcome</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. Why does the rational Investor Keep the ₹10 rather than Send it?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because Sending is illegal in this game</button>
+      <button class="quiz-choice">Because ₹10 is a dominant strategy regardless of the Trustee</button>
+      <button class="quiz-choice" data-correct="true">Because a rational Trustee won't reciprocate once the money arrives, making Send worth ₹0 in practice</button>
+      <button class="quiz-choice">Because Keep is the only Nash equilibrium in the underlying matrix</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>But real people don't actually play it this way</h2>
+
+  <p>The classic 1995 Trust Game study by Berg, Dickhaut, and McCabe found real Investors send a meaningful share of their money on average, and real Trustees often do return something — not the full backward-induction prediction of zero trust, zero reciprocity, but not full cooperation either. Same pattern as Lesson 8's Ultimatum findings: the purely self-interested prediction is a useful baseline, and real behavior deviates from it in a fairly consistent, fairness-and-reciprocity-shaped direction — worth remembering precisely because it means the "rational" prediction here is a floor to reason from, not a forecast to bet on blindly.</p>
+
+  <h2>Recognizing it outside a lab</h2>
+
+  <ul>
+    <li><strong>Paying a freelancer upfront vs. on delivery.</strong> Prepaying is the Investor's "Send" — trusting the freelancer to deliver quality work once they've already been paid, with no further leverage. A purely self-interested freelancer facing no reputational or repeated-game consequences has little reason to over-deliver once paid — which is exactly why staged payments and escrow exist: they're commitment devices that change the tree itself, not just an appeal to good faith.</li>
+    <li><strong>Early-stage equity or promotion promises</strong> ("stick with us and we'll make it worth your while") facing the same structural problem — the promise is only credible if something outside pure goodwill (a contract, a vesting schedule, a public reputation at stake) backs it once the other party has already committed effort.</li>
+    <li><strong>Venture capital and founder relationships</strong> — investors extending capital (Send) before founders have proven anything, betting that reputation, contractual protections, or repeated-fundraising incentives (Level 5, next) will do what pure backward induction says shouldn't happen on its own.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Berg, Dickhaut &amp; McCabe, "Trust, Reciprocity, and Social History" (1995), is the original Trust Game study. Ben Polak's Yale course covers backward induction and subgame perfection with several more game trees, including centipede-style games that push this exact "unraveling" logic even further.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A client can pay a freelancer 50% upfront and 50% on delivery ("Trust"), or 100% on delivery only ("No Trust"). If paid upfront, the freelancer can then deliver full-quality work or cut corners since half the money is already guaranteed regardless. Rough payoffs: No Trust → (Client: 10, Freelancer: 8) — safe, unremarkable work, no risk either way. Trust + Deliver Full Quality → (Client: 15, Freelancer: 12) — better for both. Trust + Cut Corners → (Client: 2, Freelancer: 14) — great for the freelancer, bad for the client.
+      <br><br>
+      Draw the tree (or describe it in words). Run backward induction from the freelancer's decision. What does a purely self-interested prediction say the client should do, and why does the mutually-better outcome (15, 12) go unreached? Then propose one real commitment device that could unlock it anyway.
+    </div>
+    <textarea placeholder="Write your tree, backward induction, and proposed fix here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Backward induction:</strong> at the freelancer's node (only reached if the client trusts), a self-interested freelancer compares Deliver Full Quality (12) to Cut Corners (14) — cuts corners, since 14 > 12, exactly like the Trustee keeping the full ₹30.<br><br>
+      <strong>Client's decision, anticipating this:</strong> Trust now effectively leads to (2, 14), not (15, 12) — so the client compares No Trust (10) to Trust (2, given what the freelancer will actually do) and rationally chooses No Trust. Predicted outcome: (10, 8) — the mutually-better (15, 12) goes unreached for the same structural reason as the Trust Game: the freelancer has no way to credibly commit to full quality once already paid.<br><br>
+      <strong>A real fix:</strong> staged payment tied to milestones (not simply upfront-vs-on-delivery, but several smaller checkpoints, each released only after a specific deliverable is verified) restructures the tree itself — it converts one big, unenforceable trust decision into several smaller ones, each backed by a real, credible consequence (future payments withheld) if quality drops. This doesn't eliminate the underlying tension, but it changes the payoffs at each node enough to make "deliver full quality" the freelancer's own best response, not just a hoped-for act of goodwill.
+      <br><br>
+      If your fix was "add a contract clause requiring quality" without changing who holds money when — that's worth noticing: a clause promising good behavior is exactly the kind of non-credible commitment this lesson is built to make you suspicious of, unless it comes with a real, structurally-backed consequence attached (which is what staged payments actually provide).
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what commitment device you proposed and whether you checked it against the "is this credible, or just a stated promise" test from Lesson 7. That check is the actual skill this lesson is building — the backward induction mechanics are secondary to learning to distrust unenforced promises inside a game tree.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Sketch a simple sequential decision as a tree, solve it by working backward from the last decision, and predict when an apparently mutually-better outcome will go unreached because a later promise isn't actually credible once its moment arrives — then look specifically for a structural fix (staged commitments, escrow, enforceable stakes) rather than a stronger-worded promise.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0009-public-goods-and-commons.html">← Lesson 9</a>
+    <a href="./0011-commitment-and-entry-games.html">Lesson 11: Commitment, Deterrence &amp; Market Entry →</a>
+  </p>
+
+</div>
+</body>
+</html>

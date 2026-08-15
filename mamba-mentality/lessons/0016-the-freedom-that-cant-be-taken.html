@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Freedom That Can't Be Taken — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0015-a-thousand-days-to-forge.html">Lesson 15</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 6 · Adversity · Lesson 1 · ~10 min</div>
+  <h1>The Freedom That Can't Be Taken</h1>
+  <p class="subtitle">A psychiatrist wrote this from inside a concentration camp. It's the most credentialed claim in this entire curriculum.</p>
+
+  <div class="meta">
+    Opens Stage 6. Viktor Frankl's <em>Man's Search for Meaning</em> has been Tier 1 since session 1 — this is the first lesson to actually use it.
+  </div>
+
+  <p>Viktor Frankl was a psychiatrist before the war. He spent three years in Nazi concentration camps, including Auschwitz, and lost his parents, brother, and pregnant wife. He wrote <em>Man's Search for Meaning</em> in nine days after liberation. Its first half is memoir — the second develops <strong>logotherapy</strong>, his theory that the primary human drive isn't pleasure or power, but meaning.</p>
+
+  <p>Frankl's claim, stated plainly and earned in a way almost no other source in this curriculum can match: meaning can be found through three routes — purposeful work, love, and <strong>unavoidable suffering</strong>. Not suffering you chose or engineered, like tapas or deliberate practice — suffering that has already happened to you, that you cannot undo or escape. His central line: <em>"Everything can be taken from a man but one thing: the last of the human freedoms — to choose one's attitude in any given set of circumstances."</em></p>
+
+  <h2>What this is not claiming</h2>
+
+  <p>It's easy to hear this as "suffering is secretly good for you" — it isn't. Frankl isn't saying suffering improves you, or that you should seek it out, or that everything happens for a reason. He's making a narrower, more defensible claim: even when everything else has been stripped away — health, freedom, family, the ability to act at all — the choice of what stance to take toward what's happening to you remains yours. That's a claim about a residual freedom, not a claim that the suffering itself was worthwhile.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this belongs before the case studies that follow</span>
+    The next two lessons look at documented, high-stakes adversity — one physical, one about self-doubt and criticism. Both will be tempting to read as "adversity made them better," a tidier story than what actually happened. Frankl's actual claim is the correct lens going in: not that the adversity itself was good, but that what remained genuinely theirs, the whole way through, was the stance they took toward it. Keep that distinction precise; the next lesson will test it against real evidence about whether "adversity makes you stronger" actually holds up.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of something genuinely bad that has already happened to you — not hypothetical, something real, that you did not choose and cannot undo. What stance have you actually been taking toward it? Not the stance you'd perform for someone else. The one you actually hold, most days, when you think about it alone.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the thing. Describe your actual stance toward it as honestly as you can — including if that stance is bitterness, avoidance, or numbness rather than anything resembling growth. Frankl's claim is that the choice of stance is yours regardless of what it currently is; it isn't a claim that you're currently choosing well.</p>
+    <textarea class="journal-input" id="j16" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j16-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>Man's Search for Meaning</em> (Tier 1) — read Part I in full; Part II (logotherapy proper) rewards a slower read but Part I alone carries this lesson. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If naming the thing in the journal above felt like too much for a single lesson, or brought up something this curriculum isn't equipped to handle, say so plainly — this is a philosophy and psychology curriculum, not a substitute for support from a person or professional when something real is genuinely unresolved.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0016:j16";
+  var ta = document.getElementById("j16");
+  var status = document.getElementById("j16-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

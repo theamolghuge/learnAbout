@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Microservices + Kafka</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="microservices-kafka-notes.html">Microservices + Kafka Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#tradeoffs">Trade-offs</a> ·
+  <a href="#discovery">Discovery &amp; Gateway</a> ·
+  <a href="#resilience">Resilience</a> ·
+  <a href="#kafka">Kafka</a>
+</nav>
+
+<h2 id="tradeoffs">Monolith vs Microservices</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the real trade-off between a monolith and microservices — why wouldn't every company just default to microservices?</p>
+  <p class="qa-a">Microservices trade operational simplicity for independent scalability and deployability. They add real complexity: network calls where there used to be function calls, distributed transactions, service discovery, more infrastructure to monitor. That complexity only pays off once a team is large enough (or scaling needs specific enough) that independent deployment actually matters — a small team building an MVP is usually better served starting with a monolith.</p>
+</div>
+
+<h2 id="discovery">Service Discovery &amp; API Gateway</h2>
+
+<div class="qa">
+  <p class="qa-q">Why can't microservices just call each other via hardcoded IP addresses or hostnames?</p>
+  <p class="qa-a">In a dynamic environment, instances are constantly restarting, autoscaling, or being rescheduled to different hosts — a hardcoded address becomes stale the moment that instance changes. Service discovery (e.g. Eureka) lets services register themselves on startup and callers look up "a healthy instance of X" dynamically instead of a fixed address.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What responsibilities does an API Gateway typically centralize?</p>
+  <p class="qa-a">Routing external requests to the right internal service, authentication/token validation at the edge (so individual services don't each reimplement it), rate limiting, and centralized request logging/metrics for all external traffic — one place for cross-cutting concerns instead of duplicating them in every service.</p>
+</div>
+
+<h2 id="resilience">Resilience</h2>
+
+<div class="qa">
+  <p class="qa-q">Explain the circuit breaker pattern and its three states.</p>
+  <p class="qa-a">It protects a caller from a struggling downstream service. CLOSED is normal operation — calls go through, failures are tracked. Once the failure rate crosses a threshold, it trips to OPEN — calls fail fast immediately via a fallback, with no actual call made to the struggling service, giving it room to recover instead of piling on more load. After a wait period it goes HALF_OPEN, letting a few test calls through — closing again if they succeed, re-opening if they still fail.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does one slow downstream service risk taking down an entire system without a circuit breaker?</p>
+  <p class="qa-a">Callers waiting on a slow service tie up their own request-handling threads. As more requests pile up waiting, the caller's own thread pool can exhaust, causing it to become slow or unresponsive too — the failure cascades upstream through the whole call chain. A circuit breaker stops sending calls to the struggling service, freeing the caller to fail fast or degrade gracefully instead of also getting stuck.</p>
+</div>
+
+<h2 id="kafka">Kafka</h2>
+
+<div class="qa">
+  <p class="qa-q">What is a Kafka partition, and what does it guarantee about ordering?</p>
+  <p class="qa-a">A partition is an ordered, append-only log — one of several that a topic is split into for parallelism. Kafka guarantees message order only within a single partition, not across the whole topic. Messages published with the same key always land on the same partition, which is how you guarantee ordering for a related sequence of events (e.g. all events for one order id).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What is a consumer group, and how does it enable parallel processing?</p>
+  <p class="qa-a">A consumer group is a set of consumer instances sharing the work of consuming a topic. Kafka assigns each partition to exactly one consumer within the group at a time, so adding more consumer instances (up to the number of partitions) increases parallel throughput, while each message is still delivered once per group — other groups consuming the same topic independently get their own full copy of the stream.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why does Kafka's default at-least-once delivery mean your consumer logic must be idempotent?</p>
+  <p class="qa-a">If a consumer crashes after processing a message but before committing its offset, Kafka will redeliver that message on restart/rebalance since it doesn't know the work was actually done. This means a message can be processed more than once — consumer logic (e.g. "reserve inventory") needs to be safe to run twice with the same input, or it'll double-apply the effect.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When would you choose Kafka over RabbitMQ, or vice versa?</p>
+  <p class="qa-a">Kafka fits high-volume event streaming where you need very high throughput, message replay (its log-based retention keeps messages after consumption), and multiple independent consumers reading the same stream. RabbitMQ fits more traditional task-queue and RPC-style use cases with complex routing needs (exchanges, routing keys) where messages are typically removed once acknowledged and extremely high throughput isn't the primary concern.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why publish an event to Kafka instead of making a synchronous REST call to the other service?</p>
+  <p class="qa-a">A synchronous call couples the caller's availability to the callee's — if the downstream service is down, the call fails immediately. Publishing an event decouples them: the producer publishes and moves on regardless of whether the consumer is currently up, and the consumer processes the event whenever it's able to, even after being temporarily down.</p>
+</div>
+
+<p class="footer-note"><a href="microservices-kafka-notes.html">Microservices + Kafka Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

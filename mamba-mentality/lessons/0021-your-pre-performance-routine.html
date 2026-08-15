@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Pre-Performance Routine — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0020-study-them-dont-measure-yourself-by-them.html">Lesson 20</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 7 · Performance · Lesson 3 (closing) · ~9 min</div>
+  <h1>Your Pre-Performance Routine</h1>
+  <p class="subtitle">Three separate levers. Elite performers don't leave any of them to chance in the moment.</p>
+
+  <div class="meta">
+    Closes Stage 7. Assembles Stage 3's physiological reset, Lesson 19's attention placement, and Lesson 20's comparison handling into one sequence you run before the moment arrives — not during it, when it's hardest to think clearly at all.
+  </div>
+
+  <p>Three separate mechanisms have come up for performing under pressure, from three different research traditions: cyclic sighing to regulate the body's arousal (Stage 3), trusting automaticity and keeping attention external rather than on your own mechanics (Lesson 19), and converting comparison into extractable information instead of a verdict (Lesson 20). None of them work reliably if you're trying to remember and apply them for the first time in the moment itself — that's also, not coincidentally, exactly the challenge-skill balance and flow research already covered in your <a href="../MISSION.md">attention</a> workspace: the conditions for good performance are mostly set up beforehand, not fixed in the middle of it.</p>
+
+  <h2>Build the actual sequence</h2>
+  <p>A pre-performance routine is just these three levers, in a fixed order, run every time before a specific high-stakes moment — so by the time the moment arrives, the levers are already engaged.</p>
+
+  <div class="practice-form">
+    <div>
+      <label for="pf5-moment">The specific high-stakes moment this routine is for</label>
+      <input type="text" id="pf5-moment" placeholder="e.g. right before I present, right before I compete">
+    </div>
+    <div>
+      <label for="pf5-body">Physical reset — when and how you'll do cyclic sighing before it</label>
+      <input type="text" id="pf5-body" placeholder="e.g. 2 rounds of cyclic sighing, alone, 5 minutes before">
+    </div>
+    <div>
+      <label for="pf5-attention">Attention cue — one short phrase pointing you at the target, not your own mechanics</label>
+      <input type="text" id="pf5-attention" placeholder="e.g. 'watch the target, not your hands'">
+    </div>
+    <div>
+      <label for="pf5-comparison">Comparison reset — what you'll say to yourself if you catch a verdict forming, not information</label>
+      <input type="text" id="pf5-comparison" placeholder="e.g. 'what's extractable here, not what does this say about me'">
+    </div>
+    <button class="quiz-btn" id="pf5-save" type="button" style="align-self:flex-start;">Save my routine</button>
+  </div>
+
+  <div class="practice-display" id="pf5-display">
+    <div class="pd-row"><span class="pd-label">For</span><div class="pd-value" id="pd5-moment"></div></div>
+    <div class="pd-row"><span class="pd-label">Body</span><div class="pd-value" id="pd5-body"></div></div>
+    <div class="pd-row"><span class="pd-label">Attention</span><div class="pd-value" id="pd5-attention"></div></div>
+    <div class="pd-row"><span class="pd-label">Comparison</span><div class="pd-value" id="pd5-comparison"></div></div>
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Before you close this stage</span>
+    Did you have any pre-performance routine before this lesson, or were you leaving your mental state at the moment that matters most entirely to chance — hoping you'd "show up right" without ever having deliberately engineered it? Most people spend far more time preparing the skill itself than preparing the state they'll be in when they have to use it.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">When is the next real moment you'll test this routine? Commit to it specifically, and note one thing that could make you skip doing the routine even though you built it — since building it isn't the same as using it.</p>
+    <textarea class="journal-input" id="j21" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j21-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If three separate steps feels like too much to actually run under real pressure, say so — a routine that's too complex to execute when it matters most isn't better than no routine, and it's worth simplifying now rather than discovering that under real stakes.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Stage 7 complete — 3 lessons.</span>
+    <span>Next: Stage 8 — Character. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0021:";
+  var fields = ["moment", "body", "attention", "comparison"];
+  function render() {
+    var any = false;
+    fields.forEach(function (f) {
+      var v = localStorage.getItem(key + f);
+      if (v) any = true;
+      document.getElementById("pd5-" + f).textContent = v || "—";
+    });
+    if (any) document.getElementById("pf5-display").classList.add("show");
+  }
+  fields.forEach(function (f) {
+    document.getElementById("pf5-" + f).value = localStorage.getItem(key + f) || "";
+  });
+  render();
+  document.getElementById("pf5-save").addEventListener("click", function () {
+    fields.forEach(function (f) {
+      localStorage.setItem(key + f, document.getElementById("pf5-" + f).value);
+    });
+    render();
+  });
+
+  var jkey = "mamba-mentality:0021:j21";
+  var ta = document.getElementById("j21");
+  var status = document.getElementById("j21-status");
+  var saved = localStorage.getItem(jkey);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(jkey, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

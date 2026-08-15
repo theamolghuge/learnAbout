@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Plan For Not Feeling Like It — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0011-the-lapse-isnt-the-problem.html">Lesson 11</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 4 · Discipline · Lesson 3 (closing) · ~9 min</div>
+  <h1>The Plan For Not Feeling Like It</h1>
+  <p class="subtitle">One sentence, decided in advance, does more than motivation ever will in the moment it's needed.</p>
+
+  <div class="meta">
+    Closes Stage 4. Ties Lesson 10 (context cues), Lesson 11 (lapse recovery), and tapas into one written commitment device — and reuses research your <a href="../MISSION.md">attention</a> workspace already sourced, rather than re-deriving it.
+  </div>
+
+  <p>There's a well-established finding, independent of everything in this stage so far, that closes the actual gap between knowing what to do and doing it. Psychologist Peter Gollwitzer's research on <strong>implementation intentions</strong> — already cited in your <a href="../MISSION.md">attention</a> workspace, so this lesson won't re-derive it — found that a simple if-then plan, decided in advance, dramatically outperforms just intending to do something. "I'll work out more" barely moves behavior. "If it's 7am and I've put my shoes on, then I do the workout" moves it substantially, because the decision has already been made before the moment arrives — there's nothing left to decide when motivation is lowest.</p>
+
+  <p>This is the same principle from a different research tradition than Lesson 10's context cues, and it fits together cleanly: a context cue gets the behavior triggered automatically over time; an if-then plan is what carries you through the specific moments — a bad night's sleep, a stressful day — where the automatic trigger alone isn't enough and you're tempted to skip.</p>
+
+  <h2>Build your if-then plans now</h2>
+  <p>Two plans, specifically — one for the ordinary resistance (not feeling like it), one for the lapse itself (Lesson 11's territory), so neither catches you unprepared.</p>
+
+  <div class="practice-form">
+    <div>
+      <label for="pf2-resist">If-then for resistance — "If [specific moment when you don't feel like it], then [specific action]"</label>
+      <input type="text" id="pf2-resist" placeholder="e.g. If I feel like skipping at my scheduled time, then I do just the first 2 minutes and reassess">
+    </div>
+    <div>
+      <label for="pf2-lapse">If-then for a lapse — "If I miss a day, then [specific action], and I will not [specific unhelpful reaction]"</label>
+      <input type="text" id="pf2-lapse" placeholder="e.g. If I miss a day, then I resume at the next scheduled time, and I will not do a makeup session or skip the day after out of shame">
+    </div>
+    <button class="quiz-btn" id="pf2-save" type="button" style="align-self:flex-start;">Save my plans</button>
+  </div>
+
+  <div class="practice-display" id="pf2-display">
+    <div class="pd-row"><span class="pd-label">When resistance hits</span><div class="pd-value" id="pd2-resist"></div></div>
+    <div class="pd-row"><span class="pd-label">When I miss a day</span><div class="pd-value" id="pd2-lapse"></div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this specific phrasing matters</span>
+    Vague plans ("I'll try to push through") don't work the same way — Gollwitzer's research is specifically about the if-then structure, tying a concrete situational cue to a concrete response, decided before the moment arrives. "I'll try to be disciplined" isn't an implementation intention. "If X happens, then I do Y" is.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Before you close this stage</span>
+    Stage 4 has given you a mechanism (context cues), a recovery rule (don't spiral after a lapse), and now a decided-in-advance response to resistance. Notice what it hasn't given you: any promise that this will feel good, or that the friction goes away. Tapas doesn't disappear because you're organized about it. Are you actually willing to keep doing this specific practice on the days it's simply unpleasant, or did some part of you assume that "figuring out the system" would also fix how it feels?
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Answer the question above directly. If part of the appeal of building a "system" was hoping it would make the effort stop feeling like effort, say so — that's a completely normal thing to have hoped, and worth knowing about yourself before Stage 5 asks you to go further, not less far, into deliberate difficulty.</p>
+    <textarea class="journal-input" id="j12" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j12-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Gollwitzer, P. (1999), "Implementation Intentions: Strong Effects of Simple Plans," <em>American Psychologist</em> — already in your <a href="../MISSION.md">attention</a> workspace's RESOURCES.md. Full annotations for everything else in this stage: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If writing the if-then plans felt easy but you doubt you'll actually consult them in the moment, say so — that's a real, common gap between having a plan and a plan actually firing under real resistance, worth troubleshooting rather than assuming the writing alone did the work.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Stage 4 complete — 3 lessons.</span>
+    <span>Next: Stage 5 — Mastery. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0012:";
+  var resist = document.getElementById("pf2-resist");
+  var lapse = document.getElementById("pf2-lapse");
+  var display = document.getElementById("pf2-display");
+
+  function render() {
+    var r = localStorage.getItem(key + "resist");
+    var l = localStorage.getItem(key + "lapse");
+    if (r || l) {
+      document.getElementById("pd2-resist").textContent = r || "—";
+      document.getElementById("pd2-lapse").textContent = l || "—";
+      display.classList.add("show");
+    }
+  }
+  resist.value = localStorage.getItem(key + "resist") || "";
+  lapse.value = localStorage.getItem(key + "lapse") || "";
+  render();
+
+  document.getElementById("pf2-save").addEventListener("click", function () {
+    localStorage.setItem(key + "resist", resist.value);
+    localStorage.setItem(key + "lapse", lapse.value);
+    render();
+  });
+
+  var jkey = "mamba-mentality:0012:j12";
+  var ta = document.getElementById("j12");
+  var status = document.getElementById("j12-status");
+  var saved = localStorage.getItem(jkey);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(jkey, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

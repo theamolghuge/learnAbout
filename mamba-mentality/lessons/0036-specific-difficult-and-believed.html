@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specific, Difficult, and Believed — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0010-motivation-was-never-the-plan.html">Lesson 10</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 4 · Discipline · Lesson 5 (extension) · ~10 min</div>
+  <h1>Specific, Difficult, and Believed</h1>
+  <p class="subtitle">One of psychology's most replicated findings, in three words — and the belief that determines whether it works at all.</p>
+
+  <div class="meta">
+    Extends Stage 4, closing a real gap: goal-setting theory and self-efficacy were both explicitly named in your original brief and never covered.
+  </div>
+
+  <p>Edwin Locke and Gary Latham's goal-setting research spans roughly 400 studies over four decades, and its core finding is unusually clean for psychology: people pursuing <strong>specific, difficult</strong> goals outperform people pursuing vague or easy ones ("do your best" reliably underperforms a specific hard number). Not a subtle effect — one of the most consistently replicated findings in industrial-organizational psychology.</p>
+
+  <h2>The variable that makes or breaks it</h2>
+
+  <p>The theory's own account of why some people commit to hard goals and others don't runs through <strong>self-efficacy</strong> — Albert Bandura's term for the specific belief that you're capable of the task in front of you (not general self-esteem, a narrower, task-specific confidence). Locke and Latham found that people with higher self-efficacy set higher goals for themselves, commit to them more strongly, respond better to negative feedback instead of being derailed by it, and are more likely to develop effective strategies when a straightforward approach isn't working. Goal difficulty and self-efficacy aren't independent — a genuinely difficult goal without the belief you can reach it tends to produce disengagement rather than effort.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Where this connects to what's already built</span>
+    "Specific" is the same requirement Lesson 15's practice-structure builder already asked for — a named target, not "get better." "Difficult" is Lesson 13's deliberate-practice push past current ability. What this lesson adds is the missing variable: self-efficacy isn't the same as Lesson 23's confidence-vs-ego distinction (that was about stability under challenge) — it's narrower still, a belief about this specific task, and it's buildable through exactly what Lesson 15 asked you to build: a structure with real feedback, so small real wins accumulate into a track record you can actually believe in, rather than a belief resting on nothing.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Look at your current goal for your main pursuit. Is it actually specific and difficult, or is it a vague version dressed up as ambitious ("get really good at this")? Separately: rate your honest self-efficacy for it right now — not your general confidence, your belief that <em>you specifically</em> can hit <em>this specific</em> target. If that belief is low, per the research, the fix isn't a pep talk — it's smaller, real wins that build actual evidence.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Rewrite your current goal so it's genuinely specific and difficult, not vague. Then name one small, real, achievable-soon task that would give you actual evidence toward believing you can reach it — not motivation, evidence.</p>
+    <textarea class="journal-input" id="j36" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j36-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Locke, E. & Latham, G. (2002), "Building a Practically Useful Theory of Goal Setting and Task Motivation," <em>American Psychologist</em> — a 35-year retrospective covering the full research program. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If "specific and difficult" sounds like it could tip into the perfectionism Lesson 23 warned about, say so — the line between an appropriately difficult goal and a self-punishing one is worth checking against that lesson's actual test (self-compassion vs. harsh self-criticism when you fall short), not assumed to be obvious.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Back to <a href="./0010-motivation-was-never-the-plan.html">Stage 4</a> or the <a href="../index.html">index</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0036:j36";
+  var ta = document.getElementById("j36");
+  var status = document.getElementById("j36-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision Framework — Game Theory</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="./glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="../lessons/0018-bayesian-reasoning.html">Lesson 18</a>
+  </nav>
+
+  <div class="kicker">Reference · print this</div>
+  <h1>The Game Theory Decision Framework</h1>
+  <p class="subtitle">Twenty questions, in the order it actually pays to ask them. Applies to any real situation involving other people with their own incentives — this is the whole point of this workspace, compressed onto one page.</p>
+
+  <h2>1. Map the game (Lesson 1)</h2>
+  <ol class="checklist">
+    <li><strong>Who are the players?</strong> Include anyone whose choice affects the outcome and is affected by others' choices — not just the obvious two sides.</li>
+    <li><strong>What does each player want?</strong> Their real preferences, not the stated position.</li>
+    <li><strong>What actions can each player take?</strong> Be concrete — not "work hard," but the specific real moves available.</li>
+    <li><strong>What information does each player have?</strong> What they know about the game, and about each other.</li>
+    <li><strong>What does each player believe</strong> about what the others will do, and about what the others believe?</li>
+    <li><strong>What are the incentives</strong> pushing each player toward or away from each action?</li>
+    <li><strong>What are the possible outcomes,</strong> and what does each player's payoff look like under each one?</li>
+  </ol>
+
+  <h2>2. Solve it (Lessons 2-6)</h2>
+  <ol class="checklist" start="8">
+    <li><strong>What is each player's best response</strong> to each of the other player's possible moves?</li>
+    <li><strong>Is there a dominant strategy</strong> — a move that's best regardless of what anyone else does?</li>
+    <li><strong>Is there a Nash equilibrium</strong> — a combination where nobody wants to switch unilaterally? Check for more than one.</li>
+    <li><strong>Is the equilibrium actually good for everyone,</strong> or is there a Pareto-better outcome nobody can reach alone (Prisoner's Dilemma, Public Goods, Tragedy of the Commons)?</li>
+  </ol>
+
+  <h2>3. Check the dynamics (Lessons 4, 10-12)</h2>
+  <ol class="checklist" start="12">
+    <li><strong>Is this a one-shot game or a repeated one</strong> — and if repeated, is the end known and finite (cooperation unravels) or genuinely uncertain (cooperation can be sustained)?</li>
+    <li><strong>Who moves first,</strong> and does that let them commit to something before the other side decides?</li>
+    <li><strong>What commitments are possible,</strong> and are they actually credible — visible and costly to reverse — or just stated?</li>
+    <li><strong>What threats are credible?</strong> Check: is this still the threatening player's own best move once the moment to carry it out actually arrives (subgame perfection)?</li>
+  </ol>
+
+  <h2>4. Check the information (Lessons 13-14)</h2>
+  <ol class="checklist" start="16">
+    <li><strong>What is being signaled,</strong> and is it a credible, differentially-costly signal or just cheap talk?</li>
+    <li><strong>Is there asymmetric information</strong> — and is it a hidden-type problem (adverse selection, fix with signaling/screening) or a hidden-action problem (moral hazard, fix with monitoring/aligned incentives)?</li>
+  </ol>
+
+  <h2>5. Decide what to do (Lessons 5, 15, 17)</h2>
+  <ol class="checklist" start="18">
+    <li><strong>What happens if someone defects</strong> — and can that be punished credibly (Grim Trigger, reputation, a real consequence)?</li>
+    <li><strong>What happens if cooperation continues</strong> — is there a real, sustainable path to the better equilibrium (small trust-building steps, staged commitments)?</li>
+    <li><strong>How can the rules of the game be changed?</strong> Before accepting a bad equilibrium as fixed, ask whether the game itself can be redesigned (mechanism design) — new incentives, a different contract structure, a different process entirely — rather than just playing better within the existing rules.</li>
+  </ol>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The one-sentence reminder to keep nearby</span>
+    Game theory is a framework for reasoning about strategic interactions, not a magic formula for predicting human behavior — treat the equilibrium prediction as a floor to reason from, then adjust for fairness, loss aversion, bounded rationality, and overconfidence where they're likely to bite (Lesson 17).
+  </div>
+
+  <h2>Quick lookup: which lesson has the tool</h2>
+  <div class="framework-grid">
+    <div class="framework-item"><div class="fi-label">Dominant strategy, Nash equilibrium, Pareto efficiency</div><div class="fi-body">Lesson 3</div></div>
+    <div class="framework-item"><div class="fi-label">Coordination, focal points</div><div class="fi-body">Lesson 4</div></div>
+    <div class="framework-item"><div class="fi-label">Mixed strategies, expected value</div><div class="fi-body">Lesson 5</div></div>
+    <div class="framework-item"><div class="fi-label">Risk-dominant vs. payoff-dominant equilibria, trust</div><div class="fi-body">Lesson 6</div></div>
+    <div class="framework-item"><div class="fi-label">Credible commitment, anti-coordination</div><div class="fi-body">Lesson 7</div></div>
+    <div class="framework-item"><div class="fi-label">Fairness breaking naive rationality</div><div class="fi-body">Lesson 8</div></div>
+    <div class="framework-item"><div class="fi-label">Collective action, free-riding</div><div class="fi-body">Lesson 9</div></div>
+    <div class="framework-item"><div class="fi-label">Game trees, backward induction, subgame perfection</div><div class="fi-body">Lesson 10</div></div>
+    <div class="framework-item"><div class="fi-label">First/second-mover advantage, deterrence</div><div class="fi-body">Lesson 11</div></div>
+    <div class="framework-item"><div class="fi-label">Finite vs. indefinite repetition, Tit-for-Tat</div><div class="fi-body">Lesson 12</div></div>
+    <div class="framework-item"><div class="fi-label">Adverse selection, moral hazard</div><div class="fi-body">Lesson 13</div></div>
+    <div class="framework-item"><div class="fi-label">Cheap talk vs. credible signals</div><div class="fi-body">Lesson 14</div></div>
+    <div class="framework-item"><div class="fi-label">BATNA, ZOPA, anchoring</div><div class="fi-body">Lesson 15</div></div>
+    <div class="framework-item"><div class="fi-label">Auctions, winner's curse</div><div class="fi-body">Lesson 16</div></div>
+    <div class="framework-item"><div class="fi-label">Mechanism design, behavioral corrections</div><div class="fi-body">Lesson 17</div></div>
+    <div class="framework-item"><div class="fi-label">Bayesian updating, base rate fallacy, risk vs. uncertainty</div><div class="fi-body">Lesson 18</div></div>
+  </div>
+
+  <p class="lesson-footer">
+    <a href="../index.html">← Index</a>
+    <a href="../lessons/0018-bayesian-reasoning.html">← Lesson 18</a>
+  </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring Security + JWT Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Spring Security + JWT Notes</h1>
+<p class="subtitle">Topic 5 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes <a href="../../spring-boot/reference/spring-boot-notes.html">Spring Core + Boot + REST</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#authn-authz">1. Authentication vs Authorization</a> · <a href="#filter-chain">2. The Security Filter Chain ⭐</a> ·
+  <a href="#password">3. Password Hashing</a> · <a href="#roles">4. Roles &amp; Permissions</a> ·
+  <a href="#jwt">5. JWT ⭐</a> · <a href="#refresh">6. Refresh Tokens</a> ·
+  <a href="#oauth2">7. OAuth2 Basics</a> · <a href="#cors-csrf">8. CORS &amp; CSRF</a> ·
+  <a href="#endtoend">9. End-to-End: register → login → protected route</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Authentication vs authorization, the difference</td><td><a href="#authn-authz">§1</a></td></tr>
+  <tr><td>SecurityFilterChain, how a request gets authenticated</td><td><a href="#filter-chain">§2</a></td></tr>
+  <tr><td>BCrypt / PasswordEncoder, never store plaintext</td><td><a href="#password">§3</a></td></tr>
+  <tr><td>JWT structure, signing, stateless auth</td><td><a href="#jwt">§5</a></td></tr>
+  <tr><td>CORS vs CSRF — what each actually protects against</td><td><a href="#cors-csrf">§8</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Access vs refresh tokens, rotation</td><td><a href="#refresh">§6</a></td></tr>
+  <tr><td>Method-level security, roles vs authorities</td><td><a href="#roles">§4</a></td></tr>
+  <tr><td>OAuth2 grant types</td><td><a href="#oauth2">§7</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Authentication vs Authorization → Security Filter Chain ⭐
+  → Password hashing (BCrypt) → Roles + Permissions + method security
+  → JWT ⭐ (structure → signing → stateless validation)
+  → Refresh tokens + rotation → OAuth2 basics
+  → CORS vs CSRF → End-to-end register/login/protected route
+  → Testing (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://docs.spring.io/spring-security/reference/">Spring Security reference docs</a> — the authoritative source on the filter chain, especially since the API changed significantly from the old WebSecurityConfigurerAdapter style to the current SecurityFilterChain bean style</li>
+  <li><a href="https://jwt.io/introduction">jwt.io introduction</a> — the canonical explanation of JWT structure, from the people who wrote the debugger everyone uses</li>
+  <li><a href="https://www.baeldung.com/spring-security-oauth-jwt">Baeldung — Spring Security + JWT</a> — worked end-to-end example matching the shape below</li>
+</ul>
+
+<!-- ==================== 1. AUTHN vs AUTHZ ==================== -->
+<h2 id="authn-authz">1. Authentication vs Authorization</h2>
+<table class="ref">
+  <tr><th></th><th>Question it answers</th><th>Failure status</th></tr>
+  <tr><td>Authentication (AuthN)</td><td>Who are you? — verifying identity (login)</td><td>401 Unauthorized</td></tr>
+  <tr><td>Authorization (AuthZ)</td><td>What are you allowed to do? — checking permissions</td><td>403 Forbidden</td></tr>
+</table>
+<p>Authentication always happens first — you can't check permissions for an unknown identity. In Spring Security, authentication populates a <code>SecurityContext</code> with an <code>Authentication</code> object (principal + granted authorities); authorization decisions (<code>@PreAuthorize</code>, URL rules) then read from that context.</p>
+
+<!-- ==================== 2. FILTER CHAIN ==================== -->
+<h2 id="filter-chain">2. The Security Filter Chain ⭐</h2>
+<p>Spring Security works by inserting a chain of <strong>servlet filters</strong> in front of your controllers — every request passes through this chain before it ever reaches a <code>@RestController</code>.</p>
+<pre class="code"><code>Request → CorsFilter → CsrfFilter → (Custom) JwtAuthFilter
+        → UsernamePasswordAuthenticationFilter → ExceptionTranslationFilter
+        → FilterSecurityInterceptor (authorization check)
+        → DispatcherServlet → your @RestController</code></pre>
+<pre class="code"><code>@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())                       // stateless JWT APIs don't need CSRF protection
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/register", "/auth/login").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}</code></pre>
+<p>This <code>SecurityFilterChain</code> bean approach is the current (Spring Security 5.7+) way to configure security — it replaced the older <code>WebSecurityConfigurerAdapter</code> subclassing style, which is deprecated.</p>
+
+<!-- ==================== 3. PASSWORD HASHING ==================== -->
+<h2 id="password">3. Password Hashing</h2>
+<p>Passwords must <strong>never</strong> be stored in plaintext or with a fast general-purpose hash like MD5/SHA-256 — those are designed to be fast, which makes brute-forcing leaked hashes cheap. Use a <strong>slow, salted</strong> algorithm designed for passwords.</p>
+<pre class="code"><code>@Autowired
+private PasswordEncoder passwordEncoder;   // BCryptPasswordEncoder
+
+String hashed = passwordEncoder.encode(rawPassword);   // includes a random salt automatically
+boolean matches = passwordEncoder.matches(rawPassword, hashed);   // used at login</code></pre>
+<p><strong>BCrypt</strong> is the Spring Security default — it's deliberately slow (configurable "work factor"/cost) and automatically salts each hash, so two users with the same password get different hashes, and brute-forcing requires redoing the expensive computation per guess.</p>
+
+<!-- ==================== 4. ROLES ==================== -->
+<h2 id="roles">4. Roles &amp; Permissions</h2>
+<pre class="code"><code>@RestController
+public class AdminController {
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/reports")
+    public List<Report> reports() { ... }
+
+    @PreAuthorize("hasAuthority('REPORTS_READ')")   // finer-grained than a role
+    @GetMapping("/reports")
+    public List<Report> myReports() { ... }
+}</code></pre>
+<p><strong>Role vs authority:</strong> a "role" is really just an authority with a <code>ROLE_</code> prefix by convention (<code>hasRole("ADMIN")</code> checks for authority <code>ROLE_ADMIN</code>). Authorities are the more general, granular building block — a role is typically a bundle of authorities (e.g. ROLE_ADMIN implies REPORTS_READ, USERS_WRITE, ...). Method-level checks require <code>@EnableMethodSecurity</code> on the config class.</p>
+
+<!-- ==================== 5. JWT ==================== -->
+<h2 id="jwt">5. JWT ⭐</h2>
+<p>A JSON Web Token is a compact, <strong>self-contained</strong> way to represent claims (identity + metadata) that the server can verify without a database lookup or server-side session store — this is what makes JWT-based auth <strong>stateless</strong> and horizontally scalable.</p>
+<pre class="code"><code>header.payload.signature
+// eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJ1c2VyMTIzIiwicm9sZSI6IkFETUlOIn0 . 5mhBHqs5_DTLdINd9...</code></pre>
+<table class="ref">
+  <tr><th>Part</th><th>Contains</th></tr>
+  <tr><td>Header</td><td>Algorithm used to sign (e.g. HS256), token type</td></tr>
+  <tr><td>Payload (claims)</td><td>subject (user id), roles, issued-at, expiration — Base64-encoded, NOT encrypted, readable by anyone</td></tr>
+  <tr><td>Signature</td><td>HMAC (or RSA) of header+payload using a server-side secret key — this is what proves the token wasn't tampered with</td></tr>
+</table>
+<p><strong>Critical point:</strong> the payload is only Base64-<em>encoded</em>, not encrypted — never put secrets (passwords, credit card numbers) in a JWT claim, anyone can decode it. What the signature guarantees is <em>integrity</em> (nobody altered the claims), not confidentiality.</p>
+<pre class="code"><code>// Issuing a token at login
+String token = Jwts.builder()
+    .setSubject(user.getEmail())
+    .claim("role", user.getRole())
+    .setIssuedAt(new Date())
+    .setExpiration(new Date(System.currentTimeMillis() + 900_000))  // 15 min
+    .signWith(secretKey, SignatureAlgorithm.HS256)
+    .compact();
+
+// Validating on every request (in a custom filter)
+Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
+    .parseClaimsJws(token).getBody();
+String email = claims.getSubject();</code></pre>
+<p>The server validates a token purely by re-checking the signature with its own secret key and the expiry — no database round-trip, no session store, which is why JWT auth scales horizontally with zero shared session state between instances.</p>
+
+<!-- ==================== 6. REFRESH TOKENS ==================== -->
+<h2 id="refresh">6. Access &amp; Refresh Tokens</h2>
+<table class="ref">
+  <tr><th></th><th>Access token</th><th>Refresh token</th></tr>
+  <tr><td>Lifespan</td><td>Short (minutes) — limits damage if leaked</td><td>Long (days/weeks)</td></tr>
+  <tr><td>Sent on</td><td>Every API request (Authorization header)</td><td>Only to a dedicated /auth/refresh endpoint</td></tr>
+  <tr><td>Storage</td><td>Memory / short-lived</td><td>Often stored server-side (DB) so it can be revoked</td></tr>
+</table>
+<p>Why two tokens instead of one long-lived one: a short access token limits the blast radius of a leaked token (it expires soon), while the refresh token lets the client silently get a new access token without forcing the user to log in again. <strong>Rotation</strong> — issuing a new refresh token every time one is used, and invalidating the old one — detects theft: if a stolen refresh token is used after the legitimate client already rotated it, the reused old token is a signal of compromise.</p>
+
+<!-- ==================== 7. OAUTH2 ==================== -->
+<h2 id="oauth2">7. OAuth2 Basics</h2>
+<p>OAuth2 is an <strong>authorization</strong> framework — it lets a user grant a third-party app limited access to their resources on another service (e.g. "Sign in with Google") without sharing their password with that app.</p>
+<table class="ref">
+  <tr><th>Role</th><th>Example</th></tr>
+  <tr><td>Resource Owner</td><td>The user</td></tr>
+  <tr><td>Client</td><td>Your Spring Boot app</td></tr>
+  <tr><td>Authorization Server</td><td>Google/GitHub — issues tokens after login+consent</td></tr>
+  <tr><td>Resource Server</td><td>The API that holds the protected data (can be the same as the auth server)</td></tr>
+</table>
+<p><strong>Authorization Code flow</strong> (most common for server-side web apps): user is redirected to the provider to log in and consent → provider redirects back with a short-lived code → your server exchanges that code (plus a client secret) for tokens server-to-server, so the access token never touches the browser directly. Spring Boot supports this via <code>spring-boot-starter-oauth2-client</code>.</p>
+
+<!-- ==================== 8. CORS & CSRF ==================== -->
+<h2 id="cors-csrf">8. CORS &amp; CSRF</h2>
+<table class="ref">
+  <tr><th></th><th>CORS</th><th>CSRF</th></tr>
+  <tr><td>Protects</td><td>The server — controls which browser-origins are allowed to call it via JS (fetch/XHR)</td><td>The user — prevents a malicious site from tricking the browser into making an unwanted authenticated request using the user's existing cookies</td></tr>
+  <tr><td>Enforced by</td><td>The browser, based on server response headers</td><td>The server, via a token the attacker's page can't obtain</td></tr>
+  <tr><td>Relevant when</td><td>Frontend and backend are on different origins</td><td>Auth relies on cookies (ambient credentials automatically sent by the browser)</td></tr>
+</table>
+<pre class="code"><code>@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("https://myfrontend.com"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+}</code></pre>
+<p><strong>Why JWT-in-header APIs typically disable CSRF:</strong> CSRF exploits the browser automatically attaching cookies to requests. A JWT sent explicitly in an <code>Authorization</code> header (not a cookie) isn't automatically attached by the browser to a cross-site request, so the classic CSRF attack doesn't apply — this is why <code>.csrf(csrf -&gt; csrf.disable())</code> is common for stateless token APIs, but NOT if you ever store the JWT in a cookie.</p>
+
+<!-- ==================== 9. END TO END ==================== -->
+<h2 id="endtoend">9. End-to-End: Register → Login → Protected Route</h2>
+<pre class="code"><code>POST /auth/register  { "email": "...", "password": "..." }
+  → hash password (BCrypt) → save User → 201 Created
+
+POST /auth/login  { "email": "...", "password": "..." }
+  → AuthenticationManager verifies credentials against stored hash
+  → issue access token (short) + refresh token (long) → 200 OK
+
+GET /users/profile
+  Header: Authorization: Bearer <access-token>
+  → JwtAuthFilter validates signature + expiry, populates SecurityContext
+  → @PreAuthorize / authorizeHttpRequests rule checks role → 200 OK, or 401/403</code></pre>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Testing (JUnit + Mockito)</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

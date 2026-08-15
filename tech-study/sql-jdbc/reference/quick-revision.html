@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — SQL &amp; JDBC</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="sql-jdbc-notes.html#study-guide">SQL &amp; JDBC Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>INNER JOIN</td><td>Only matching rows in both tables</td></tr>
+  <tr><td>LEFT JOIN</td><td>All of left + matches from right, NULL if none</td></tr>
+  <tr><td>Find "no match" rows</td><td>LEFT JOIN + <code>WHERE right.id IS NULL</code></td></tr>
+  <tr><td>WHERE vs HAVING</td><td>WHERE filters rows before grouping · HAVING filters groups after</td></tr>
+  <tr><td>Primary key</td><td>One per table, not null, usually FK target</td></tr>
+  <tr><td>Foreign key</td><td>Must reference existing row · CASCADE/RESTRICT/SET NULL on delete</td></tr>
+  <tr><td>Index</td><td>B-tree · O(log n) reads, slower writes, extra space</td></tr>
+  <tr><td>Composite index rule</td><td>Leftmost-prefix — usable only if leading column(s) are filtered</td></tr>
+  <tr><td>ACID</td><td>Atomic · Consistent · Isolated · Durable</td></tr>
+  <tr><td>PreparedStatement</td><td>Params sent separately — prevents SQL injection, precompiled</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>EXISTS vs IN</td><td>EXISTS short-circuits + NULL-safe · preferred for large subqueries</td></tr>
+  <tr><td>Normalization</td><td>1NF atomic cols · 2NF full-key dependency · 3NF no transitive dependency</td></tr>
+  <tr><td>Denormalization</td><td>Deliberate read-speed trade for write consistency risk</td></tr>
+  <tr><td>Connection pooling</td><td>HikariCP default · reuse open connections, avoid handshake cost</td></tr>
+</table>
+
+<h2>Isolation levels (weakest → strongest)</h2>
+<table class="ref">
+  <tr><th>Level</th><th>Allows</th></tr>
+  <tr><td>READ UNCOMMITTED</td><td>Dirty reads</td></tr>
+  <tr><td>READ COMMITTED (Postgres default)</td><td>Non-repeatable reads</td></tr>
+  <tr><td>REPEATABLE READ (MySQL default)</td><td>Phantom reads</td></tr>
+  <tr><td>SERIALIZABLE</td><td>Nothing — lowest concurrency</td></tr>
+</table>
+
+<h2>SQL clause evaluation order</h2>
+<pre class="code"><code>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT</code></pre>
+
+<h2>30-second answers</h2>
+<p><strong>Why PreparedStatement over Statement?</strong><br>
+Params sent separately from SQL text — user input can't become SQL. Also faster on repeat execution.</p>
+<p><strong>Why index, but not on everything?</strong><br>
+Speeds reads (O(log n)), but every write also updates the index — cost in write latency and disk space.</p>
+<p><strong>Dirty vs non-repeatable vs phantom read?</strong><br>
+Dirty = uncommitted data seen. Non-repeatable = same row changes value. Phantom = new rows appear on re-query.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Query: customers with zero orders (LEFT JOIN + IS NULL)</li>
+  <li>Query: top N by group (GROUP BY + HAVING + ORDER BY)</li>
+  <li>JDBC: open connection → PreparedStatement → ResultSet loop, try-with-resources</li>
+  <li>Explain a composite index leftmost-prefix example</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="sql-jdbc-notes.html#joins">Joins ⭐</a></li>
+  <li><a href="sql-jdbc-notes.html#aggregates">Aggregates &amp; Grouping</a></li>
+  <li><a href="sql-jdbc-notes.html#indexes">Indexes ⭐</a></li>
+  <li><a href="sql-jdbc-notes.html#transactions">Transactions &amp; ACID ⭐</a></li>
+  <li><a href="sql-jdbc-notes.html#jdbc">JDBC ⭐</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="sql-jdbc-notes.html">SQL &amp; JDBC Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

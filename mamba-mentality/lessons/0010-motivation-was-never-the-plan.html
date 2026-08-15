@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motivation Was Never The Plan — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0009-build-the-daily-practice.html">Lesson 9</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 4 · Discipline · Lesson 1 · ~10 min</div>
+  <h1>Motivation Was Never The Plan</h1>
+  <p class="subtitle">Lesson 9 asked what happens on your worst day. Here's the actual, evidence-based answer.</p>
+
+  <div class="meta">
+    Opens Stage 4. Picks up directly from Lesson 9's honest gut-check: if your answer to "what makes you do the practice when you don't want to" was "willpower," this lesson explains why that answer was structurally doomed, and gives you the one that actually works.
+  </div>
+
+  <h2>Discipline is supposed to have friction</h2>
+
+  <p>Sutra 2.1 of the <em>Yoga Sutras</em> names <strong>tapas</strong> — usually translated "discipline" or "austerity," but the Sanskrit root carries the sense of heat — as one of three components of <em>kriya yoga</em>, yoga actually put into practice (alongside svadhyaya, self-study, and Ishvara-pranidhana, surrender to something larger than yourself). Tapas is effort that burns — deliberately including some resistance, not effort that flows only when it feels good. This matters because of a quiet assumption most people carry without examining it: that if a practice requires willpower, something's wrong with the practice, or with them. Tapas says the opposite — the friction is often exactly where the practice is doing its work.</p>
+
+  <p>But "expect friction" isn't a plan for getting through it. That's where the philosophy needs a mechanism.</p>
+
+  <h2>What actually predicts whether you'll do it</h2>
+
+  <p>Wendy Wood, a USC psychologist with three decades of habit research behind her, has a finding that directly answers Lesson 9's question: roughly <strong>43% of daily behavior is repeated in the same context and executed with minimal deliberation</strong> — people aren't deciding to do it each time, they're responding automatically to a stable trigger. That's what a habit actually is, mechanically. And what turns a behavior into that kind of automatic response isn't motivation or willpower — it's <strong>context cues</strong> (the same time of day, the same location, the same preceding action, the same people around, even the same emotional state) paired with <strong>repetition</strong> and a <strong>reward</strong>, repeated enough times that the behavior stops requiring a decision at all.</p>
+
+  <p>Read that again against Lesson 9's confront question. If your honest answer to "what makes you do it on your worst day" was "willpower" — you named the one input that habit research says barely matters. Willpower is a feeling, and feelings are exactly what's unreliable on a bad day. A stable cue isn't a feeling. It doesn't care how you feel.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this isn't a contradiction of tapas</span>
+    This doesn't replace the philosophy above — it explains why tapas is survivable. Disciplined effort still has to happen, still involves friction, still isn't always going to feel good. But you don't have to re-decide to endure that friction from scratch every single day using raw willpower. You engineer the moment so the behavior starts automatically — from a cue, not a decision — and then tapas is the effort you apply once you're already there, not the thing getting you there in the first place.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Check the practice you built in Lesson 9</span>
+    Go back to it. Does it actually anchor to a real context cue — a specific time, a specific location, something that reliably precedes it — or does it depend on "when I feel ready" or "when I have energy"? Be exact. "I'll do it in the morning" is weaker than "right after I pour my coffee, at the kitchen counter." The second one is a cue. The first one is a hope wearing a schedule.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Strengthen it.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Rewrite your Lesson 9 practice's trigger using at least two of: time of day, location, a specific preceding action, the people around you. Be concrete enough that someone else could tell, from watching your day, exactly when it's supposed to start.</p>
+    <textarea class="journal-input" id="j10" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j10-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>Yoga Sutras</em> 2.1 (Bryant translation) for tapas and kriya yoga. Wendy Wood, <em>Good Habits, Bad Habits</em>, for the context-cue mechanism — read at least the chapters on context and repetition; the willpower-mythbusting chapters are useful but not required for this lesson's core point. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you've tried cue-based habit building before and it didn't stick, say what actually happened — the gap between "the research says cues work" and "this specific cue didn't work for me" is exactly the kind of detail worth troubleshooting directly rather than papering over with more theory.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0010:j10";
+  var ta = document.getElementById("j10");
+  var status = document.getElementById("j10-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

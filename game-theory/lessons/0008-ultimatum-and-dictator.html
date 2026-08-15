@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 8 · Ultimatum &amp; Dictator Games</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0007-chicken.html">← Lesson 7</a>
+    <span>·</span>
+    <a href="./0009-public-goods-and-commons.html">Next: Lesson 9 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 8 · ~14 min · Level 2-3: Strategic Games</div>
+  <h1>Ultimatum &amp; Dictator Games</h1>
+  <p class="subtitle">The game where the textbook-rational prediction is confidently wrong, in a way real people prove in a lab every time it's run.</p>
+  <div class="meta">Recap: Lesson 2 flagged that rationality is a modeling assumption that "quietly breaks" when real payoffs include fairness or spite, not just money — and promised the Ultimatum Game as the precise example. This is that lesson. Every game before this one was played simultaneously; this one is <strong>sequential</strong> — one player moves, then the other responds having seen the first move — which is your first real taste of Level 4's territory, borrowed early because this game needs it.</div>
+
+  <h2>The game</h2>
+
+  <p>Two players split a fixed amount of money — say ₹100. The <strong>Proposer</strong> offers a split (any amount from ₹0 to ₹100 to the Responder, keeping the rest). The <strong>Responder</strong> then either <strong>Accepts</strong> (both players get exactly the proposed split) or <strong>Rejects</strong> (both players get ₹0 — the whole ₹100 disappears). One round, no negotiation, no repetition.</p>
+
+  <h2>What "rational" predicts</h2>
+
+  <p>Reason backward from the Responder's decision, since it comes last (this backward-reasoning move is the seed of Level 4's <em>backward induction</em> — full treatment there, just the intuition here). A purely payoff-maximizing Responder should accept <em>any</em> offer above ₹0 — even ₹1 is strictly better than the ₹0 they'd get by rejecting. Knowing this in advance, a purely payoff-maximizing Proposer should offer the smallest possible positive amount — ₹1 — and keep ₹99. The "rational" prediction, if payoffs are pure money and nothing else: <strong>Proposer offers ₹1 (or close to it), Responder accepts.</strong></p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Under the naive money-only rationality assumption, what should a Responder do with any positive offer?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Reject anything below 50%</button>
+      <button class="quiz-choice" data-correct="true">Accept it — something beats the ₹0 from rejecting</button>
+      <button class="quiz-choice">Counter-offer a different split</button>
+      <button class="quiz-choice">Reject it to punish an unfair Proposer</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>What actually happens</h2>
+
+  <p>Run this exact experiment with real people — and it has been run, in dozens of countries, cultures, and stakes levels, since the 1980s — and the prediction fails on both sides:</p>
+
+  <ul>
+    <li><strong>Responders routinely reject low offers.</strong> Offers below roughly 20-30% of the total are frequently rejected, even though rejecting is strictly worse for the Responder in pure money terms — they're choosing ₹0 over some positive amount, specifically to punish an offer that feels unfair.</li>
+    <li><strong>Proposers anticipate this and don't offer ₹1.</strong> Typical real offers cluster around 40-50% of the total — far more generous than the "keep 99%" prediction — because Proposers correctly sense that a stingy offer risks outright rejection, losing everything instead of a lot.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">This isn't "irrational" — it's a payoff you left out</span>
+    A Responder who rejects a ₹1-for-them, ₹99-for-them offer isn't failing at rationality — they're revealing that their actual payoff function includes something beyond the cash: the value (or relief, or satisfaction) of punishing an offer that feels exploitative, even at a real cost to themselves. Once you add that term back into the payoff, rejecting can be perfectly rational. The lesson isn't "game theory is wrong" — it's "the model is only as good as the payoffs you put into it," which is exactly Lesson 2's rationality caveat, now made concrete.
+  </div>
+
+  <h2>The Dictator Game: isolating the fear of rejection</h2>
+
+  <p>Strip out the Responder's power entirely: the <strong>Dictator Game</strong> has the same setup, except the first player simply decides the split, unilaterally — the second player has no move at all, no ability to reject anything. If Proposers in the Ultimatum Game were only being generous out of fear of rejection, Dictators (who face zero risk of rejection) should keep everything.</p>
+
+  <p>They don't, not fully. Real Dictators, on average across studies, still give away a meaningful share — commonly somewhere in the 10-30% range, far from ₹0 but also well below the roughly 50/50 seen in Ultimatum offers. Comparing the two games cleanly separates two different forces: the <em>gap</em> between Dictator giving and Ultimatum giving is roughly the fear-of-rejection effect; the giving that remains even in the Dictator Game — where rejection is impossible — is closer to a genuine, unforced fairness or generosity preference.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What does comparing Ultimatum and Dictator Game results let you isolate?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Whether the game is zero-sum or not</button>
+      <button class="quiz-choice" data-correct="true">How much generosity is fear of rejection vs. genuine fairness preference</button>
+      <button class="quiz-choice">Whether players are using mixed strategies</button>
+      <button class="quiz-choice">The exact dominant strategy for both players</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. A Responder rejecting a low but positive offer is best understood as...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">A math error — they should have accepted</button>
+      <button class="quiz-choice">Proof that game theory doesn't apply to real people</button>
+      <button class="quiz-choice" data-correct="true">Rational once you include the value of punishing an unfair offer in their payoff</button>
+      <button class="quiz-choice">Evidence the game wasn't actually sequential</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it outside a lab</h2>
+
+  <ul>
+    <li><strong>Severance and layoff offers.</strong> A company technically holds most of the leverage — a departing employee often has little formal power to change the offer. But a severance that feels insultingly low routinely gets "rejected" in the real sense that matters to the company: bad reviews, hostile exit conversations, occasionally legal action that costs the company far more than a fairer offer would have — the ex-employee accepting the financial hit in exchange for "punishing" the unfair split, exactly like a lab Responder.</li>
+    <li><strong>Final, take-it-or-leave-it offers in negotiation generally.</strong> A buyer or seller who lowballs a final offer, correctly noting the other side has no formal counter-power, still risks outright rejection (the deal collapsing) if the offer reads as exploitative rather than merely tough — the same dynamic Level 8's full Negotiation module will build directly on.</li>
+    <li><strong>Splitting inheritance or shared assets.</strong> One sibling with more formal control over a decision (say, an executor) still routinely offers something closer to an even split than the minimum legally required — partly to avoid a costly, relationship-destroying dispute (fear of rejection), and partly, often, out of genuine fairness feeling (the Dictator-Game residue).</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    The Ultimatum Game was introduced by Werner Güth and colleagues in 1982; it's since become one of the most-replicated experiments in behavioral economics. Ben Polak's Yale course and most behavioral economics primers (see Level 10 of this workspace's own roadmap, still ahead) cover the cross-cultural replication findings in more depth.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A freelancer delivers a finished project. The client, who holds the money and all the formal leverage, offers a final payment noticeably below the originally discussed rate, framing it as "take it or we part ways and you get nothing further." The freelancer has no realistic legal recourse (informal agreement, small amount, not worth a lawyer) — but does have a public portfolio/review presence the client cares about.
+      <br><br>
+      Using this lesson's framework: what does the naive "rational" prediction say the freelancer should do? What's actually likely to happen instead, and why? What should the client's offer have looked like if they wanted to actually maximize their own outcome, accounting for the Responder side of this game rather than just their formal leverage?
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Naive prediction:</strong> the freelancer has no formal recourse and something beats nothing, so they should accept any positive payment, and the client should therefore offer close to the legal/practical minimum.<br><br>
+      <strong>What's actually likely:</strong> a "take it or leave it" framing on a below-agreed rate reads as exploitative, and the freelancer has an available, low-cost rejection move that isn't in the strict two-player game — a public review, a portfolio case study naming the client, word of mouth in their industry. Exactly like a lab Responder giving up money to punish unfairness, the freelancer may accept a worse financial outcome specifically to inflict a costly reputational one on the client, especially if the client is a repeat player in a small industry (this also previews Level 5's reputation effects).<br><br>
+      <strong>A better client offer:</strong> something closer to the originally discussed rate, or an explanation of legitimate scope/budget reasons for the reduction rather than a bare ultimatum — the finding from real Ultimatum experiments is precisely that Proposers who want to actually maximize their own take need to offer meaningfully more than the bare "better than nothing" minimum, because the true payoff-maximizing move accounts for the Responder's fairness-driven rejection risk, not just their formal lack of power.
+      <br><br>
+      If you named the public review/reputation channel as the freelancer's real "rejection" move — even though it's outside the strict two-player money game — that's the sharp catch here: real-world Ultimatum situations often have off-the-books rejection options the formal game doesn't show, and missing them is exactly how the "just lowball them, they have no leverage" mistake happens in practice.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what you predicted for the freelancer's actual behavior, and whether you spotted the off-the-books rejection channel (reviews/reputation) before the reveal or not. If you focused only on the money and concluded "they should just accept it," that's the exact naive-rationality trap this lesson is built to catch.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Recognize a real-world Ultimatum-shaped situation (one side with formal power to make a take-it-or-leave-it offer, the other with an option to reject at a cost to themselves), predict that low, "technically rational" offers carry real rejection risk, and look specifically for off-the-books rejection channels (reputation, reviews, legal cost, relationship damage) the formal payoffs might be missing.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0007-chicken.html">← Lesson 7</a>
+    <a href="./0009-public-goods-and-commons.html">Lesson 9: Public Goods, Free-Riding &amp; the Tragedy of the Commons →</a>
+  </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2 · Rationality, Common Knowledge &amp; the Shape of the Game</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0001-what-is-game-theory.html">← Lesson 1</a>
+    <span>·</span>
+    <a href="./0003-prisoners-dilemma.html">Next: Lesson 3 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 2 · ~13 min · Level 1: Foundations (closing)</div>
+  <h1>Rationality, Common Knowledge &amp; the Shape of the Game</h1>
+  <p class="subtitle">Four ideas that don't add new vocabulary so much as change how you read every game you already know how to describe.</p>
+  <div class="meta">Recap: Lesson 1 gave you five parts — players, actions/strategies, payoffs, information, rules. This lesson adds four lenses you apply <em>on top of</em> those parts: are the players rational, is a fact common knowledge or just individually known, is the game zero-sum or not, and are binding agreements possible. Finishes Level 1 — Level 2 starts with your first real payoff matrix and Nash equilibrium.</div>
+
+  <h2>1. Rationality — a narrower idea than it sounds</h2>
+
+  <p>In everyday speech, "rational" means sensible, level-headed, unemotional. In game theory it means something much narrower and more mechanical: <strong>a rational player chooses the action that best serves their own payoffs, given their beliefs about what everyone else will do.</strong> That's it. It says nothing about what they value — a player who values revenge over money, or fairness over winning, can be perfectly rational as long as they're consistently pursuing <em>that</em>.</p>
+
+  <p>Why bother assuming it at all? Because without some assumption about how players choose, you can't predict anything — the whole point of the five-part anatomy from Lesson 1 is to feed into a prediction, and "rational" is the minimum assumption that makes prediction possible. It's a modeling choice, not a moral claim.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Where it quietly breaks</span>
+    Real humans don't always act this way — they leave tips at restaurants they'll never revisit, reject "free" money in the Ultimatum Game if the split feels unfair, and let anger override a good deal. None of that is "irrational" in the plain-English sense; it just means their true payoffs include things like fairness and spite that a naive model might leave out. You'll see this precisely in the Ultimatum Game (Level 2-3) and in Behavioral Game Theory (Level 10) — for now, just hold the idea that "rational" is a modeling assumption you should watch for breaking, not a fact about people.
+  </div>
+
+  <h2>2. Common knowledge — stronger than "everybody knows"</h2>
+
+  <p>Suppose a fact is true, and every player individually knows it. Is that enough for them to safely act on it together? Not necessarily — and the gap between "everyone happens to know X" and <strong>common knowledge</strong> of X is one of the most underrated ideas in this entire field.</p>
+
+  <p>Common knowledge of a fact means: everyone knows it, <em>and</em> everyone knows that everyone knows it, <em>and</em> everyone knows that everyone knows that everyone knows it — all the way down. That sounds like philosophical hair-splitting until you see it break in a real room.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">A scene you've probably lived through</span>
+    A project is failing. Individually, most people in the weekly status meeting privately suspect this. But nobody says it, because each person is only confident about their <em>own</em> doubt — they don't know the person next to them shares it, so speaking up feels like a solo risk (looking negative, being wrong, undermining the lead). The fact "this project is failing" is widely <em>known</em>. It is not <em>common knowledge</em>. The moment one person says it out loud in the room and gets visible nods, it becomes common knowledge instantly — and the group's behavior can shift within the same meeting, even though no new information about the project itself was revealed. What changed was the information about what <em>other people know</em>.
+  </div>
+
+  <p>This is why public statements, group announcements, and "reply-all" carry strategic weight that a private one-on-one conversation saying the exact same words doesn't — publicity is what manufactures common knowledge, and common knowledge is often what's needed before a group can coordinate a response.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. A rational player, in the game-theory sense, is one who...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Always chooses the emotionally detached option</button>
+      <button class="quiz-choice">Always maximizes money, never fairness or spite</button>
+      <button class="quiz-choice" data-correct="true">Consistently acts to maximize their own payoff given their beliefs about others</button>
+      <button class="quiz-choice">Never makes a decision under uncertainty</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What actually makes a fact "common knowledge" rather than just widely known?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">More than half the group believes it</button>
+      <button class="quiz-choice">It was written down somewhere official</button>
+      <button class="quiz-choice">It has been true for a long time</button>
+      <button class="quiz-choice" data-correct="true">Everyone knows it, and knows that everyone else knows it, recursively</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>3. Zero-sum vs. non-zero-sum</h2>
+
+  <p>A game is <strong>zero-sum</strong> when one player's gain is exactly another's loss — the total payoff on the table is fixed, and the only question is how it gets split. Splitting a fixed cash bonus pool between two people is zero-sum: every rupee one person gets is a rupee the other doesn't.</p>
+
+  <p>A game is <strong>non-zero-sum</strong> when the total isn't fixed — the players' choices can grow or shrink the whole pie, not just redistribute it. Most of real life is non-zero-sum, which is exactly why treating it as zero-sum is one of the most common strategic errors people make.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Revisiting Lesson 1's promotion scenario</span>
+    On the surface, "only one person gets the promotion" looks zero-sum. But look at the full payoff, the way Lesson 1's reveal did: it included the ongoing cooperation between Priya and Raj (covering for each other's mistakes). If competing for the title also damages that cooperation, both players can end up worse off than if they'd competed cleanly — the <em>title</em> is zero-sum, but the <em>situation</em> isn't, because trust and future cooperation aren't fixed quantities being split. Treating the whole situation as zero-sum (act as if any gain to Raj is a loss to Priya, full stop) would be a real strategic mistake here, not just an academic nitpick.
+  </div>
+
+  <p>A genuine business version of the same trap: two companies negotiating a supply deal sometimes act as if every rupee is contested (zero-sum framing), when in fact a longer contract, better forecasting, or shared logistics could grow the total value available to split (non-zero-sum reality). Negotiators who only ever think in zero-sum terms leave real value on the table — this is the single biggest idea Level 8 (Negotiation) builds on.</p>
+
+  <h2>4. Cooperative vs. non-cooperative games</h2>
+
+  <p>This split is about something narrower and more specific than it sounds: <strong>can the players make binding agreements that an outside party will enforce?</strong></p>
+
+  <ul>
+    <li><strong>Cooperative game theory</strong> studies situations where players <em>can</em> form enforceable agreements — a signed contract, a court that will punish breach, a binding coalition. The core questions become about how to split the value a coalition creates, not whether promises will be kept.</li>
+    <li><strong>Non-cooperative game theory</strong> studies situations where any agreement has to be <em>self-enforcing</em> — no external party will punish someone who reneges, so a promise only holds if keeping it is each player's own best move anyway. Almost everything in this course, including everything in Lesson 1 and everything above, is non-cooperative — there's no referee forcing your friend to actually go to the restaurant you agreed on, or forcing a company to honor an informal understanding.</li>
+  </ul>
+
+  <p>The reason this course lives almost entirely in non-cooperative territory: most real strategic situations in careers, relationships, and everyday negotiation don't have a contract-enforcing referee standing by. Even where a contract technically exists (an employment offer, say), most of the interesting strategic tension happens in the parts no contract covers — how hard someone actually works, whether a manager follows through on a verbal promise, whether a coworker keeps confidences. That's non-cooperative terrain, and it's where "self-enforcing" ideas like reputation and repeated interaction (Level 5) end up doing the work a contract would do elsewhere.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. Two friends splitting a fixed ₹1,000 bonus with no way to grow it is an example of...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">A cooperative, non-zero-sum game</button>
+      <button class="quiz-choice" data-correct="true">A zero-sum game</button>
+      <button class="quiz-choice">A game with incomplete rules</button>
+      <button class="quiz-choice">A non-rational game</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-4">
+    <div class="quiz-q">4. What actually distinguishes a cooperative game from a non-cooperative one?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Whether the players like each other</button>
+      <button class="quiz-choice" data-correct="true">Whether binding agreements can be externally enforced</button>
+      <button class="quiz-choice">Whether the total payoff is fixed</button>
+      <button class="quiz-choice">Whether there are more than two players</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Ben Polak's <a href="https://oyc.yale.edu/economics/econ-159/lecture-1">Lecture 1</a> also touches rationality and common knowledge with the class-participation examples that make the "everyone knows that everyone knows" idea click faster than any text description. If you want the classic formal version of the common-knowledge puzzle (not required, just fun), search "blue-eyed islanders puzzle" — same underlying logic as the failing-project meeting above, dressed up as a logic riddle.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A startup's founders are splitting equity for a new venture. They could (a) sign a formal, lawyer-drafted vesting agreement, or (b) go with a informal handshake understanding because "we trust each other." Separately, each founder privately suspects the product idea needs to pivot, but no one has said so out loud in a full team meeting yet.
+      <br><br>
+      Using this lesson's four ideas, answer: Is the equity split zero-sum or non-zero-sum, and does that change based on (a) vs (b)? Is "the product needs to pivot" common knowledge yet, or just individually known? What does choosing (a) vs (b) actually change about which branch of game theory (cooperative vs. non-cooperative) applies to their future disputes?
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Zero-sum or not:</strong> The equity split itself, at the moment of signing, is zero-sum in the narrow sense (100% has to add up to 100%) — but the situation is non-zero-sum, because how they split it affects motivation, effort, and whether the company grows at all. A resentful founder with 20% who feels shortchanged can shrink the whole pie more than the extra 10% they didn't get was worth. This is the same pattern as Lesson 1's promotion scenario.<br><br>
+      <strong>Cooperative vs. non-cooperative:</strong> This is the sharpest part of the scenario. Choosing (a), the formal agreement, moves future equity disputes into <em>cooperative</em> game-theory territory — a court can enforce the contract, so promises are backed by something external. Choosing (b), the handshake, keeps them in <em>non-cooperative</em> territory — any future disagreement has to be resolved by whatever's self-enforcing (reputation, the relationship, mutual dependence), because there's nothing to sue over. "We trust each other" is really a bet that repeated-game incentives (Level 5) will hold without a referee — sometimes right, often expensive to get wrong.<br><br>
+      <strong>Common knowledge:</strong> "The product needs to pivot" is individually known by each founder but not yet common knowledge, by the same logic as the failing-project meeting above — each founder may be silently waiting for someone else to say it first, and the pivot conversation won't actually start until it's said out loud where everyone can see everyone else's reaction.
+      <br><br>
+      If you connected the equity-split choice to which branch of game theory applies to their future — not just "cooperative sounds nicer" — that's the catch this scenario was built to test.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Same as last time — tell me what you wrote before the reveal, especially on the cooperative/non-cooperative branch. That distinction is easy to get backwards on a first pass (people often assume "cooperative" means "friendly," not "externally enforceable"), so if you did too, that's useful signal, not a failure.
+  </div>
+
+  <h2>Level 1, closed</h2>
+  <p>You now have the full foundational vocabulary: players, actions, strategies, payoffs, preferences, incentives, information, rules — plus how to read a game through rationality, common knowledge, zero-sum-ness, and the cooperative/non-cooperative split. Nothing so far has told you what the smart move actually <em>is</em> in any of these games — that starts now. Level 2 opens with your first real payoff matrix and the two ideas everything else stands on: <strong>dominant strategy</strong> and <strong>Nash equilibrium</strong>, taught through the single most famous game in the field — the Prisoner's Dilemma.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Look at a real situation and ask: are the people in it actually acting on their stated payoffs, or is something like fairness/spite quietly in there too? Is the key fact everyone needs to act on actually common knowledge, or just individually suspected? Is this really zero-sum, or does it just look that way? Could an agreement here be enforced by a contract, or does it have to be self-enforcing?
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0001-what-is-game-theory.html">← Lesson 1</a>
+    <a href="./0003-prisoners-dilemma.html">Lesson 3: Prisoner's Dilemma, Dominant Strategy &amp; Nash Equilibrium →</a>
+  </p>
+
+</div>
+</body>
+</html>

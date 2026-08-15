@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring Data JPA + Validation + Exception Handling Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Spring Data JPA + Validation + Exception Handling Notes</h1>
+<p class="subtitle">Topic 4 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes <a href="../../sql-jdbc/reference/sql-jdbc-notes.html">SQL &amp; JDBC</a> and <a href="../../spring-boot/reference/spring-boot-notes.html">Spring Core + Boot + REST</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#jpa-hibernate">1. JPA &amp; Hibernate</a> · <a href="#entities">2. Entities &amp; Mapping</a> ·
+  <a href="#relationships">3. Relationships ⭐</a> · <a href="#repositories">4. Repositories</a> ·
+  <a href="#jpql">5. JPQL &amp; Native Queries</a> · <a href="#paging">6. Pagination &amp; Sorting</a> ·
+  <a href="#loading">7. Lazy vs Eager &amp; N+1 ⭐</a> · <a href="#transactions">8. Transactions</a> ·
+  <a href="#validation">9. Validation</a> · <a href="#exceptions">10. Exception Handling ⭐</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>@Entity, @Id, @GeneratedValue basics</td><td><a href="#entities">§2</a></td></tr>
+  <tr><td>@OneToMany/@ManyToOne/@ManyToMany, owning side</td><td><a href="#relationships">§3</a></td></tr>
+  <tr><td>JpaRepository CRUD + derived query methods</td><td><a href="#repositories">§4</a></td></tr>
+  <tr><td>Lazy vs eager loading, N+1 problem</td><td><a href="#loading">§7</a></td></tr>
+  <tr><td>@Valid, Bean Validation annotations</td><td><a href="#validation">§9</a></td></tr>
+  <tr><td>@ExceptionHandler, @ControllerAdvice, global error responses</td><td><a href="#exceptions">§10</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>JPQL vs native queries</td><td><a href="#jpql">§5</a></td></tr>
+  <tr><td>Pagination &amp; sorting</td><td><a href="#paging">§6</a></td></tr>
+  <tr><td>@Transactional propagation &amp; rollback rules</td><td><a href="#transactions">§8</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>JPA/Hibernate overview → Entities + @Id/@GeneratedValue
+  → Relationships ⭐ (OneToMany → ManyToOne → ManyToMany)
+  → JpaRepository + derived queries → JPQL + native queries
+  → Pagination + Sorting → Lazy vs Eager + N+1 ⭐
+  → @Transactional → Validation (@Valid + Bean Validation)
+  → Exception Handling ⭐ (@ControllerAdvice)
+  → Spring Security + JWT (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://docs.spring.io/spring-data/jpa/reference/">Spring Data JPA reference docs</a> — repository derived queries, paging, and JPQL, straight from the source</li>
+  <li><a href="https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html">Hibernate User Guide</a> — the ORM underneath JPA; go here for the N+1 problem and fetch strategies in depth</li>
+  <li><a href="https://www.baeldung.com/spring-boot-bean-validation">Baeldung — Bean Validation</a> and <a href="https://www.baeldung.com/exception-handling-for-rest-with-spring">Baeldung — Exception Handling for REST</a></li>
+</ul>
+
+<!-- ==================== 1. JPA & HIBERNATE ==================== -->
+<h2 id="jpa-hibernate">1. JPA &amp; Hibernate</h2>
+<p><strong>JPA</strong> (Jakarta Persistence API) is a specification — a set of interfaces/annotations for mapping Java objects to relational tables (ORM). <strong>Hibernate</strong> is the most common implementation of that spec. <strong>Spring Data JPA</strong> sits on top of both, eliminating boilerplate by generating repository implementations from interfaces.</p>
+<pre class="code"><code>Your code → Spring Data JPA (repository interfaces)
+          → JPA (spec: EntityManager, @Entity, JPQL)
+          → Hibernate (implementation, generates SQL)
+          → JDBC (§ previous topic)
+          → Database</code></pre>
+
+<!-- ==================== 2. ENTITIES ==================== -->
+<h2 id="entities">2. Entities &amp; Mapping</h2>
+<pre class="code"><code>@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // DB auto-increment
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    protected User() {}   // JPA requires a no-arg constructor (can be protected)
+
+    public User(String email) { this.email = email; }
+    // getters/setters
+}</code></pre>
+<table class="ref">
+  <tr><th>Strategy</th><th>How IDs are generated</th></tr>
+  <tr><td><code>IDENTITY</code></td><td>DB auto-increment column — simple, but can't batch inserts efficiently</td></tr>
+  <tr><td><code>SEQUENCE</code></td><td>DB sequence object — allows batching, Hibernate's generally preferred choice on Postgres</td></tr>
+  <tr><td><code>AUTO</code></td><td>Let the provider pick based on the DB dialect</td></tr>
+</table>
+
+<!-- ==================== 3. RELATIONSHIPS ==================== -->
+<h2 id="relationships">3. Entity Relationships ⭐</h2>
+<table class="ref">
+  <tr><th>Annotation</th><th>Represents</th><th>Example</th></tr>
+  <tr><td><code>@OneToOne</code></td><td>1:1</td><td>User ↔ UserProfile</td></tr>
+  <tr><td><code>@OneToMany</code></td><td>1:N (inverse side)</td><td>Customer → many Orders</td></tr>
+  <tr><td><code>@ManyToOne</code></td><td>N:1 (owning side — holds the FK)</td><td>Order → one Customer</td></tr>
+  <tr><td><code>@ManyToMany</code></td><td>N:N, needs a join table</td><td>Student ↔ many Courses</td></tr>
+</table>
+<pre class="code"><code>@Entity
+public class Customer {
+    @Id @GeneratedValue
+    private Long id;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+}
+
+@Entity
+public class Order {
+    @Id @GeneratedValue
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)          // Order is the owning side — holds the FK column
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+}</code></pre>
+<p><strong>Owning side:</strong> the side with <code>@JoinColumn</code> is the one that actually holds the foreign key in the database and controls the relationship on save. The other side uses <code>mappedBy</code> to say "I'm just the inverse view of that FK, don't create a second join column." Always put <code>@ManyToOne</code> on the "many" side — it naturally corresponds to where the FK column lives.</p>
+<pre class="code"><code>@Entity
+public class Student {
+    @ManyToMany
+    @JoinTable(name = "student_course",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<Course> courses = new HashSet<>();
+}</code></pre>
+
+<!-- ==================== 4. REPOSITORIES ==================== -->
+<h2 id="repositories">4. Repositories</h2>
+<pre class="code"><code>public interface UserRepository extends JpaRepository<User, Long> {
+
+    // Derived query — Spring parses the method name and generates the query
+    Optional<User> findByEmail(String email);
+    List<User> findByCreatedAtAfter(Instant date);
+    boolean existsByEmail(String email);
+    List<User> findByRoleAndActiveTrue(String role);
+}</code></pre>
+<p><code>JpaRepository&lt;User, Long&gt;</code> gives you <code>save()</code>, <code>findById()</code>, <code>findAll()</code>, <code>deleteById()</code>, <code>count()</code> for free — no implementation code, Spring generates a proxy at startup. Derived query methods follow a naming convention (<code>findBy</code> + property + optional operator like <code>After</code>/<code>Containing</code>/<code>OrderBy</code>) that Spring Data parses into a query without you writing SQL or JPQL at all.</p>
+
+<!-- ==================== 5. JPQL ==================== -->
+<h2 id="jpql">5. JPQL &amp; Native Queries</h2>
+<p><strong>JPQL</strong> queries entities and their fields (object-oriented), not tables and columns — it's translated to SQL by Hibernate, so it stays portable across databases.</p>
+<pre class="code"><code>public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    @Query("SELECT o FROM Order o WHERE o.customer.id = :customerId AND o.total > :min")
+    List<Order> findLargeOrders(@Param("customerId") Long customerId, @Param("min") BigDecimal min);
+
+    // Native SQL — escape hatch for DB-specific features (window functions, etc.)
+    @Query(value = "SELECT * FROM orders WHERE total > :min ORDER BY total DESC LIMIT 10", nativeQuery = true)
+    List<Order> findTop10ByTotal(@Param("min") BigDecimal min);
+}</code></pre>
+<p>Prefer derived query methods for simple lookups, JPQL for anything needing joins/aggregation that stays portable, and native queries only when you need a DB-specific feature JPQL can't express.</p>
+
+<!-- ==================== 6. PAGINATION ==================== -->
+<h2 id="paging">6. Pagination &amp; Sorting</h2>
+<pre class="code"><code>public interface OrderRepository extends JpaRepository<Order, Long> {
+    Page<Order> findByCustomerId(Long customerId, Pageable pageable);
+}
+
+Pageable pageable = PageRequest.of(0, 20, Sort.by("createdAt").descending());
+Page<Order> page = orderRepository.findByCustomerId(customerId, pageable);
+
+page.getContent();       // the 20 orders on this page
+page.getTotalElements(); // total count across all pages (extra COUNT query)
+page.getTotalPages();</code></pre>
+<p><code>Page&lt;T&gt;</code> runs an extra <code>COUNT</code> query to know the total — for infinite-scroll style APIs where you don't need a total count, <code>Slice&lt;T&gt;</code> avoids that extra query and just tells you if there's a next page.</p>
+
+<!-- ==================== 7. LAZY/EAGER & N+1 ==================== -->
+<h2 id="loading">7. Lazy vs Eager Loading &amp; the N+1 Problem ⭐</h2>
+<table class="ref">
+  <tr><th>Strategy</th><th>Behavior</th><th>Default for</th></tr>
+  <tr><td><code>FetchType.LAZY</code></td><td>Related entity loaded only when accessed — a proxy is fetched initially</td><td>@OneToMany, @ManyToMany</td></tr>
+  <tr><td><code>FetchType.EAGER</code></td><td>Related entity loaded immediately, in the same or an additional query</td><td>@ManyToOne, @OneToOne</td></tr>
+</table>
+<p><strong>The N+1 problem:</strong> fetch 1 list of N parent entities (1 query), then lazily access a collection on each one inside a loop — that's N additional queries, one per parent, instead of one query joining everything.</p>
+<pre class="code"><code>List<Customer> customers = customerRepository.findAll();   // 1 query
+for (Customer c : customers) {
+    c.getOrders().size();   // LAZY — triggers 1 query PER customer = N extra queries
+}</code></pre>
+<p><strong>Fixes:</strong></p>
+<pre class="code"><code>// 1. JOIN FETCH in JPQL — pulls related entities in the same query
+@Query("SELECT DISTINCT c FROM Customer c LEFT JOIN FETCH c.orders")
+List<Customer> findAllWithOrders();
+
+// 2. @EntityGraph — declarative alternative to JOIN FETCH
+@EntityGraph(attributePaths = "orders")
+List<Customer> findAll();
+
+// 3. Batch fetching — groups the N queries into fewer IN(...) queries
+@BatchSize(size = 20)
+private List<Order> orders;</code></pre>
+<p><strong>Interview rule of thumb:</strong> default relationships to <code>LAZY</code> everywhere (including @ManyToOne/@OneToOne, overriding the EAGER default), and fetch what you actually need explicitly per query — this avoids both N+1 and accidentally loading huge unrelated object graphs.</p>
+
+<!-- ==================== 8. TRANSACTIONS ==================== -->
+<h2 id="transactions">8. Transactions</h2>
+<pre class="code"><code>@Service
+public class OrderService {
+
+    @Transactional
+    public void placeOrder(Order order) {
+        orderRepository.save(order);
+        inventoryService.reserve(order.getItems());   // if this throws, the save above rolls back too
+    }
+}</code></pre>
+<p><code>@Transactional</code> wraps the method in a database transaction — by default it rolls back on any unchecked exception, but NOT on checked exceptions (you can override with <code>rollbackFor = Exception.class</code>). It's implemented via a Spring AOP proxy, which is why calling an <code>@Transactional</code> method from <em>within the same class</em> (self-invocation) bypasses the proxy and the transaction silently doesn't apply.</p>
+<table class="ref">
+  <tr><th>Propagation</th><th>Behavior</th></tr>
+  <tr><td><code>REQUIRED</code> (default)</td><td>Join the existing transaction, or start a new one if none exists</td></tr>
+  <tr><td><code>REQUIRES_NEW</code></td><td>Always start a new, independent transaction — suspends any existing one</td></tr>
+  <tr><td><code>NESTED</code></td><td>Start a savepoint within the existing transaction — can roll back to just that point</td></tr>
+</table>
+
+<!-- ==================== 9. VALIDATION ==================== -->
+<h2 id="validation">9. Validation</h2>
+<pre class="code"><code>public class CreateUserRequest {
+
+    @NotBlank(message = "name is required")
+    private String name;
+
+    @Email
+    @NotBlank
+    private String email;
+
+    @Min(18) @Max(120)
+    private int age;
+
+    @Size(min = 8, message = "password must be at least 8 characters")
+    private String password;
+}
+
+@PostMapping
+public UserDto create(@RequestBody @Valid CreateUserRequest request) {
+    return userService.create(request);   // never reached if validation fails
+}</code></pre>
+<table class="ref">
+  <tr><th>Annotation</th><th>Checks</th></tr>
+  <tr><td><code>@NotNull</code></td><td>Not null (but empty string/collection still passes)</td></tr>
+  <tr><td><code>@NotBlank</code></td><td>Not null and not just whitespace — for Strings</td></tr>
+  <tr><td><code>@NotEmpty</code></td><td>Not null and size &gt; 0 — for Strings/collections</td></tr>
+  <tr><td><code>@Size(min=, max=)</code></td><td>Length/size bounds</td></tr>
+  <tr><td><code>@Min</code> / <code>@Max</code></td><td>Numeric bounds</td></tr>
+  <tr><td><code>@Email</code></td><td>Valid email format</td></tr>
+  <tr><td><code>@Pattern(regexp=)</code></td><td>Matches a regex</td></tr>
+</table>
+<p><code>@Valid</code> on a <code>@RequestBody</code> parameter tells Spring MVC to run Bean Validation before the handler body executes. A failure throws <code>MethodArgumentNotValidException</code> — which is exactly what the global exception handler below catches to return a proper 400.</p>
+
+<!-- ==================== 10. EXCEPTION HANDLING ==================== -->
+<h2 id="exceptions">10. Exception Handling ⭐</h2>
+<pre class="code"><code>public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(Long id) {
+        super("User not found: " + id);
+    }
+}
+
+@RestControllerAdvice   // = @ControllerAdvice + @ResponseBody on every method
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)   // thrown by failed @Valid
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(f -> f.getField() + ": " + f.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        return ResponseEntity.badRequest().body(new ErrorResponse("VALIDATION_ERROR", message));
+    }
+
+    @ExceptionHandler(Exception.class)   // catch-all — never leak stack traces to clients
+    public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
+        log.error("Unhandled exception", ex);
+        return ResponseEntity.internalServerError().body(new ErrorResponse("INTERNAL_ERROR", "Something went wrong"));
+    }
+}
+
+record ErrorResponse(String code, String message) {}</code></pre>
+<p><strong>Why centralize this:</strong> without <code>@ControllerAdvice</code>, every controller method would need its own try/catch to produce consistent error JSON — duplicated everywhere and easy to get inconsistent. One class intercepts exceptions thrown from any controller and maps each exception type to the right HTTP status and response shape. Handlers are matched most-specific-exception-type first, so a specific <code>UserNotFoundException</code> handler wins over the generic <code>Exception</code> catch-all.</p>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Spring Security + JWT</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Thousand Days To Forge — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0014-the-corroborated-version.html">Lesson 14</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 3 (closing) · ~10 min</div>
+  <h1>A Thousand Days To Forge</h1>
+  <p class="subtitle">Miyamoto Musashi's own timeframe for mastery, and a protocol so your practice sessions actually earn it.</p>
+
+  <div class="meta">
+    Closes Stage 5. Combines Lesson 13's deliberate-practice diagnostic and Lesson 14's targeted-effort case study into a repeatable weekly structure — and resets your sense of the actual timescale involved.
+  </div>
+
+  <p>Near the end of <em>The Book of Five Rings</em>, Miyamoto Musashi — undefeated across some sixty duels — gives a line often rendered as: <strong>"One thousand days of training to forge, ten thousand days of training to refine."</strong> A thousand days is roughly three years. Ten thousand days is roughly twenty-seven. Musashi isn't speaking loosely: he fought his first duel at thirteen and was still writing about strategy in his sixties, having spent essentially a lifetime at it before he considered the thing refined.</p>
+
+  <p>This is the timescale Stage 5 has been building toward without saying it outright. Lesson 13 showed deliberate practice matters enormously and still doesn't fully explain expertise on its own. Lesson 14 showed a specific instance of targeted, unwitnessed effort. Neither one means anything without this: sustained across years, not sessions.</p>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with the actual numbers</span>
+    A thousand days — three years of consistent practice — is Musashi's timeframe just to reach "forged," not "refined." Are you evaluating your own progress on that kind of horizon, or are you quietly judging yourself against a timescale of weeks or months and concluding something's wrong when it isn't? Most frustration with "not being good enough yet" is actually a timeframe error, not a talent or effort error.
+  </div>
+
+  <h2>Build one repeatable session structure</h2>
+  <p>Not a single session — a structure you'll run every time, so the deliberate-practice diagnostic from Lesson 13 stops being a one-off reflection and becomes how you actually train.</p>
+
+  <div class="practice-form">
+    <div>
+      <label for="pf3-target">Specific weak point this structure targets (not the whole skill — one identifiable gap)</label>
+      <input type="text" id="pf3-target" placeholder="e.g. my footwork on the transition, not 'get better at the sport' generally">
+    </div>
+    <div>
+      <label for="pf3-feedback">What gives you immediate feedback — a person, a recording, a measurable result, a specific self-check</label>
+      <input type="text" id="pf3-feedback" placeholder="e.g. filming the session and reviewing footwork frame-by-frame within the hour">
+    </div>
+    <div>
+      <label for="pf3-stretch">What "past your current level" means for this specific structure</label>
+      <input type="text" id="pf3-stretch" placeholder="e.g. adding a variable my current footwork can't yet handle cleanly">
+    </div>
+    <button class="quiz-btn" id="pf3-save" type="button" style="align-self:flex-start;">Save my structure</button>
+  </div>
+
+  <div class="practice-display" id="pf3-display">
+    <div class="pd-row"><span class="pd-label">Target</span><div class="pd-value" id="pd3-target"></div></div>
+    <div class="pd-row"><span class="pd-label">Feedback</span><div class="pd-value" id="pd3-feedback"></div></div>
+    <div class="pd-row"><span class="pd-label">Stretch</span><div class="pd-value" id="pd3-stretch"></div></div>
+  </div>
+
+  <p>Run this structure repeatedly — same target until it's no longer the weak point, then a new one. That repetition, not novelty, is what a thousand days actually looks like from the inside: mostly the same specific work, returned to again and again.</p>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Roughly how many real days of deliberate practice (not just time-in-the-activity) have you actually put into what you're trying to master? Where does that put you on Musashi's curve — nowhere near forged, forged but not refined, or somewhere you weren't expecting? What does that change about how you'll judge your progress over the next month?</p>
+    <textarea class="journal-input" id="j15" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j15-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    <em>The Book of Five Rings</em> (Wilson translation) — read the Fire Scroll for practical training principles and the Wind/Void Scrolls for the passage above in full context. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If a multi-year (or multi-decade) timeframe feels discouraging rather than clarifying, say so — that reaction is worth examining directly rather than pushing past, since Stage 9 will eventually ask you to think in decades on purpose, and it's better to know now whether that framing helps or hurts you.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Stage 5 complete — 3 lessons.</span>
+    <span>Next: Stage 6 — Adversity. Not yet built.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0015:";
+  var target = document.getElementById("pf3-target");
+  var feedback = document.getElementById("pf3-feedback");
+  var stretch = document.getElementById("pf3-stretch");
+  var display = document.getElementById("pf3-display");
+
+  function render() {
+    var t = localStorage.getItem(key + "target");
+    var f = localStorage.getItem(key + "feedback");
+    var s = localStorage.getItem(key + "stretch");
+    if (t || f || s) {
+      document.getElementById("pd3-target").textContent = t || "—";
+      document.getElementById("pd3-feedback").textContent = f || "—";
+      document.getElementById("pd3-stretch").textContent = s || "—";
+      display.classList.add("show");
+    }
+  }
+  target.value = localStorage.getItem(key + "target") || "";
+  feedback.value = localStorage.getItem(key + "feedback") || "";
+  stretch.value = localStorage.getItem(key + "stretch") || "";
+  render();
+
+  document.getElementById("pf3-save").addEventListener("click", function () {
+    localStorage.setItem(key + "target", target.value);
+    localStorage.setItem(key + "feedback", feedback.value);
+    localStorage.setItem(key + "stretch", stretch.value);
+    render();
+  });
+
+  var jkey = "mamba-mentality:0015:j15";
+  var ta = document.getElementById("j15");
+  var status = document.getElementById("j15-status");
+  var saved = localStorage.getItem(jkey);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(jkey, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

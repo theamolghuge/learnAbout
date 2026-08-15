@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Spring Data JPA + Validation + Exception Handling</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail in <a href="spring-data-jpa-notes.html#study-guide">Spring Data JPA Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>JPA vs Hibernate</td><td>JPA = spec · Hibernate = implementation</td></tr>
+  <tr><td>@Id/@GeneratedValue</td><td>IDENTITY (auto-inc, no batching) vs SEQUENCE (batchable)</td></tr>
+  <tr><td>Owning side</td><td>Side with @JoinColumn holds the FK — usually the "many" side</td></tr>
+  <tr><td>mappedBy</td><td>Marks the inverse, non-owning side of a relationship</td></tr>
+  <tr><td>JpaRepository</td><td>save/findById/findAll/delete for free, no impl code</td></tr>
+  <tr><td>Derived queries</td><td>findByX parsed from method name into a query</td></tr>
+  <tr><td>N+1 problem</td><td>1 query for parents + N lazy-triggered queries per child access</td></tr>
+  <tr><td>N+1 fix</td><td>JOIN FETCH / @EntityGraph — pull related data in one query</td></tr>
+  <tr><td>@Valid</td><td>Runs Bean Validation before handler body · throws MethodArgumentNotValidException</td></tr>
+  <tr><td>@NotBlank vs @NotEmpty vs @NotNull</td><td>Blank rejects whitespace · Empty rejects size 0 · Null only rejects null</td></tr>
+  <tr><td>@ControllerAdvice</td><td>Global exception → HTTP status/body mapping, one place</td></tr>
+  <tr><td>@ExceptionHandler matching</td><td>Most specific exception type wins</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>JPQL</td><td>Queries entities/fields, portable across DBs</td></tr>
+  <tr><td>Native query</td><td>Raw SQL — escape hatch for DB-specific features</td></tr>
+  <tr><td>Page&lt;T&gt; vs Slice&lt;T&gt;</td><td>Page runs extra COUNT query · Slice doesn't, just knows "has next"</td></tr>
+  <tr><td>@Transactional rollback</td><td>Unchecked exceptions only, by default</td></tr>
+  <tr><td>Self-invocation bug</td><td>Calling @Transactional method from same class bypasses the AOP proxy</td></tr>
+  <tr><td>REQUIRED vs REQUIRES_NEW</td><td>Join existing tx vs always start an independent one</td></tr>
+</table>
+
+<h2>Relationship annotations</h2>
+<table class="ref">
+  <tr><th>Annotation</th><th>Cardinality</th><th>Default fetch</th></tr>
+  <tr><td>@OneToOne</td><td>1:1</td><td>EAGER</td></tr>
+  <tr><td>@OneToMany</td><td>1:N (inverse)</td><td>LAZY</td></tr>
+  <tr><td>@ManyToOne</td><td>N:1 (owning)</td><td>EAGER</td></tr>
+  <tr><td>@ManyToMany</td><td>N:N, join table</td><td>LAZY</td></tr>
+</table>
+
+<h2>30-second answers</h2>
+<p><strong>N+1 in one sentence?</strong><br>
+Fetching a list, then lazily loading a related collection per item in a loop — 1 + N queries instead of 1 joined query.</p>
+<p><strong>Why override @ManyToOne to LAZY?</strong><br>
+The EAGER default can silently pull large object graphs — explicit fetch (JOIN FETCH/@EntityGraph) per query is safer and predictable.</p>
+<p><strong>Why doesn't @Transactional roll back on IOException?</strong><br>
+Checked exceptions don't trigger rollback by default — only unchecked ones, unless rollbackFor is set.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Customer/Order @OneToMany + @ManyToOne with correct owning side</li>
+  <li>A JOIN FETCH JPQL query fixing an N+1</li>
+  <li>@RestControllerAdvice with a specific + a catch-all handler</li>
+  <li>A DTO with @NotBlank/@Email/@Size and its 400 error shape</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="spring-data-jpa-notes.html#relationships">Relationships ⭐</a></li>
+  <li><a href="spring-data-jpa-notes.html#loading">Lazy vs Eager &amp; N+1 ⭐</a></li>
+  <li><a href="spring-data-jpa-notes.html#validation">Validation</a></li>
+  <li><a href="spring-data-jpa-notes.html#exceptions">Exception Handling ⭐</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="spring-data-jpa-notes.html">Spring Data JPA Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

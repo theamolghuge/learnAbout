@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing Notes — JUnit, Mockito &amp; Spring Test</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Testing Notes</h1>
+<p class="subtitle">Topic 6 of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes everything through <a href="../../spring-security/reference/spring-security-notes.html">Spring Security</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#pyramid">1. The Test Pyramid</a> · <a href="#junit">2. JUnit 5 ⭐</a> ·
+  <a href="#mockito">3. Mockito ⭐</a> · <a href="#service-tests">4. Unit Testing a Service</a> ·
+  <a href="#webmvctest">5. @WebMvcTest — Testing Controllers</a> · <a href="#datajpatest">6. @DataJpaTest — Testing Repositories</a> ·
+  <a href="#springboottest">7. @SpringBootTest — Integration Tests</a> · <a href="#testcontainers">8. Testcontainers</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>JUnit 5 lifecycle annotations, assertions</td><td><a href="#junit">§2</a></td></tr>
+  <tr><td>Mockito: @Mock, @InjectMocks, when/thenReturn, verify</td><td><a href="#mockito">§3</a></td></tr>
+  <tr><td>Testing Controller → Service → Repository, which layer uses what</td><td><a href="#service-tests">§4</a>, <a href="#webmvctest">§5</a></td></tr>
+  <tr><td>@WebMvcTest + MockMvc</td><td><a href="#webmvctest">§5</a></td></tr>
+  <tr><td>@SpringBootTest vs slice tests — when to use which</td><td><a href="#springboottest">§7</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>@DataJpaTest, embedded/test databases</td><td><a href="#datajpatest">§6</a></td></tr>
+  <tr><td>Testcontainers — testing against real infrastructure</td><td><a href="#testcontainers">§8</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Test pyramid → JUnit 5 basics ⭐ → Mockito ⭐
+  → Unit test a Service (mock the repository)
+  → @WebMvcTest + MockMvc (mock the service) → @DataJpaTest (real-ish repository)
+  → @SpringBootTest (full context, sparingly) → Testcontainers
+  → Git + Maven + API tools (next topic)</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://junit.org/junit5/docs/current/user-guide/">JUnit 5 User Guide</a> — the canonical reference for annotations, assertions, and extensions</li>
+  <li><a href="https://site.mockito.org/">Mockito official docs</a></li>
+  <li><a href="https://docs.spring.io/spring-boot/reference/testing/index.html">Spring Boot reference — Testing</a> — the authoritative source on @SpringBootTest, test slices (@WebMvcTest, @DataJpaTest), and when each applies</li>
+</ul>
+
+<!-- ==================== 1. PYRAMID ==================== -->
+<h2 id="pyramid">1. The Test Pyramid</h2>
+<pre class="code"><code>        /\
+       /  \    E2E / UI tests        — few, slow, brittle, highest confidence
+      /----\
+     /      \  Integration tests     — some, medium speed (@SpringBootTest, @WebMvcTest)
+    /--------\
+   /          \ Unit tests           — many, fast, isolated (plain JUnit + Mockito)
+  /------------\</code></pre>
+<p>Most tests should be fast unit tests with no Spring context at all — a plain <code>new ServiceUnderTest(mockDependency)</code> runs in milliseconds. Spring context tests are slower (starting a context takes real time) so they're used more sparingly, targeted at the specific layer being verified.</p>
+
+<!-- ==================== 2. JUNIT 5 ==================== -->
+<h2 id="junit">2. JUnit 5 ⭐</h2>
+<pre class="code"><code>class OrderCalculatorTest {
+
+    private OrderCalculator calculator;
+
+    @BeforeEach                          // runs before every test method
+    void setUp() {
+        calculator = new OrderCalculator();
+    }
+
+    @Test
+    void calculatesTotalWithTax() {
+        double total = calculator.totalWithTax(100.0, 0.08);
+        assertEquals(108.0, total, 0.001);      // delta for double comparison
+    }
+
+    @Test
+    void throwsOnNegativePrice() {
+        assertThrows(IllegalArgumentException.class,
+            () -> calculator.totalWithTax(-10.0, 0.08));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {0.0, 0.05, 0.2})
+    void handlesVariousTaxRates(double rate) {
+        assertTrue(calculator.totalWithTax(100.0, rate) >= 100.0);
+    }
+
+    @AfterEach
+    void tearDown() { /* cleanup, e.g. close resources */ }
+}</code></pre>
+<table class="ref">
+  <tr><th>Annotation</th><th>Purpose</th></tr>
+  <tr><td><code>@Test</code></td><td>Marks a test method</td></tr>
+  <tr><td><code>@BeforeEach</code> / <code>@AfterEach</code></td><td>Runs before/after every test in the class — fresh state per test</td></tr>
+  <tr><td><code>@BeforeAll</code> / <code>@AfterAll</code></td><td>Runs once for the whole class — must be <code>static</code></td></tr>
+  <tr><td><code>@ParameterizedTest</code></td><td>Runs the same test body across multiple input sets — avoids copy-pasted near-duplicate tests</td></tr>
+  <tr><td><code>@DisplayName</code></td><td>Human-readable test name in reports</td></tr>
+</table>
+<p><strong>assertEquals vs assertThrows vs assertTrue</strong> — the common assertion set. Prefer <code>assertThrows</code> over a manual try/catch that fails the test if no exception is thrown; it's clearer and idiomatic.</p>
+
+<!-- ==================== 3. MOCKITO ==================== -->
+<h2 id="mockito">3. Mockito ⭐</h2>
+<p>A <strong>mock</strong> is a fake implementation of a dependency whose behavior you control, so you can test a unit in isolation without its real collaborators (database, network, other services).</p>
+<pre class="code"><code>@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+    @Mock
+    private OrderRepository orderRepository;      // fake — no real DB
+
+    @Mock
+    private PaymentClient paymentClient;
+
+    @InjectMocks
+    private OrderService orderService;             // real object, mocks injected via constructor
+
+    @Test
+    void placeOrder_savesAndCharges() {
+        Order order = new Order("Ada", 100.0);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);   // stub behavior
+
+        orderService.placeOrder(order);
+
+        verify(paymentClient).charge(order.getTotal());   // behavior verification — was it called?
+        verify(orderRepository, times(1)).save(order);
+    }
+
+    @Test
+    void placeOrder_whenRepositoryFails_doesNotCharge() {
+        when(orderRepository.save(any())).thenThrow(new DataAccessException("db down") {});
+
+        assertThrows(DataAccessException.class, () -> orderService.placeOrder(new Order("Ada", 100.0)));
+        verifyNoInteractions(paymentClient);   // charge should never be reached
+    }
+}</code></pre>
+<table class="ref">
+  <tr><th>Concept</th><th>Meaning</th></tr>
+  <tr><td><code>@Mock</code></td><td>Creates a fake with all methods stubbed to return null/0/false by default</td></tr>
+  <tr><td><code>@InjectMocks</code></td><td>Creates the real class under test, injecting the @Mock fields (via constructor if available)</td></tr>
+  <tr><td><code>when(...).thenReturn(...)</code></td><td>Stub a mock's return value for a given call</td></tr>
+  <tr><td><code>verify(mock).method(...)</code></td><td>Assert a method WAS called — behavior verification, distinct from checking a return value</td></tr>
+  <tr><td><code>@Spy</code></td><td>Wraps a REAL object — calls go to the real method unless explicitly stubbed. Rarely needed; usually a sign to redesign.</td></tr>
+</table>
+<p><strong>Mock vs stub vs spy, informally:</strong> a stub just returns canned data when asked; a mock additionally lets you verify it was called correctly; a spy wraps a real object and lets you selectively override some methods while keeping real behavior for others.</p>
+
+<!-- ==================== 4. SERVICE TESTS ==================== -->
+<h2 id="service-tests">4. Unit Testing a Service Layer</h2>
+<p>The service layer is the sweet spot for pure unit tests: mock the repository (and any other collaborators), instantiate the service directly with <code>new</code> or <code>@InjectMocks</code> — <strong>no Spring context needed at all</strong>, so these tests run in milliseconds and don't need a database.</p>
+<pre class="code"><code>class UserServiceTest {
+    @Mock private UserRepository repository;
+    @InjectMocks private UserService service;
+
+    @Test
+    void findById_throwsWhenMissing() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> service.findById(1L));
+    }
+}</code></pre>
+
+<!-- ==================== 5. WEBMVCTEST ==================== -->
+<h2 id="webmvctest">5. @WebMvcTest — Testing Controllers</h2>
+<p><strong>@WebMvcTest</strong> loads only the web layer (controllers, filters, @ControllerAdvice) — not the full application context, not real repositories/database. Any service the controller depends on must be mocked (typically with <code>@MockBean</code>).</p>
+<pre class="code"><code>@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean                              // registers a Mockito mock into the Spring context
+    private UserService userService;
+
+    @Test
+    void getUser_returns200AndBody() throws Exception {
+        when(userService.findById(1L)).thenReturn(new UserDto(1L, "Ada"));
+
+        mockMvc.perform(get("/users/1"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Ada"));
+    }
+
+    @Test
+    void createUser_withInvalidBody_returns400() throws Exception {
+        mockMvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"not-an-email\"}"))
+            .andExpect(status().isBadRequest());
+    }
+}</code></pre>
+<p><strong>MockMvc</strong> simulates HTTP requests against the controller without starting a real servlet container/port — fast, but still exercises the real request-mapping, validation, and JSON serialization logic. This is the right layer to verify status codes, response shapes, and validation error handling.</p>
+
+<!-- ==================== 6. DATAJPATEST ==================== -->
+<h2 id="datajpatest">6. @DataJpaTest — Testing Repositories</h2>
+<p><strong>@DataJpaTest</strong> loads only the JPA-related slice of the context (entities, repositories, an <code>EntityManager</code>) against an in-memory embedded database (H2 by default) — and wraps each test in a transaction that's rolled back afterward, so tests never pollute each other.</p>
+<pre class="code"><code>@DataJpaTest
+class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    void findByEmail_returnsMatchingUser() {
+        userRepository.save(new User("ada@example.com"));
+
+        Optional<User> found = userRepository.findByEmail("ada@example.com");
+
+        assertTrue(found.isPresent());
+    }
+}</code></pre>
+<p>Good for verifying custom <code>@Query</code>/derived query methods actually do what you expect — logic Mockito can't test, since there's no real query execution to mock.</p>
+
+<!-- ==================== 7. SPRINGBOOTTEST ==================== -->
+<h2 id="springboottest">7. @SpringBootTest — Full Integration Tests</h2>
+<p><strong>@SpringBootTest</strong> boots the entire application context — every bean, real or close-to-real. It's the slowest and heaviest test type, so it's used sparingly, for a handful of true end-to-end flows rather than every scenario.</p>
+<pre class="code"><code>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+class OrderFlowIntegrationTest {
+
+    @Autowired private MockMvc mockMvc;
+    @Autowired private OrderRepository orderRepository;
+
+    @Test
+    void placingAnOrder_persistsItToTheDatabase() throws Exception {
+        mockMvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"item\":\"Book\",\"quantity\":2}"))
+            .andExpect(status().isCreated());
+
+        assertEquals(1, orderRepository.count());   // verifies real end-to-end persistence
+    }
+}</code></pre>
+<table class="ref">
+  <tr><th>Test type</th><th>Loads</th><th>Speed</th><th>Use for</th></tr>
+  <tr><td>Plain unit test</td><td>Nothing — just the class under test + Mockito</td><td>Fastest</td><td>Service/business logic — the bulk of your tests</td></tr>
+  <tr><td>@WebMvcTest</td><td>Web layer only</td><td>Fast</td><td>Controllers — status codes, request/response shape, validation</td></tr>
+  <tr><td>@DataJpaTest</td><td>JPA layer + embedded DB</td><td>Medium</td><td>Repositories — custom queries actually work</td></tr>
+  <tr><td>@SpringBootTest</td><td>Full application context</td><td>Slowest</td><td>A few critical end-to-end flows</td></tr>
+</table>
+
+<!-- ==================== 8. TESTCONTAINERS ==================== -->
+<h2 id="testcontainers">8. Testcontainers</h2>
+<p>H2 (an in-memory DB) is fast but isn't the real database — SQL dialect differences can hide bugs that only show up against real Postgres/MySQL in production. <strong>Testcontainers</strong> spins up a real database (or Kafka, Redis, etc.) in a throwaway Docker container for the duration of the test run, giving high-fidelity integration tests without a shared, stateful test environment.</p>
+<pre class="code"><code>@Testcontainers
+@SpringBootTest
+class OrderRepositoryIT {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    @DynamicPropertySource
+    static void configure(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+    }
+}</code></pre>
+
+<p class="footer-note">Next: <a href="../../MISSION.md">Git + Maven/Gradle + API tools</a>. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>

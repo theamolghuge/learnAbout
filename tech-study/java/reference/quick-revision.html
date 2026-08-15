@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Revision Guide — Java</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Quick Revision Guide</h1>
+<p class="subtitle">Last-minute scan before a backend interview. Full detail &amp; learning order in <a href="java-notes.html#study-guide">Java Notes</a>.</p>
+
+<h2>Tier 1 — Must Master</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>OOP pillars</td><td>Encapsulation, Inheritance, Polymorphism, Abstraction</td></tr>
+  <tr><td>Overload vs Override</td><td>Overload = compile-time, same class, diff params · Override = runtime, subclass, same signature</td></tr>
+  <tr><td>equals/hashCode</td><td>Override both together or break HashMap/HashSet lookup</td></tr>
+  <tr><td>Interface vs abstract class</td><td>Interface = contract, multi-implement, no state · Abstract = shared state + impl, single extend</td></tr>
+  <tr><td>Checked vs unchecked</td><td>Checked = must handle/declare · Unchecked = RuntimeException, preferred in Spring services</td></tr>
+  <tr><td>try-with-resources</td><td>Auto-closes AutoCloseable · used for Connection/Statement/ResultSet</td></tr>
+  <tr><td>ArrayList vs LinkedList</td><td>Array = O(1) get, default choice · Linked = O(1) head/tail insert only</td></tr>
+  <tr><td>HashMap internals</td><td>hash → bucket → chain (tree if &gt;8) → resize at 75% load factor</td></tr>
+  <tr><td>Comparable vs Comparator</td><td>Comparable = in-class, one order · Comparator = external, many orders</td></tr>
+  <tr><td>Streams</td><td>Lazy, one-time-use pipeline · nothing runs until a terminal op</td></tr>
+  <tr><td>Optional</td><td>Return type only — never field/param/collection</td></tr>
+  <tr><td>synchronized</td><td>Visibility + atomicity via intrinsic lock — for compound ops</td></tr>
+  <tr><td>volatile</td><td>Visibility only — for simple flags, not compound ops</td></tr>
+</table>
+
+<h2>Tier 2 — Advanced</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>Type erasure</td><td>Generics vanish at runtime · no <code>new T()</code>, no generic instanceof</td></tr>
+  <tr><td>PECS</td><td>Producer Extends, Consumer Super</td></tr>
+  <tr><td>ExecutorService</td><td>Managed thread pool — don't spawn raw Threads in real apps</td></tr>
+  <tr><td>ConcurrentHashMap</td><td>Bucket-level locking, not whole-map</td></tr>
+  <tr><td>CompletableFuture</td><td><code>.thenApply().thenCompose().exceptionally()</code> async pipelines</td></tr>
+  <tr><td>Integer cache</td><td>-128..127 cached — always use <code>.equals()</code> for wrapper compare</td></tr>
+  <tr><td>Record</td><td>Immutable data carrier — auto ctor/equals/hashCode/toString</td></tr>
+  <tr><td>java.time</td><td>Immutable, thread-safe · store <code>Instant</code> UTC, convert at the edge</td></tr>
+</table>
+
+<h2>Tier 3 — Discussion (skim)</h2>
+<table class="ref">
+  <tr><th>Topic</th><th>One-liner</th></tr>
+  <tr><td>JDK / JRE / JVM</td><td>JDK = build tools + JRE · JRE = JVM + libs · JVM = runs bytecode</td></tr>
+  <tr><td>Generational GC</td><td>Young (Eden+Survivor, frequent) → promoted to Old (rare, expensive)</td></tr>
+  <tr><td>GC eligibility</td><td>Unreachable from GC roots (stacks, statics) — no manual free()</td></tr>
+  <tr><td>Class loading</td><td>Lazy, delegation hierarchy: Bootstrap → Platform → Application</td></tr>
+</table>
+
+<h2>String pool output tricks</h2>
+<pre class="code"><code>String s1 = "abc";
+String s2 = "abc";
+s1 == s2;                      // true  — pooled literal
+new String("abc") == s1;       // false — new heap object
+
+Integer a = 127, b = 127;
+a == b;                        // true  — Integer cache
+Integer c = 200, d = 200;
+c == d;                        // false — outside cache</code></pre>
+
+<h2>HashMap.put() — 30-second answer</h2>
+<p>Hash the key → mask to bucket index → empty? insert : walk chain with equals() → found? replace value : append (treeify if chain &gt; 8) → over 75% full? double + rehash.</p>
+
+<h2>Implement from memory</h2>
+<ul>
+  <li>Custom equals()/hashCode() for a class with 2-3 fields</li>
+  <li>Singleton with private constructor + static factory</li>
+  <li>group-by with streams (<code>Collectors.groupingBy</code>)</li>
+  <li>Thread-safe counter: synchronized vs AtomicInteger</li>
+  <li>Custom unchecked exception + where it'd be thrown</li>
+</ul>
+
+<h2>Revision order (follow Notes)</h2>
+<ol>
+  <li><a href="java-notes.html#oop">OOP</a> + <a href="java-notes.html#interfaces">Interfaces vs Abstract</a></li>
+  <li><a href="java-notes.html#exceptions">Exception Handling</a></li>
+  <li><a href="java-notes.html#collections">Collections ⭐</a></li>
+  <li><a href="java-notes.html#java8">Java 8+ ⭐ (Streams/Optional)</a></li>
+  <li><a href="java-notes.html#concurrency">Concurrency</a></li>
+  <li><a href="interview-qa.html">Interview Q&amp;A</a></li>
+</ol>
+
+<p class="footer-note"><a href="java-notes.html">Java Notes</a> · <a href="interview-qa.html">Interview Q&amp;A</a></p>
+
+</body>
+</html>

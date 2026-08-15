@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 11 · Commitment, Deterrence &amp; Market Entry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0010-sequential-games-and-trust.html">← Lesson 10</a>
+    <span>·</span>
+    <a href="./0012-repeated-games.html">Next: Lesson 12 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 11 · ~16 min · Level 4: Sequential Games (closing)</div>
+  <h1>Commitment, Deterrence &amp; Market Entry</h1>
+  <p class="subtitle">Your own example from the start of this course, finally worked properly: should a company enter a competitor's market?</p>
+  <div class="meta">Recap: Lesson 10 gave you backward induction and the credibility test (subgame perfect equilibrium). This lesson applies both to the exact situation named in this workspace's mission — market entry — and shows precisely how a threat that looks non-credible can be made real through investment made in advance.</div>
+
+  <h2>The entry game</h2>
+
+  <p>An Entrant is deciding whether to enter a market currently held by an Incumbent monopolist. If the Entrant <strong>Stays Out</strong>, nothing changes. If the Entrant <strong>Enters</strong>, the Incumbent then chooses whether to <strong>Fight</strong> (a price war, expensive for both) or <strong>Accommodate</strong> (share the market peacefully).</p>
+
+  <div class="tree">
+    <div class="tree-node">
+      <strong>Entrant moves first:</strong> Stay Out, or Enter
+      <div class="tree-branch">
+        <div class="tree-edge">Stay Out →</div>
+        <div class="tree-leaf">Payoffs: Entrant = 0, Incumbent = 5 (kept monopoly)</div>
+      </div>
+      <div class="tree-branch">
+        <div class="tree-edge">Enter →</div>
+        <div class="tree-node">
+          <strong>Incumbent responds:</strong> Fight, or Accommodate
+          <div class="tree-branch">
+            <div class="tree-edge">Fight →</div>
+            <div class="tree-leaf">Payoffs: Entrant = −3, Incumbent = −1</div>
+          </div>
+          <div class="tree-branch">
+            <div class="tree-edge">Accommodate →</div>
+            <div class="tree-leaf spe">Payoffs: Entrant = 2, Incumbent = 2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Backward induction says the incumbent's threat is empty</h2>
+
+  <p>Solve from the last decision: if entry has already happened, the Incumbent compares Fight (−1) to Accommodate (2) — and Accommodate wins. Fighting is genuinely worse for the Incumbent too, once entry is a done deal; the price war costs the Incumbent more than just quietly sharing the market. So a rational Incumbent accommodates.</p>
+
+  <p>Knowing this, the Entrant compares Stay Out (0) to Enter (which now actually leads to 2, since Fight was never really on the table). Entering wins. <strong>The predicted outcome is (2, 2), and the Incumbent's implicit "if you enter, I'll fight" threat is exactly the non-credible kind Lesson 7 and Lesson 10 taught you to distrust</strong> — it sounds intimidating stated in advance, but fails the subgame-perfection test: it's not actually the Incumbent's best move once entry happens.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. Why is the Incumbent's "I'll fight if you enter" threat non-credible in the base game above?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because Fighting is illegal</button>
+      <button class="quiz-choice">Because the Entrant can't observe the Incumbent's choice</button>
+      <button class="quiz-choice" data-correct="true">Because Accommodating is actually better for the Incumbent than Fighting, once entry has already happened</button>
+      <button class="quiz-choice">Because the game isn't sequential</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Making the threat real: strategic commitment</h2>
+
+  <p>The Incumbent clearly prefers keeping its monopoly (5) to sharing the market (2) — deterring entry entirely would be worth a lot. The problem is purely that "I'll fight" isn't believable as stated. Three real ways to fix that, each of which works by <strong>changing the Incumbent's actual future payoffs</strong>, not by saying the threat louder:</p>
+
+  <ul>
+    <li><strong>Sunk capacity investment.</strong> If the Incumbent builds significant excess production capacity <em>before</em> the Entrant decides — capacity that only makes sense if it's later used to flood the market with supply and crush prices — fighting becomes genuinely cheap for the Incumbent once entry happens (that capacity is a sunk cost either way, so using it barely lowers the Incumbent's payoff). This can flip Fight from −1 to, say, +3 in the tree above — Fight now actually beats Accommodate, making the threat credible for real, and a rational Entrant who sees this evidence should predict Fight and Stay Out.</li>
+    <li><strong>Reputation across multiple markets.</strong> An Incumbent facing entrants in many separate markets over time has an incentive to actually fight in one market — even at a short-term loss — specifically to build a reputation that deters entrants everywhere else. This only works as a repeated-game argument (full treatment next lesson), but the intuition matters now: a threat that's individually irrational in one isolated market can become genuinely credible once it's serving a reputation that pays off across many.</li>
+    <li><strong>Contractual commitments.</strong> Publicly signed exclusive-supplier or price-matching agreements can bind the Incumbent's own hands in a way that makes aggressive response automatic and visible — the same "burn the steering wheel" logic from Lesson 7, applied to a business rather than a car.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">First-mover advantage, precisely defined</span>
+    This is what "first-mover advantage" actually means in game-theoretic terms: moving first lets you make a commitment — capacity, contracts, sunk investment — that changes the game your opponent then has to respond to, rather than reacting to theirs. It's not an advantage from being first in a calendar sense; it's an advantage from being able to commit before the other side has to decide. <strong>Second-mover advantage</strong> is the mirror case: sometimes waiting to see what the first mover actually does — and how the market responds — lets you react with better information, avoiding a costly commitment made too early. Neither is universally better; which one wins depends on whether commitment power or information matters more in the specific game.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. What actually makes the Incumbent's fight threat credible after building excess capacity?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">The threat is stated more forcefully</button>
+      <button class="quiz-choice" data-correct="true">Fighting genuinely becomes the Incumbent's own best move once entry happens, not just a stated intention</button>
+      <button class="quiz-choice">The Entrant is legally bound to believe it</button>
+      <button class="quiz-choice">Capacity investment has nothing to do with credibility, only cost</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Now your own example</h2>
+
+  <p>This is the entry game named in this workspace's mission from the very first lesson: "should my company enter a competitor's market." Here's the actual checklist this lesson gives you, not a generic pep talk:</p>
+
+  <div class="framework-grid">
+    <div class="framework-item"><div class="fi-label">1. Map the tree</div><div class="fi-body">Your move (Enter/Stay Out) first, their response (Fight/Accommodate) second — get real rough numbers for all four/three outcomes, even approximate ones.</div></div>
+    <div class="framework-item"><div class="fi-label">2. Solve backward</div><div class="fi-body">Is Fight actually better for them than Accommodate, once entry has happened — given their real current cost structure, not just their stated posture?</div></div>
+    <div class="framework-item"><div class="fi-label">3. Look for commitment evidence</div><div class="fi-body">Have they made sunk investments (capacity, exclusive contracts) that would make fighting cheap for them? Do they have a track record of fighting entrants elsewhere (reputation)?</div></div>
+    <div class="framework-item"><div class="fi-label">4. Predict, don't assume</div><div class="fi-body">If the evidence for credible commitment is weak or absent, backward induction says Accommodate is their real best response — the "they'll crush us" fear may itself be a non-credible threat you're reacting to.</div></div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    This entry-deterrence model traces to work by Avinash Dixit and others in the late 1970s-80s on strategic commitment; it's covered directly in Dixit &amp; Nalebuff's <em>The Art of Strategy</em> (see <a href="../RESOURCES.md">RESOURCES.md</a>) with several more real corporate examples.
+  </div>
+
+  <h2>Game Theory Detective — and your real situation</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A mid-sized SaaS company is deciding whether to launch a product competing directly with a larger, established incumbent's flagship offering. The incumbent has publicly stated it will "aggressively defend its market position." The incumbent has not made any visible new infrastructure investment recently, has a history of quietly acquiring or ignoring smaller competitors rather than price-warring them, and its cost structure means an actual price war would cut deeply into its own profitable core business.
+      <br><br>
+      Using the four-step checklist above: is the incumbent's public threat credible? What should the smaller company predict, and why? Then — this is the part that matters most — try the same four steps on your <em>actual</em> market-entry situation, if you have one in mind, and bring me the real numbers and evidence you come up with.
+    </div>
+    <textarea placeholder="Work through the checklist for the scenario, and for your own real situation, here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Credibility check:</strong> The evidence points toward non-credible. A public statement alone is cheap talk (Lesson 7's non-credible threat, restated). The absence of new infrastructure investment means there's no sunk-cost logic making Fight cheap. A history of acquiring or ignoring rather than price-warring smaller entrants is direct behavioral evidence against a fighting reputation. And a price war genuinely hurting the incumbent's own profitable core business means Fight likely isn't even their own best move once entry happens — the same structural gap as the base entry game.<br><br>
+      <strong>Prediction:</strong> Backward induction says Accommodate is the incumbent's real best response despite the public posture, and the smaller company's rational move is to Enter — the threat is very likely bluster rather than a credible deterrent, though it's worth staying alert for any of the three commitment signals (capacity, reputation, contracts) appearing later, since a threat's credibility can change.
+      <br><br>
+      This is the one lesson in the course built specifically so the "reveal" matters less than the real version — the mission this workspace was built around was explicitly this exact question. Whatever you found for your own situation, that's the answer worth telling me, not the fictional SaaS company's.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer — especially the real one</span>
+    If you ran this on your own real market-entry decision, tell me what you found for each of the four steps. This is precisely the kind of "bring your own situation" analysis this workspace's mission committed to doing live, not just in a hypothetical.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Model an entry-and-response decision as a tree, solve it by backward induction, and — critically — evaluate whether a rival's threatened response is actually credible by checking for real sunk commitment (capacity, contracts, reputation), rather than taking a stated threat at face value.
+  </div>
+
+  <h2>Level 4, closed</h2>
+  <p>You now have the full sequential toolkit: game trees, backward induction, subgame perfect equilibrium, credible vs. non-credible commitment, and first/second-mover advantage. Level 5 turns to what happens when a game like the Trust Game or the entry game isn't played once, but many times — which changes almost everything about which threats and promises are actually credible.</p>
+
+  <p class="lesson-footer">
+    <a href="./0010-sequential-games-and-trust.html">← Lesson 10</a>
+    <a href="./0012-repeated-games.html">Lesson 12: Repeated Games, Reputation &amp; Tit-for-Tat →</a>
+  </p>
+
+</div>
+</body>
+</html>

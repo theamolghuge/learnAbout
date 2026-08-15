@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3 · The Prisoner's Dilemma</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0002-rationality-and-game-types.html">← Lesson 2</a>
+    <span>·</span>
+    <a href="./0004-battle-of-the-sexes.html">Next: Lesson 4 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 3 · ~15 min · Level 2-3: Strategic Games</div>
+  <h1>The Prisoner's Dilemma</h1>
+  <p class="subtitle">The single most famous game in the field — and your first real payoff matrix, dominant strategy, and Nash equilibrium.</p>
+  <div class="meta">Recap: Levels 1's five parts (players, actions, payoffs, information, rules) told you how to describe a game. This lesson gives you your first tool for <em>solving</em> one — predicting what happens, not just naming the pieces. Everything here is non-cooperative (Lesson 2) and, for now, one-shot (played once, no repetition) — that second detail matters more than it sounds, and Level 5 exists entirely because of what changes when it isn't true.</div>
+
+  <h2>Reading a payoff matrix</h2>
+
+  <p>A payoff matrix lays out every combination of actions two players could take, and what each gets from it. Convention: the row player's action picks the row, the column player's action picks the column, and each cell lists <strong>(row player's payoff, column player's payoff)</strong> — in this lesson, row player's number in amber, column player's in blue. Higher numbers are always better for that player, by convention — we'll set up the story so that holds even though the "payoff" here is actually a prison sentence.</p>
+
+  <h2>The story</h2>
+
+  <p>Anjali and Bilal are arrested together and questioned in separate rooms — they can't communicate. Each is offered the same deal: stay silent, or betray the other by confessing. The sentences depend on <em>both</em> choices:</p>
+
+  <ul>
+    <li>Both stay silent → each gets a light 1-year sentence (evidence is thin without a confession).</li>
+    <li>Both betray → each gets a heavier 3-year sentence (enough evidence now, but cooperating with the investigation earns a small discount off the maximum).</li>
+    <li>One betrays, one stays silent → the betrayer walks free (0 years) for cooperating fully; the one who stayed silent takes the full 5-year sentence alone.</li>
+  </ul>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <caption>Payoffs shown as −years in prison, so higher = better, matching normal convention. Anjali's payoff (amber) is listed first in each cell, Bilal's (blue) second.</caption>
+      <tr>
+        <th></th>
+        <th>Bilal: Stay Silent</th>
+        <th>Bilal: Betray</th>
+      </tr>
+      <tr>
+        <th>Anjali: Stay Silent</th>
+        <td class="cell"><span class="payoff-a">−1</span>, <span class="payoff-b">−1</span></td>
+        <td class="cell"><span class="payoff-a">−5</span>, <span class="payoff-b">0</span></td>
+      </tr>
+      <tr>
+        <th>Anjali: Betray</th>
+        <td class="cell"><span class="payoff-a">0</span>, <span class="payoff-b">−5</span></td>
+        <td class="cell ne"><span class="payoff-a">−3</span>, <span class="payoff-b">−3</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Finding the dominant strategy</h2>
+
+  <p>A <strong>dominant strategy</strong> is an action that's a player's best move <em>no matter what the other player does</em> — you don't even need to guess their move to know your own. Check it for Anjali by holding Bilal's action fixed, one at a time:</p>
+
+  <ul>
+    <li>If Bilal stays silent: Anjali gets −1 for silent, 0 for betray. Betray is better.</li>
+    <li>If Bilal betrays: Anjali gets −5 for silent, −3 for betray. Betray is still better.</li>
+  </ul>
+
+  <p>Either way, betraying beats staying silent for Anjali — that's what makes it dominant, not just "usually good." By the matrix's symmetry, the exact same logic makes Betray dominant for Bilal too. Two players, each independently reasoning from self-interest, each arrive at Betray — without ever needing to know what the other actually chose.</p>
+
+  <h2>Nash equilibrium</h2>
+
+  <p>A <strong>Nash equilibrium</strong> is a combination of choices where no player can do better by <em>unilaterally</em> switching, given what the other player is doing. (Betray, Betray) is one here: if Anjali switches to Silent while Bilal stays at Betray, she goes from −3 to −5 — worse. Same for Bilal. Neither has a reason to move alone, so the pair is stable — that's the highlighted cell above.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Dominant strategy vs. Nash equilibrium — don't blur these</span>
+    In this particular game they point to the same place, which is easy to mistake for them being the same idea. They aren't: a dominant strategy is a property of <em>one player's</em> choice, evaluated against every possible thing the other player might do. A Nash equilibrium is a property of a <em>pair</em> (or set) of choices, evaluated only against what's actually being played. Lesson 4's game (Battle of the Sexes) has Nash equilibria with <em>no</em> dominant strategy anywhere in it — this lesson's clean overlap is the exception, not the rule.
+  </div>
+
+  <h2>The actual dilemma: Pareto inefficiency</h2>
+
+  <p>Here's the sting. Compare the equilibrium outcome, (Betray, Betray) at (−3, −3), to (Silent, Silent) at (−1, −1). <em>Both players would be strictly better off at (Silent, Silent).</em> A move to it would be a <strong>Pareto improvement</strong> — nobody worse off, at least one player better off (here, both). Yet two rational, self-interested players following their own best logic land on the worse outcome for both of them. That gap — individually rational choices producing a collectively worse result — is the entire reason this game is famous, not the crime story wrapped around it.</p>
+
+  <p>Why can't they just agree to both stay silent? Because they can't communicate (no chance to coordinate), and even if they could, there's no way to <em>enforce</em> the agreement — this is Lesson 2's cooperative/non-cooperative distinction doing real work. A promise to stay silent isn't binding; each still has a private incentive to break it the moment the other seems committed to keeping it. That's what "non-cooperative" costs you here.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What makes an action a "dominant strategy" for a player?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">It gives the highest payoff in the game overall</button>
+      <button class="quiz-choice" data-correct="true">It's that player's best move regardless of what the other player does</button>
+      <button class="quiz-choice">It's the move most players pick in practice</button>
+      <button class="quiz-choice">It's the move that helps both players the most</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. At a Nash equilibrium, a player who switches their choice alone will...</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Always do better</button>
+      <button class="quiz-choice">Always tie</button>
+      <button class="quiz-choice" data-correct="true">Never do better, given the other player's choice stays fixed</button>
+      <button class="quiz-choice">Force the other player to also switch</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-3">
+    <div class="quiz-q">3. Why don't Anjali and Bilal just both stay silent, since it's better for both?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">The matrix doesn't actually allow that combination</button>
+      <button class="quiz-choice">One of them always prefers betraying regardless</button>
+      <button class="quiz-choice" data-correct="true">No communication and no way to bindingly enforce a mutual promise</button>
+      <button class="quiz-choice">Prison sentences can't be compared this way</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>Recognizing it outside a police interrogation</h2>
+
+  <p>The prisoner's dilemma shape — two parties, each with a dominant "defect" move, whose joint self-interest lands them somewhere worse than if they'd both held back — shows up constantly once you know what to look for:</p>
+
+  <ul>
+    <li><strong>Price wars.</strong> Two competing companies each face: cut price, or hold it. Cutting price is individually tempting no matter what the rival does (win share if they hold, avoid losing share if they also cut) — but if both cut, both just earn less margin on the same customers they'd have kept anyway. Holding price together would leave both better off; neither can trust the other to actually do it.</li>
+    <li><strong>Advertising spend.</strong> Same shape: outspending your rival looks individually correct regardless of their budget, but if everyone escalates, total market share barely moves and everyone's just spent more to stay in place.</li>
+    <li><strong>Two coworkers deciding whether to cut corners on a shared deliverable</strong> to save personal time — each is individually better off cutting corners regardless of what the other does, but if both do, the shared output suffers and both look worse to their manager than if both had held the line.</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Ben Polak covers the Prisoner's Dilemma with several more real variations in <a href="https://oyc.yale.edu/economics/econ-159/lecture-2">Lecture 2</a> of his Yale course. William Spaniel's <a href="https://www.youtube.com/watch?v=DanTKx1FLY8">"The Prisoner's Dilemma and Strict Dominance"</a> is a tighter 10-minute version if you want a fast second pass.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      Two ride-hailing apps operate in the same city. Each quarter, each company decides whether to spend heavily on rider discounts and driver incentives ("invest") or hold steady ("hold"). If both hold, the market stays stable and both keep healthy margins. If one invests while the other holds, the investor grabs meaningful market share from the other. If both invest, riders and drivers get the same net benefit as if only one had invested, but now <em>both</em> companies are burning cash to stand still relative to each other.
+      <br><br>
+      Build this as a payoff matrix (rough numbers are fine — you're checking the <em>shape</em>, not exact values). Is there a dominant strategy for each company? What's the Nash equilibrium? Is it Pareto efficient — could both companies be better off elsewhere in the matrix, and if so, why don't they just go there?
+    </div>
+    <textarea placeholder="Sketch your matrix and reasoning here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Shape:</strong> This is a Prisoner's Dilemma. Rough payoffs (higher = better): both hold → (3, 3); both invest → (1, 1); one invests while other holds → (4, 0) for the investor, (0, 4) for the holder. <br><br>
+      <strong>Dominant strategy:</strong> Invest dominates for each company — if the rival holds, investing grabs share (4 beats 3); if the rival invests, investing at least avoids getting run over (1 beats 0). Exactly the same logic as Anjali's betray-dominates-silent reasoning, just relabeled.<br><br>
+      <strong>Nash equilibrium:</strong> (Invest, Invest) at (1, 1) — neither company can unilaterally do better by switching to hold while the other keeps investing (that would drop them to 0).<br><br>
+      <strong>Pareto efficiency:</strong> (Hold, Hold) at (3, 3) is strictly better for both — a real Pareto improvement sitting unused, exactly like (Silent, Silent) in the original story. They don't get there for the same underlying reason: no binding agreement is possible (coordinating on pricing/incentives between competitors is usually illegal collusion anyway, which is its own real-world wrinkle), and even an informal understanding isn't self-enforcing — each company has a standing incentive to quietly invest while hoping the other holds.
+      <br><br>
+      If you noticed that real companies sometimes escape this exact trap — and wondered how — that's the right question to be asking. The honest short answer previews two different lessons still ahead: sometimes it's <strong>repetition</strong> (Level 5 — this isn't really one-shot, it happens every quarter, and reputation can sustain restraint that a single round can't), and sometimes it's <strong>regulation</strong> changing the rules of the game entirely (outside this course's scope, but worth naming so you don't think game theory says price wars are always inevitable).
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me the rough numbers you put in your matrix and whether you spotted the dominant strategy before checking both cases the way the lesson did for Anjali, or after. If this is the first time you've built a payoff matrix from scratch rather than reading one, say so — that's useful to know before Lesson 4 asks you to build another one for a game with no dominant strategy at all.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Given two players and their possible actions, sketch a payoff matrix, check each player's payoffs holding the other's action fixed to find a dominant strategy if one exists, and identify whether the resulting equilibrium leaves value on the table (Pareto inefficiency) that neither player can reach alone.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0002-rationality-and-game-types.html">← Lesson 2</a>
+    <a href="./0004-battle-of-the-sexes.html">Lesson 4: Battle of the Sexes &amp; Coordination Without a Dominant Strategy →</a>
+  </p>
+
+</div>
+</body>
+</html>

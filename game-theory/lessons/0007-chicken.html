@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 7 · Chicken: Credible Threats &amp; Brinkmanship</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0006-stag-hunt.html">← Lesson 6</a>
+    <span>·</span>
+    <a href="./0008-ultimatum-and-dictator.html">Next: Lesson 8 →</a>
+  </nav>
+
+  <div class="kicker">Lesson 7 · ~15 min · Level 2-3: Strategic Games</div>
+  <h1>Chicken: Credible Threats &amp; Brinkmanship</h1>
+  <p class="subtitle">The opposite of a coordination game — and the first game where the smart move is to make yourself less free, on purpose, in public.</p>
+  <div class="meta">Recap: Battle of the Sexes (Lesson 4) and Stag Hunt (Lesson 6) were both <em>coordination</em> games — players wanted to land on the <em>same</em> cell. This game is an <strong>anti-coordination</strong> game — each player wants to do the opposite of whatever the other does. That flip changes everything about how you "win," and introduces this course's first real look at commitment as a source of power.</div>
+
+  <h2>The story</h2>
+
+  <p>Two drivers speed toward each other on a collision course. Each can Swerve or go Straight. Both swerving is mildly embarrassing but fine. One swerving while the other goes straight makes the straight driver look bold and the swerver look weak — but nobody's hurt. Both going straight is a catastrophic crash — the worst outcome for both, by far.</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <caption>Both drivers' payoffs, amber first, blue second. Both circled cells are Nash equilibria.</caption>
+      <tr>
+        <th></th>
+        <th>Driver B: Swerve</th>
+        <th>Driver B: Straight</th>
+      </tr>
+      <tr>
+        <th>Driver A: Swerve</th>
+        <td class="cell"><span class="payoff-a">3</span>, <span class="payoff-b">3</span></td>
+        <td class="cell ne"><span class="payoff-a">2</span>, <span class="payoff-b">5</span></td>
+      </tr>
+      <tr>
+        <th>Driver A: Straight</th>
+        <td class="cell ne"><span class="payoff-a">5</span>, <span class="payoff-b">2</span></td>
+        <td class="cell"><span class="payoff-a">0</span>, <span class="payoff-b">0</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Why this is anti-coordination, not coordination</h2>
+
+  <p>Check Driver A's best response the usual way: if B swerves, A's best move is Straight (5 beats 3) — A wants to do the <em>opposite</em> of B. If B goes straight, A's best move is Swerve (2 beats 0) — again, the opposite of B. Compare that to Battle of the Sexes, where Meera's best response <em>matched</em> whatever Karan did. Here it's the mirror image: whatever the other player is doing, your best move is the other option. That's what makes this a fundamentally different coordination problem, even though the mechanics (two players, two actions, multiple equilibria) look similar on paper.</p>
+
+  <p>Confirming the equilibria: (Straight, Swerve) at (5, 2) is stable — A has no reason to swerve (would drop to 3... wait, check: A swerving while B stays swerve gives (3,3), A prefers 5), and B has no reason to switch to straight (would drop to 0). Same logic, mirrored, makes (Swerve, Straight) stable too. Both-swerve and both-straight are each unstable, exactly the way Lesson 6 walked through Stag Hunt's unstable cells.</p>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. What makes Chicken an "anti-coordination" game rather than a coordination game?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">It has no Nash equilibrium at all</button>
+      <button class="quiz-choice" data-correct="true">Each player's best response is the opposite of what the other player does</button>
+      <button class="quiz-choice">The players can't observe each other's choice</button>
+      <button class="quiz-choice">It's zero-sum, unlike Battle of the Sexes</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>How do you actually "win" Chicken?</h2>
+
+  <p>Both pure equilibria are stable, but they're wildly unequal — one driver gets 5, the other gets 2. If both drivers reason identically and choose simultaneously, there's no way to know in advance which equilibrium you land in (or you land in the mixed one below). But Thomas Schelling's central insight, from the same book behind Lesson 4's focal points, is that a player who can move <em>first</em> — credibly — doesn't have to leave it to chance.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Schelling's own example: burning the steering wheel</span>
+    Imagine, in full view of the other driver, you visibly rip out your own steering wheel and throw it out the window. You can no longer swerve even if you wanted to — physically impossible. The other driver, seeing this, now faces a simple choice: crash, or swerve. A rational driver swerves. By <em>destroying your own option</em>, you forced the game into the equilibrium where you go straight and they swerve — the one that pays you 5 instead of 2. This is the founding example of an entire idea: reducing your own future choices, visibly and irreversibly, can make you <em>more</em> powerful, not less.
+  </div>
+
+  <p>This only works under a strict condition, which is worth naming precisely: the commitment has to be <strong>credible</strong> — genuinely irreversible and visible to the other player — not just announced. Shouting "I'm not swerving no matter what!" from inside a car that still has its steering wheel is a <strong>non-credible threat</strong>: cheap to say, costless to break, and a rational opponent should simply ignore it and call the bluff. The steering wheel actually has to be gone.</p>
+
+  <div class="callout callout-source">
+    <span class="callout-label">A real geopolitical example</span>
+    Schelling's Chicken framing is widely used to analyze the 1962 Cuban Missile Crisis — both the US and USSR were, in effect, racing toward mutual catastrophe (nuclear war) with neither wanting to be the one who visibly backed down first. Resolving it required exactly the kind of face-saving, partially-credible signaling this lesson describes — not a purely simultaneous, one-shot Chicken match, but the same underlying tension.
+  </div>
+
+  <h2>The mixed-strategy equilibrium (spaced practice from Lesson 5)</h2>
+
+  <p>If neither driver can move first or commit credibly, the same recipe from Lesson 5 applies here too — even though this game isn't zero-sum. Let Driver A go Straight with probability <var>p</var>. Find B's expected payoff from each of B's own choices:</p>
+
+  <ul>
+    <li>B plays Swerve: <code>p(2) + (1−p)(3) = 3 − p</code></li>
+    <li>B plays Straight: <code>p(0) + (1−p)(5) = 5 − 5p</code></li>
+  </ul>
+
+  <p>Set equal: <code>3 − p = 5 − 5p</code> → <code>4p = 2</code> → <code>p = 0.5</code>. Each driver should go straight exactly half the time. <strong>Real-life interpretation:</strong> without a credible commitment move available, the honest, unexploitable strategy here is genuine 50/50 unpredictability — which also means a real crash happens with real, calculable probability (25% of the time, both go straight, in this symmetric mix) if neither side can find a way to commit first. That's not a flaw in the math — it's the model correctly telling you why Chicken, played for real, is dangerous.</p>
+
+  <h2>Recognizing it outside a car</h2>
+
+  <ul>
+    <li><strong>Vendor or supplier negotiations.</strong> Both sides threaten to walk away rather than concede on price. Whoever can make walking away credible first — a genuinely signed alternative contract, a publicly announced deadline they'd look foolish breaking — usually gets the better split, exactly as Level 8 (Negotiation) will formalize with BATNA.</li>
+    <li><strong>Labor strikes.</strong> A union that visibly builds a large, public strike fund has made striking credible in a way that "we might strike" alone never could — the fund is the steering wheel being thrown out the window.</li>
+    <li><strong>A founder publicly quitting their day job</strong> to signal full commitment to a startup, or to investors: the public, hard-to-reverse nature of the move is what makes it a real signal rather than just a stated intention — direct preview of Level 7 (costly signaling).</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Thomas Schelling's <em>The Strategy of Conflict</em> (see <a href="../RESOURCES.md">RESOURCES.md</a>) is the primary source for both the steering-wheel example and credible commitment as a general idea — he won the 2005 Nobel Memorial Prize in Economic Sciences substantially for this line of work.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      Your company and a key supplier are negotiating a renewal price. Both sides have said, informally, that they're prepared to walk away rather than accept a bad deal — but neither has done anything that would actually be costly to reverse. Deadline is approaching.
+      <br><br>
+      First: is "both informally threatening to walk" actually a credible commitment yet, by this lesson's definition? Second: propose one concrete, realistic move either side could make that would convert their threat from non-credible to credible — remember, it needs to be visible to the other side and genuinely costly/hard to reverse, not just a stronger version of the same words.
+    </div>
+    <textarea placeholder="Write your answer here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Credible yet?</strong> No — "prepared to walk away" stated informally, with nothing actually risked or committed, is a textbook non-credible threat, same as shouting from inside a car that still has its steering wheel. Cheap to say, free to abandon the moment the deadline actually arrives.<br><br>
+      <strong>A real credible move:</strong> Your company could visibly begin (not just threaten) onboarding a second, alternative supplier — signing even a small initial contract, publicly announced internally in a way the current supplier would plausibly hear about. That's costly (real onboarding effort, a real signed alternative) and hard to fully reverse without a visible reputational cost, which is what makes it credible where the verbal threat wasn't. The supplier could do the mirror version: visibly commit capacity to another buyer, making it genuinely harder (not just claimed to be harder) to keep serving your company on the old terms.<br><br>
+      A common near-miss: proposing a harder deadline or a more forceful ultimatum. That's escalation, not commitment — it's still just words, still fully reversible, and doesn't change the underlying credibility problem this scenario is testing.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what commitment move you proposed. If it was a stronger statement rather than an actual costly, visible action, that's the single most common miss on this exact exercise — worth flagging so Level 8's negotiation lessons can address it head-on rather than assuming it's already solid.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Recognize an anti-coordination standoff (each side wants the opposite of the other), and distinguish a real credible commitment — visible, costly, hard to reverse — from a threat that's just strongly worded but costs nothing to break.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0006-stag-hunt.html">← Lesson 6</a>
+    <a href="./0008-ultimatum-and-dictator.html">Lesson 8: Ultimatum &amp; Dictator Games — When "Rational" Predicts Wrong →</a>
+  </p>
+
+</div>
+</body>
+</html>

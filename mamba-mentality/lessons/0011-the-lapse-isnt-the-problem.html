@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lapse Isn't The Problem — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0010-motivation-was-never-the-plan.html">Lesson 10</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 4 · Discipline · Lesson 2 · ~9 min</div>
+  <h1>The Lapse Isn't The Problem</h1>
+  <p class="subtitle">What actually kills a practice usually isn't the day you missed. It's the story you told about it.</p>
+
+  <div class="meta">
+    Builds directly on Lesson 10's context-cue mechanism. This lesson is about what happens the day the cue fires and you don't follow it.
+  </div>
+
+  <p>You've probably heard "it takes 66 days to form a habit," usually stated as settled fact. It's a real finding — Lally, van Jaarsveld, Potts & Wardle (2010, University College London) tracked 96 people building a daily habit over 12 weeks — but the "66 days" is just the <em>average</em>. The actual range across participants was 18 to 254 days. The number that gets quoted is far more certain-sounding than the underlying data.</p>
+
+  <p>The finding that actually matters for this lesson is a different one from the same study, and it's the one that rarely gets quoted: <strong>missing an occasional repetition did not materially impair the habit-formation process.</strong> One missed day, in the data, basically didn't matter.</p>
+
+  <h2>So why does one missed day so often turn into quitting?</h2>
+
+  <p>Because of what happens <em>after</em> the miss, not the miss itself. Addiction researchers Marlatt and Gordon named this the <strong>abstinence violation effect</strong>: after a lapse, people generate guilt, shame, and an internal story ("I have no discipline," "I've ruined it") — and it's that story, not the lapse, that predicts whether a single missed day turns into full abandonment. The research is from relapse-prevention work with substance use, not general habit-building, so take the specific numbers as belonging to that context — but the mechanism it describes (a lapse triggers a self-judgment that does more damage than the lapse) shows up far beyond addiction, in exactly the situation you're in every time you miss your practice.</p>
+
+  <p>Put plainly: the missed day was mostly not up to you — you got sick, something urgent happened, you were exhausted past the point of good judgment. What's entirely up to you, per Lesson 2's dichotomy of control, is what you do the next time the cue fires. That's the only decision that actually determines whether yesterday was a blip or an ending.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The rule, stated plainly</span>
+    When you miss it: no makeup session, no doubling up tomorrow to "make up for it," and — this is the part that actually matters — no internal story about what the miss means about your character. You just do the next scheduled occurrence, exactly as planned, as if yesterday were unremarkable. Because per the data above, it basically was.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of the last time you broke a personal commitment — not a huge one, just a daily one you'd set for yourself. What actually happened next? Did you quietly let the whole thing die within a week, telling yourself a story about why it "wasn't really working anyway"? Be honest about your actual pattern, not the one you'd like to have.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write your specific if-then rule.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">For the practice you built in Lesson 9: "If I miss a day, then I will ___, and I will specifically NOT ___." Make it concrete enough to actually follow without thinking, the next time it happens — because it will happen.</p>
+    <textarea class="journal-input" id="j11" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j11-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Lally, P. et al. (2010), "How are habits formed: Modelling habit formation in the real world," <em>European Journal of Social Psychology</em>. On the abstinence violation effect: Marlatt, G.A. & Gordon, J.R. (1985), <em>Relapse Prevention</em> — read for the mechanism, not as a claim that missing a habit is equivalent to addiction relapse. Full annotations: <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If applying an addiction-relapse concept to an ordinary missed workout or missed practice session feels like a stretch, say so — the mechanism (guilt after a lapse causing disproportionate abandonment) is being borrowed across a real difference in stakes, and it's fair to question whether it transfers as cleanly as this lesson claims.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0011:j11";
+  var ta = document.getElementById("j11");
+  var status = document.getElementById("j11-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

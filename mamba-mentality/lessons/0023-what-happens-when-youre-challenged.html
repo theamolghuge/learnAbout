@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Happens When You're Challenged — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0022-the-discriminating-question.html">Lesson 22</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../reference/glossary.html">Glossary</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 8 · Character · Lesson 2 · ~11 min</div>
+  <h1>What Happens When You're Challenged</h1>
+  <p class="subtitle">Two separate research traditions, two separate distinctions, and one identical diagnostic test.</p>
+
+  <div class="meta">
+    Continues Stage 8. Covers two more of the brief's ten distinctions — confidence vs. ego, high standards vs. perfectionism — using research that's been sitting in this workspace's Tier 2 since session 1, unused until now.
+  </div>
+
+  <h2>Confidence vs. ego</h2>
+
+  <p>Psychologist Michael Kernis's research distinguishes <strong>secure</strong> from <strong>fragile</strong> high self-esteem — and from the outside, they can look identical. Both present as confidence. What separates them, measurably, is <strong>stability</strong> (does it hold steady, or swing wildly with each win and loss) and <strong>contingency</strong> (does it depend on continued achievement and approval to stay intact). Kernis found a concrete behavioral marker that tracks the difference: <strong>verbal defensiveness</strong>. People with secure high self-esteem show markedly less defensiveness when challenged. People with fragile high self-esteem — even when it presents as confident, even boastful — show significantly more.</p>
+
+  <h2>High standards vs. perfectionism</h2>
+
+  <p>Hewitt and Flett's multidimensional perfectionism research (already in this curriculum's Tier 2) splits perfectionism into self-oriented, other-oriented, and socially prescribed forms. The distinction that matters most for this lesson: high standards paired with <strong>self-compassion</strong> when you fall short tends to function adaptively; high standards paired with <strong>harsh self-criticism</strong> when you fall short is what the research links to distress. Worth being precise here, per this curriculum's own sourcing standard: Hewitt's own more recent position (the 2022 paper already in Tier 2) explicitly pushes back on the popular idea that any form of perfectionism is fully healthy — so hold this lightly rather than concluding "there's a good kind of perfectionism." A cleaner reading might be that what gets called "adaptive perfectionism" in some studies is functionally just high standards plus self-compassion, and perfectionism, properly defined, tends toward harm regardless.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The same test, twice</span>
+    Notice that both distinctions converge on one identical question: what happens when you fall short or get challenged? Ego and perfectionism both show up as defensiveness, harshness, or an inability to just sit with the gap between where you are and where you wanted to be. Confidence and genuine high standards both show up as the ability to hold that gap — disagree if warranted, feel the disappointment if warranted — without a defensive or self-punishing spiral. Two different research traditions, two different names, the same underlying diagnostic.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Think of the last time someone directly, specifically criticized something you're genuinely good at — not a vague insult, a real, pointed critique of your actual work. What did you do in the first ten seconds, honestly? Defend, dismiss, mentally build a counter-argument before they'd even finished — or actually hear it, even if you ultimately disagreed? Most people's honest answer is less flattering than the answer they'd give if asked in the abstract.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Describe that specific moment in detail — what was said, and your actual first reaction, not your reaction after you'd composed yourself. Based on Kernis's marker (defensiveness) and Hewitt & Flett's marker (self-compassion vs. harsh self-criticism), what does that moment actually reveal about which side of these two distinctions you tend to land on?</p>
+    <textarea class="journal-input" id="j23" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j23-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Kernis, M. (2003), "Toward a Conceptualization of Optimal Self-Esteem," <em>Psychological Inquiry</em> — free PDF via the Self-Determination Theory site. Flett & Hewitt et al. (2022), already cited in <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If you noticed yourself getting defensive just answering the journal prompt honestly — say that too. It's a live example of exactly the pattern this lesson is describing, and naming it in the moment is more useful than editing it out of what you wrote.
+  </div>
+
+  <p class="lesson-footer">
+    <span>New terms from this lesson are in the <a href="../reference/glossary.html">glossary</a>.</span>
+    <span>Next: not yet built — say the word when ready.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0023:j23";
+  var ta = document.getElementById("j23");
+  var status = document.getElementById("j23-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

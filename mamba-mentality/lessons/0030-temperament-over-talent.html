@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperament Over Talent — Mamba Mentality</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="../index.html">Index</a>
+    <a href="./0015-a-thousand-days-to-forge.html">Lesson 15</a>
+    <a href="../reference/case-studies.html">Case Studies</a>
+    <a href="../MISSION.md">Mission</a>
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+
+  <div class="kicker">Stage 5 · Mastery · Lesson 4 (extension) · ~11 min</div>
+  <h1>Temperament Over Talent</h1>
+  <p class="subtitle">Two people who look like opposites — one isolated genius, one deliberate generalist — converging on the same real bottleneck.</p>
+
+  <div class="meta">
+    Extends Stage 5 beyond Kobe and Musashi, closing a real gap: your original brief asked for case studies across science, business, art, and — with real weight — Indian figures. Full gallery of six: <a href="../reference/case-studies.html">Case Studies</a>. This lesson goes deep on two.
+  </div>
+
+  <p>Srinivasa Ramanujan built three notebooks of original mathematics almost entirely alone, self-taught from a single textbook in colonial-era South India, with no mathematical community to check his work against, for over a decade before G.H. Hardy at Cambridge recognized what he'd found. Charlie Munger built his career on the opposite method: deliberately, systematically synthesizing psychology, economics, physics, biology, and history into what he called a "latticework of mental models," reading and cross-checking against as many disciplines as he could hold. One worked in near-total isolation; the other built his entire method around external synthesis. Worth asking what, if anything, they actually share.</p>
+
+  <h2>An honest complication first</h2>
+
+  <p>Lesson 13 gave you Ericsson's definition of deliberate practice — specific goals, full attention, <em>immediate feedback</em>, a push past your current level. Ramanujan's decade of solitary notebook-building doesn't obviously fit that fourth requirement: there was no teacher, no peer, no external check on whether a given intuition was right. The honest read isn't that he's an exception to the research — it's that his feedback loop was self-generated: checking new intuitions against known results he could verify himself, dreaming up whole theorems and then doing the work to prove or disprove them. Feedback doesn't have to come from another person. It has to come from <em>somewhere real</em> — and for a genuinely rigorous field like mathematics, self-verification against known results can function as that feedback, in a way it usually can't for skills that are more subjective or externally judged.</p>
+
+  <h2>What Munger actually prioritized</h2>
+
+  <p>Munger's own ranking is explicit and worth taking at face value: "an even temperament is more important than a big brain." Not a modest deflection — a stated claim about what actually predicts good outcomes over a long career, from someone whose career was built on decades of high-stakes decisions. His practical method for protecting that temperament was <strong>inversion</strong>: instead of asking how to succeed, routinely ask how the plan could fail, and work backward from the failure modes. This is Stage 8's dark-side checklist and Stage 7's pressure work from a different angle entirely — not "how do I perform under pressure" but "how do I build a plan sturdy enough that pressure has less to exploit in the first place."</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What actually connects them</span>
+    Ramanujan and Munger built almost opposite external methods — total isolation vs. deliberate cross-disciplinary synthesis. What's shared underneath is a refusal to let the absence of an obvious external validator (a mentor, in Ramanujan's early years; consensus, in Munger's contrarian bets) stop the work from being rigorous. Both built their own internal check on quality rather than waiting for someone else to supply one.
+  </div>
+
+  <div class="callout callout-confront">
+    <span class="callout-label">Sit with this before moving on</span>
+    Read all six profiles in the <a href="../reference/case-studies.html">Case Studies</a> reference. Of the six, which one's actual documented method is <em>least</em> like your own current approach — not the one that inspires you most, the one that operates most differently from how you actually work right now? That gap is more useful than admiration; it points at a real, specific alternative method you haven't tried.
+  </div>
+
+  <div class="journal">
+    <div class="journal-prompt">Write it down.</div>
+    <p style="font-family:var(--sans);font-size:0.88rem;color:var(--ink-soft);margin-top:-0.4em;">Name the figure and the specific method gap. What's one concrete thing about how they operate that you could actually borrow — not their genius or their circumstances, one transferable habit or method?</p>
+    <textarea class="journal-input" id="j30" placeholder="Start writing..."></textarea>
+    <div class="journal-status" id="j30-status">Not saved yet.</div>
+  </div>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Primary source</span>
+    Full sourcing for all six profiles, including Ramanujan and Munger, is in <a href="../RESOURCES.md">RESOURCES.md</a>.
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Stuck, or disagree?</span>
+    If the Ramanujan/deliberate-practice reconciliation above feels like it's stretching the research to fit an exception, say so — that's a fair read, and it's worth being honest that his case might genuinely sit at the edge of what Ericsson's framework was built to explain.
+  </div>
+
+  <p class="lesson-footer">
+    <span>Back to <a href="./0015-a-thousand-days-to-forge.html">Stage 5</a> or the <a href="../reference/case-studies.html">full case studies</a>.</span>
+  </p>
+
+</div>
+<script>
+(function () {
+  var key = "mamba-mentality:0030:j30";
+  var ta = document.getElementById("j30");
+  var status = document.getElementById("j30-status");
+  var saved = localStorage.getItem(key);
+  if (saved) { ta.value = saved; status.textContent = "Saved on this device."; status.classList.add("saved"); }
+  var timer;
+  ta.addEventListener("input", function () {
+    status.textContent = "Typing...";
+    status.classList.remove("saved");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      localStorage.setItem(key, ta.value);
+      status.textContent = "Saved on this device.";
+      status.classList.add("saved");
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

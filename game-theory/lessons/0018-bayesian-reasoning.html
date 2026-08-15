@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 18 · Bayesian Reasoning, Beliefs &amp; Risk vs. Uncertainty</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../reference/glossary.html">Glossary</a>
+    <span>·</span>
+    <a href="./0017-mechanism-design-and-beyond.html">← Lesson 17</a>
+    <span>·</span>
+    <a href="../reference/decision-framework.html">Decision Framework →</a>
+  </nav>
+
+  <div class="kicker">Lesson 18 · ~16 min · Level 6 (deepening): Beliefs Under Uncertainty</div>
+  <h1>Bayesian Reasoning, Beliefs &amp; Risk vs. Uncertainty</h1>
+  <p class="subtitle">The actual math for what a signal does to your beliefs — and a precise line between situations you can calculate and situations you genuinely can't.</p>
+  <div class="meta">Recap: Lesson 13 talked about "beliefs" informally, and Lesson 14 established that a credible signal should shift what you think about someone. This lesson gives the exact tool for that shift — how much a specific piece of evidence should move a specific belief, worked as real numbers, not just "more confident now."</div>
+
+  <h2>The question Bayes' rule actually answers</h2>
+
+  <p>You start with some belief about how likely something is — a candidate is genuinely skilled, a startup will succeed, a coworker is telling the truth. New evidence arrives. How much should that belief move? Not "more" or "a lot more" — an exact number, if you're willing to estimate two things: how likely you thought it was <em>before</em>, and how much more likely the evidence is if the belief is true versus if it's false.</p>
+
+  <h2>The formula, plain English first</h2>
+
+  <p><strong>Bayes' rule:</strong> <code>P(H|E) = P(E|H) × P(H) / P(E)</code></p>
+
+  <ul>
+    <li><var>P(H)</var> — your <strong>prior</strong>: how likely the hypothesis (H) seemed before this evidence.</li>
+    <li><var>P(E|H)</var> — the <strong>likelihood</strong>: how likely this specific evidence (E) is, <em>if</em> the hypothesis is true.</li>
+    <li><var>P(E)</var> — the overall probability of seeing this evidence at all, true hypothesis or not (this is what makes the final answer a proper probability, not just a raw ratio).</li>
+    <li><var>P(H|E)</var> — your <strong>posterior</strong>: your updated belief, after folding in the evidence.</li>
+  </ul>
+
+  <p>The plain-English version: <strong>your belief should move toward whichever hypothesis makes the evidence you actually saw more likely</strong> — and by exactly how much depends on how much more likely, weighted by how confident you were to begin with.</p>
+
+  <h2>A worked example, connecting straight back to Lesson 14</h2>
+
+  <p>A hiring pipeline: of candidates who reach the final round, 30% are genuinely high performers (the rest interview well but aren't). This is your prior: <code>P(High) = 0.3</code>, <code>P(Low) = 0.7</code>.</p>
+
+  <p>Now a piece of evidence arrives: the candidate has a strong, verifiable open-source portfolio — Lesson 14's credible signal, precisely because it's differentially costly. Say 80% of genuinely high performers can produce a portfolio this strong, but only 20% of lower performers can fake one convincingly: <code>P(Portfolio|High) = 0.8</code>, <code>P(Portfolio|Low) = 0.2</code>.</p>
+
+  <p>First find <var>P(Portfolio)</var> overall — the chance of seeing this evidence at all, across both types: <code>P(Portfolio) = (0.8 × 0.3) + (0.2 × 0.7) = 0.24 + 0.14 = 0.38</code>.</p>
+
+  <p>Now apply Bayes' rule: <code>P(High|Portfolio) = (0.8 × 0.3) / 0.38 = 0.24 / 0.38 ≈ 0.63</code>.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">The number that matters: 30% became 63%</span>
+    One piece of evidence more than doubled the belief that this candidate is genuinely high-performing. This is, precisely, what Lesson 14 was describing in words: a credible signal's differential cost — more likely to appear from a true high type than a low type faking it — is exactly the <var>P(E|H)</var> vs. <var>P(E|not H)</var> gap that drives a real Bayesian update. Signaling theory and Bayesian updating are the same idea, viewed from two different angles.
+  </div>
+
+  <h2>Retrieval check</h2>
+
+  <div class="quiz" id="quiz-1">
+    <div class="quiz-q">1. In Bayes' rule, what does the "prior" represent?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">The probability of the evidence occurring at all</button>
+      <button class="quiz-choice" data-correct="true">Your belief about the hypothesis before seeing this evidence</button>
+      <button class="quiz-choice">The probability the evidence is fake</button>
+      <button class="quiz-choice">Your final, updated belief</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz-2">
+    <div class="quiz-q">2. Why did the belief in the example move so much (30% → 63%) from just one piece of evidence?</div>
+    <div class="quiz-choices">
+      <button class="quiz-choice">Because the prior didn't actually matter</button>
+      <button class="quiz-choice" data-correct="true">Because the evidence was substantially more likely under the true hypothesis than the false one (0.8 vs. 0.2)</button>
+      <button class="quiz-choice">Because Bayes' rule always produces large shifts</button>
+      <button class="quiz-choice">Because the candidate pool was small</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <h2>The base rate trap — the most common real mistake</h2>
+
+  <p>The classic version, from medicine: a disease affects 1% of people. A test for it is 95% accurate (correctly identifies both sick and healthy people 95% of the time). Someone tests positive — how likely are they actually sick? Intuition says "95%-ish." Bayes' rule says otherwise: <code>P(Sick) = 0.01</code>, <code>P(Positive|Sick) = 0.95</code>, <code>P(Positive|Healthy) = 0.05</code> (the false-positive rate). <code>P(Positive) = (0.95 × 0.01) + (0.05 × 0.99) = 0.0095 + 0.0495 = 0.059</code>. <code>P(Sick|Positive) = 0.0095 / 0.059 ≈ 0.16</code> — only about 16%, not 95%.</p>
+
+  <p>The disease is so rare (a low prior) that even a highly accurate test produces far more false positives, in raw count, than true positives — this is the <strong>base rate fallacy</strong>: ignoring how rare something was to begin with, and over-weighting the test's accuracy alone. It applies just as directly outside medicine: a "highly accurate" fraud-detection system, applied to a population where fraud is genuinely rare, will still flag mostly innocent people in absolute terms — worth remembering before trusting any single strong-sounding signal without asking how rare the thing it's detecting actually is.</p>
+
+  <h2>Risk vs. uncertainty</h2>
+
+  <p>Economist Frank Knight's 1921 distinction, still standard: <strong>risk</strong> describes situations where the probabilities are knowable — a fair coin, actuarial insurance tables, a well-understood repeated process. <strong>Uncertainty</strong> describes situations where the probabilities themselves genuinely aren't knowable in advance — a truly novel market, an unprecedented geopolitical event, a first-of-its-kind startup category.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">Why this distinction matters for everything else in this course</span>
+    Lesson 5's expected-value math assumes you can assign real probabilities — that's a risk problem. Genuine uncertainty can't be plugged into that formula honestly, because there's no reliable number to plug in. Bayesian reasoning is the practical bridge between the two: start with a subjective, honestly-uncertain prior, then update it as real evidence arrives, gradually converting a genuinely uncertain situation into something closer to a calculable risk as you learn more — rather than either freezing (refusing to decide without perfect information) or fooling yourself with a false-precision probability pulled from nowhere.
+  </div>
+
+  <h2>Recognizing it at work</h2>
+
+  <ul>
+    <li><strong>Early-stage investing.</strong> A venture investing in a genuinely new market category faces real Knightian uncertainty, not calculable risk — no actuarial table exists for "will this specific novel business model work." Early traction metrics function as Bayesian evidence, updating a necessarily rough prior, rather than plugging into a formula with known probabilities.</li>
+    <li><strong>Evaluating a new hire's early performance.</strong> A manager's prior on a new employee should update with each piece of real evidence (a strong first project, a missed deadline) — proportional to how surprising that evidence actually is given each hypothesis, not just "one good week means they're great."</li>
+    <li><strong>Any "highly accurate" detection or screening claim</strong> — fraud detection, spam filters, medical tests, background-check flags — deserves the base-rate question before being trusted: how rare is the thing being detected, and does the accuracy rate actually survive contact with that rarity?</li>
+  </ul>
+
+  <div class="callout callout-source">
+    <span class="callout-label">Go deeper (optional — this lesson is complete on its own)</span>
+    Frank Knight, <em>Risk, Uncertainty and Profit</em> (1921) is the primary source for the risk/uncertainty distinction. Any solid introductory statistics or Bayesian reasoning resource covers the base-rate fallacy in more depth — it's one of the most well-documented reasoning errors in the cognitive-bias literature Lesson 17 already introduced.
+  </div>
+
+  <h2>Game Theory Detective</h2>
+
+  <div class="scenario" id="scenario-1">
+    <span class="scenario-label">Your turn — reason first, then reveal</span>
+    <div class="scenario-prompt">
+      A manager's prior: 40% of candidates who claim strong Python skills on their resume genuinely have them. A technical screening test is given: 90% of genuinely skilled candidates pass it, but 30% of unskilled candidates also pass (partial knowledge, lucky guessing, memorized patterns). A specific candidate passes.
+      <br><br>
+      Calculate the posterior probability that this candidate is genuinely skilled, showing your work the way the hiring-portfolio example did above. Then answer: should the manager treat a single passed screen as sufficient evidence to make an offer, or does the number you calculated suggest something else?
+    </div>
+    <textarea placeholder="Show your Bayes' rule calculation and conclusion here before revealing."></textarea>
+    <button class="scenario-reveal-btn">Reveal my analysis</button>
+    <div class="scenario-analysis">
+      <strong>Calculation:</strong> <code>P(Skilled) = 0.4</code>, <code>P(Pass|Skilled) = 0.9</code>, <code>P(Pass|Unskilled) = 0.3</code>. <code>P(Pass) = (0.9 × 0.4) + (0.3 × 0.6) = 0.36 + 0.18 = 0.54</code>. <code>P(Skilled|Pass) = 0.36 / 0.54 ≈ 0.67</code>.<br><br>
+      <strong>Interpretation:</strong> the posterior is about 67% — a real, meaningful update from the 40% prior, but nowhere near certainty. A 30% false-pass rate for unskilled candidates is high enough that a single passed screen leaves real, substantial doubt (roughly one in three candidates who pass the screen are actually unskilled, given these numbers). The honest conclusion is that one passed screen is meaningful evidence, not proof — a second, independent piece of evidence (a live coding interview, a reference check) would move the belief further and is worth the extra step before an offer, especially since the two pieces of evidence being independent is what lets a second update compound usefully rather than just repeating the same information.
+      <br><br>
+      If you calculated 90% (just reading off the test's stated accuracy) or treated 67% as "basically confirmed," both are the base-rate-adjacent mistake this scenario is built to catch — the first ignores the prior entirely, the second overstates how far one moderately reliable signal actually moves a real decision.
+    </div>
+  </div>
+
+  <div class="callout callout-ask">
+    <span class="callout-label">Bring me your actual answer</span>
+    Tell me what posterior you calculated and whether your instinct going in was closer to 90% or closer to 40% — that gap between intuition and the real math is exactly what this lesson exists to close, and knowing which direction your intuition leans is useful for calibrating future lessons that touch probability.
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-label">What you should be able to do now</span>
+    Update a belief with real numbers given a prior and evidence, rather than just "more/less confident now"; catch the base-rate fallacy when a strong-sounding accuracy claim is applied to something rare; and tell apart genuine calculable risk from Knightian uncertainty, using Bayesian updating as the practical bridge between them.
+  </div>
+
+  <p class="lesson-footer">
+    <a href="./0017-mechanism-design-and-beyond.html">← Lesson 17</a>
+    <a href="../reference/decision-framework.html">Reference: The Game Theory Decision Framework →</a>
+  </p>
+
+</div>
+</body>
+</html>

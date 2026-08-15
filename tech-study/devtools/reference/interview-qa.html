@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Git + Maven/Gradle + API Tools</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="devtools-notes.html">Git + Maven + API Tools Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#git">Git</a> ·
+  <a href="#maven">Maven</a> ·
+  <a href="#tools">API Tools</a>
+</nav>
+
+<h2 id="git">Git</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the fundamental difference between merge and rebase?</p>
+  <p class="qa-a">Merge combines two branches' histories with a new merge commit that has two parents — nothing is rewritten, the original commits stay exactly as they were. Rebase replays your branch's commits one by one onto a new base, giving each replayed commit a brand new hash — the result is a cleaner, linear history, but it rewrites commit identity.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is it dangerous to rebase a branch that's already been pushed and pulled by teammates?</p>
+  <p class="qa-a">Rebase gives every replayed commit a new hash — from Git's perspective they're entirely different commits, even though the content is similar. Anyone who already has the old commits will find their local branch has diverged irreconcilably from the rewritten remote branch, typically requiring a forced reset on their end and potentially losing local work.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Walk through resolving a merge conflict.</p>
+  <p class="qa-a">Git marks the conflicting sections in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; markers showing both versions. You manually edit the file to the correct final content, removing the conflict markers, then <code>git add</code> the resolved file and <code>git commit</code> (or <code>git rebase --continue</code> if mid-rebase) to complete the operation.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's a fast-forward merge, and when does Git use one automatically?</p>
+  <p class="qa-a">When the target branch has no new commits since the feature branch diverged from it, Git can simply move the target branch's pointer forward to the feature branch's tip — no merge commit needed, since there's nothing to reconcile. It only happens when history is still linear between the two branches.</p>
+</div>
+
+<h2 id="maven">Maven</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between compile, provided, runtime, and test dependency scopes?</p>
+  <p class="qa-a">compile (default) is available everywhere and packaged in the final artifact. provided is available at compile/test time but NOT packaged — you're assuming the deployment environment supplies it. runtime is needed to run but not to compile against (e.g. a JDBC driver, referenced only via reflection/SPI). test is only available while running tests, never packaged.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What does the Maven build lifecycle look like, and what does `mvn package` actually run?</p>
+  <p class="qa-a">The default lifecycle is an ordered sequence: validate → compile → test → package → verify → install → deploy, and running any phase runs every phase before it too. `mvn package` therefore compiles the code and runs the tests first, then produces the jar/war — it does not by itself install to the local repo or deploy.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the purpose of a parent POM like spring-boot-starter-parent?</p>
+  <p class="qa-a">It centrally manages dependency versions and plugin configuration for everything downstream — this is why individual Spring Boot starter dependencies in your pom.xml usually don't need an explicit version number; the parent has already pinned a tested, mutually-compatible set of versions, avoiding version-conflict bugs.</p>
+</div>
+
+<h2 id="tools">API Tools</h2>
+
+<div class="qa">
+  <p class="qa-q">What problem does OpenAPI/Swagger solve versus manually written API documentation?</p>
+  <p class="qa-a">Manually written docs drift out of sync with the actual code over time as endpoints change. With springdoc-openapi on the classpath, the spec is generated automatically from the real @RestController classes and their annotations, so the documentation can never fall behind the actual behavior of the API — and Swagger UI gives consumers an interactive page to try requests directly.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When would you reach for Postman versus an automated integration test?</p>
+  <p class="qa-a">Postman is for manual, exploratory testing during development — quickly hitting an endpoint, inspecting the raw response, iterating on request shape, or sharing a runnable request with a teammate/frontend dev. Automated tests (MockMvc, @SpringBootTest) are for regression protection that runs on every build without a human clicking anything — the two are complementary, not substitutes for each other.</p>
+</div>
+
+<p class="footer-note"><a href="devtools-notes.html">Git + Maven + API Tools Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

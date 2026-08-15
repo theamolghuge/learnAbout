@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — Game Theory</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a href="../index.html">Index</a>
+    <span>·</span>
+    <a href="../lessons/0001-what-is-game-theory.html">Lesson 1</a>
+    <span>·</span>
+    <a href="../lessons/0002-rationality-and-game-types.html">Lesson 2</a>
+    <span>·</span>
+    <a href="../lessons/0003-prisoners-dilemma.html">Lesson 3</a>
+    <span>·</span>
+    <a href="../lessons/0006-stag-hunt.html">Lesson 6</a>
+    <span>·</span>
+    <a href="../lessons/0009-public-goods-and-commons.html">Lesson 9</a>
+    <span>·</span>
+    <a href="../lessons/0018-bayesian-reasoning.html">Lesson 18</a>
+    <span>·</span>
+    <a href="./decision-framework.html">Decision Framework</a>
+  </nav>
+
+  <div class="kicker">Reference · print this</div>
+  <h1>Glossary</h1>
+  <p class="subtitle">The canonical vocabulary for this workspace. Every lesson uses these terms exactly as defined here — if a lesson seems to use a word loosely, this page wins. Grows one lesson at a time; a term appears here only once you've actually used it correctly, not just been shown it.</p>
+
+  <h2>Anatomy of a game (Lesson 1)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Player</div>
+    <p>Anyone making a decision that affects the outcome, whose decision is itself affected by others' decisions. Bystanders whose choices don't feed back into the strategic loop (a waiter, the weather) are not players, no matter how present they are in the scene.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Action</div>
+    <p>A single choice available to a player at a given decision point.</p>
+    <div class="gloss-avoid"><em>Contrast: strategy.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Strategy</div>
+    <p>A complete plan covering every situation a player might face, including contingencies on what other players do. Identical to an action in a one-shot, simultaneous game; diverges once choices happen in sequence (see Level 4: Sequential Games).</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Payoff</div>
+    <p>A number representing how good a given outcome is for one specific player, combining that player's preferences and incentives into a single comparable value.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Preferences</div>
+    <p>What a player actually wants, ranked — the raw material payoffs are built from.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Incentives</div>
+    <p>Forces pushing a player toward or away from a given action, beyond raw preference — cost, convenience, risk, social pressure, reputation.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Information</div>
+    <p>What a player knows at the moment they choose — about the game's structure, about other players' preferences, and (in sequential games) about moves already made. A gap here between players is <em>information asymmetry</em> (Level 6).</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Rules of the game</div>
+    <p>The structure play happens inside: who moves when, what's observable, how many rounds, when it ends. Identical players and payoffs can produce different smart moves under different rules — this is why rules are tracked as their own category, not folded into "actions."</p>
+  </div>
+
+  <h2>Rationality &amp; the shape of the game (Lesson 2)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Rationality</div>
+    <p>A modeling assumption, not a personality trait: a rational player consistently chooses the action that best serves their own payoffs, given their beliefs about what other players will do. Says nothing about what they value — only that they pursue it consistently.</p>
+    <div class="gloss-avoid"><em>Avoid: "cold," "unemotional," "purely selfish" — a player who values fairness or revenge can still be rational.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Common knowledge</div>
+    <p>A fact is common knowledge when everyone knows it, everyone knows that everyone knows it, and so on without end — stronger than a fact simply being true and individually known by every player. Public statements manufacture common knowledge in a way private ones don't.</p>
+    <div class="gloss-avoid"><em>Avoid: "everyone knows" as a synonym — that's necessary but not sufficient.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Zero-sum game</div>
+    <p>A game where the total payoff across all players is fixed — one player's gain is exactly another's loss.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Non-zero-sum game</div>
+    <p>A game where the total payoff isn't fixed — players' choices can grow or shrink the whole amount available, not just redistribute it. Most real strategic situations are this, even when a piece of them (like a single fixed prize) looks zero-sum.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Cooperative game</div>
+    <p>A game where players can make agreements an outside party (a court, an enforcer) will bindingly enforce. The central questions shift to how a coalition splits the value it jointly creates.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Non-cooperative game</div>
+    <p>A game where any agreement has to be self-enforcing — no external party will punish a broken promise, so it only holds if keeping it is each player's own best move. Most of this workspace lives here.</p>
+  </div>
+
+  <h2>Strategic games (Lesson 3)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Payoff matrix</div>
+    <p>A table laying out every combination of two players' actions and what each gets from it. Convention used in this workspace: row player's action picks the row, column player's picks the column, each cell reads (row payoff, column payoff), higher numbers always better.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Dominant strategy</div>
+    <p>An action that is a player's best move regardless of what the other player does — checked by holding the other player's action fixed at each possibility in turn and confirming the same action wins every time.</p>
+    <div class="gloss-avoid"><em>Contrast: Nash equilibrium — a property of one player's choice across all possibilities, not of a pair of choices actually being played.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Dominated strategy</div>
+    <p>An action that is never a player's best move, no matter what the other player does — the mirror image of a dominant strategy. A rational player never plays a strictly dominated strategy.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Nash equilibrium</div>
+    <p>A combination of every player's choices such that no single player can do better by unilaterally switching, given everyone else's choice stays fixed. Can arise from dominant strategies (Prisoner's Dilemma) or without them (Battle of the Sexes, Level 2-3 continued).</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Pareto improvement</div>
+    <p>A change to an outcome that makes at least one player better off and no player worse off.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Pareto efficiency</div>
+    <p>An outcome is Pareto efficient when no Pareto improvement is possible from it — you can't make anyone better off without making someone else worse off. The Prisoner's Dilemma's Nash equilibrium is famously <em>not</em> Pareto efficient — that gap is the whole point of the game.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Prisoner's Dilemma</div>
+    <p>The named game where each player has a dominant strategy to "defect," both playing it is the Nash equilibrium, and that equilibrium is Pareto-dominated by both playing "cooperate" instead — individually rational choices producing a jointly worse outcome. Recognizable pattern: price wars, arms races, and any two-party race to the bottom with no binding way to hold back together.</p>
+  </div>
+
+  <h2>Coordination &amp; mixed strategies (Lessons 4-6)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Coordination game</div>
+    <p>A game where players share an interest in landing on the <em>same</em> outcome together, as opposed to a conflict of interest — the strategic challenge is agreeing which shared outcome, not resisting a temptation to defect. Battle of the Sexes and Stag Hunt are both coordination games; Prisoner's Dilemma is not.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Focal point (Schelling point)</div>
+    <p>An option that stands out to both players as the obvious choice for reasons outside the formal payoffs — because each expects the other to expect them to pick it. The standard tool for resolving a coordination game with multiple equal Nash equilibria and no communication.</p>
+    <div class="gloss-avoid"><em>Avoid confusing with a fairness mechanism like a coin flip — a focal point works through shared, obvious context, not randomization.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Mixed strategy</div>
+    <p>A plan to randomize over available actions with specific probabilities, rather than committing to one action for certain. Necessary when no pure-strategy Nash equilibrium exists (Matching Pennies) because any predictable pure choice would be exploitable.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Expected value</div>
+    <p>The probability-weighted average outcome of an uncertain event — what you'd average per round if it repeated many times. Needed to compare mixed strategies, since a randomized choice doesn't have a single fixed payoff.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Mixed-strategy Nash equilibrium</div>
+    <p>A pair of randomization probabilities, one per player, such that neither player can gain by deviating — found by setting each player's <em>opponent's</em> two expected payoffs equal to each other and solving for the mixing probability.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Payoff-dominant equilibrium</div>
+    <p>Among multiple Nash equilibria, the one that gives every player a strictly higher payoff than the others.</p>
+    <div class="gloss-avoid"><em>Contrast: risk-dominant equilibrium — these can point to different outcomes, as in Stag Hunt.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Risk-dominant equilibrium</div>
+    <p>Among multiple Nash equilibria, the one that's the safer response when a player is uncertain what the other will do — even if it isn't the equilibrium with the highest payoff.</p>
+  </div>
+
+  <h2>Commitment &amp; fairness (Lessons 7-8)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Anti-coordination game</div>
+    <p>A game where each player's best response is the <em>opposite</em> of what the other player does — the mirror image of a coordination game. Chicken is the canonical example.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Credible commitment / credible threat</div>
+    <p>A commitment or threat that's visible to the other player and genuinely costly or irreversible to break — as opposed to a stated intention that costs nothing to abandon. Only credible commitments actually change another player's best response; see Schelling's "burning the steering wheel" (Lesson 7).</p>
+    <div class="gloss-avoid"><em>Contrast: non-credible threat — words alone, with no real cost to reneging.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Ultimatum Game</div>
+    <p>A sequential game where a Proposer offers a split of a fixed amount and a Responder can Accept (both get the split) or Reject (both get nothing). The naive money-only-rational prediction (minimal offer, always accepted) is reliably contradicted by real behavior — low offers get rejected, and Proposers offer far more than the minimum in anticipation.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Dictator Game</div>
+    <p>Like the Ultimatum Game, but the second player has no power to reject — the first player's split is final. Used to isolate genuine fairness/generosity preference from fear of rejection, by removing the rejection option entirely.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Backward induction (informal)</div>
+    <p>Reasoning about a sequential game by working out the last decision first, then the decision before it, and so on back to the start. Used informally in Lesson 8 to derive the naive Ultimatum prediction; gets full formal treatment in Level 4.</p>
+  </div>
+
+  <h2>Collective action (Lesson 9)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Public Goods Game</div>
+    <p>A group game where private contributions to a shared pot are multiplied and split equally among all players regardless of individual contribution. Contributing ₹0 is a dominant strategy for every player individually, even though full contribution would leave the whole group better off — a multiplayer Prisoner's Dilemma.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Free-rider problem</div>
+    <p>The incentive to let others pay for a shared, non-excludable benefit while enjoying it without contributing. The mechanism underlying the Public Goods Game's zero-contribution dominant strategy.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Non-excludable</div>
+    <p>A property of a good or benefit: people who didn't pay for it can't be stopped from enjoying it anyway. What makes free-riding possible.</p>
+    <div class="gloss-avoid"><em>Contrast: rivalrous.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Rivalrous</div>
+    <p>A property of a resource: one person's use genuinely reduces what's left for others (a fishery, a pasture) — as opposed to a non-rivalrous good like most information, where one person's use doesn't diminish anyone else's.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Tragedy of the Commons</div>
+    <p>Over-consumption of a shared, rivalrous resource because each user captures the full private benefit of extra use while bearing only a fraction of the shared cost of depletion. The over-taking mirror image of the Public Goods Game's under-giving.</p>
+  </div>
+
+  <h2>Sequential games &amp; commitment (Lessons 10-11)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Game tree (extensive form)</div>
+    <p>A representation of a sequential game as decision points (nodes), the actions available at each (branches), and final payoffs (leaves) — as opposed to a payoff matrix (normal form), which assumes simultaneous moves.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Backward induction</div>
+    <p>Solving a sequential game by working out the last decision first, then the decision before it, back to the start. The formal version of the informal reasoning used in Lesson 8.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Subgame perfect equilibrium (SPE)</div>
+    <p>A strategy for each player that remains a best response at every decision point in the tree, not just along the path actually taken — found via backward induction. The formal test for whether a threat or promise is credible: if it isn't actually the best move once that point in the tree is reached, the strategy isn't subgame perfect.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Trust Game</div>
+    <p>A sequential game where one player can extend a benefit (often multiplied) to a second player, who then decides whether to reciprocate. Structurally the sequential version of Stag Hunt's trust problem; backward induction predicts no trust extended absent a credible commitment to reciprocate, though real behavior deviates (Berg, Dickhaut &amp; McCabe, 1995).</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">First-mover advantage</div>
+    <p>The advantage that comes from being able to commit to something before the other player has to decide, changing the game they respond to. Not simply "being first" — specifically, being first to commit.</p>
+    <div class="gloss-avoid"><em>Contrast: second-mover advantage — sometimes waiting for better information beats committing early.</em></div>
+  </div>
+
+  <h2>Repeated games (Lesson 12)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Shadow of the future</div>
+    <p>Robert Axelrod's term for the way a possible future round changes today's incentives — today's choice can be rewarded or punished tomorrow, which is what can make cooperation rational in a repeated game even when it isn't in a one-shot one.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Finitely repeated game (known end)</div>
+    <p>A game repeated a fixed, commonly-known number of times. Backward induction from the known last round unravels cooperation all the way back to round one — the shadow of the future evaporates entirely.</p>
+    <div class="gloss-avoid"><em>Contrast: indefinitely repeated game — no known fixed end, where cooperation can be a genuine equilibrium.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Grim Trigger</div>
+    <p>A repeated-game strategy: cooperate until the other player defects once, then defect forever after. Harsh and unforgiving, but a credible deterrent.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Tit-for-Tat</div>
+    <p>A repeated-game strategy: cooperate first, then mirror whatever the other player did last round. Nice (never defects first), retaliatory, forgiving, and clear — the combination Axelrod's tournaments credited for its success against far more complex strategies.</p>
+  </div>
+
+  <h2>Information &amp; signaling (Lessons 13-14)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Adverse selection</div>
+    <p>A hidden-type problem: information about quality or type known to one party before a deal is made, unknown to the other. Fixed by signaling or screening.</p>
+    <div class="gloss-avoid"><em>Contrast: moral hazard — a hidden-action problem, not hidden-type.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Moral hazard</div>
+    <p>A hidden-action problem: behavior that changes after a deal is made because the consequences have shifted onto someone else. Fixed by monitoring or aligning incentives, not by screening.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Market for Lemons</div>
+    <p>George Akerlof's model of how unchecked adverse selection can unravel an entire market: buyers price at average quality, pushing the best sellers out first, lowering the average further, in a spiral that can collapse a market that would otherwise have matched buyers and sellers profitably.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Cheap talk</div>
+    <p>Communication that costs the same regardless of whether it's true, so it carries no differential information — unless the sender's and receiver's interests are already well-aligned.</p>
+    <div class="gloss-avoid"><em>Contrast: costly signal.</em></div>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Costly / credible signal</div>
+    <p>An action that's genuinely expensive, and — critically — relatively cheaper for a true high type to produce than for a low type faking it. That differential cost, not the cost alone, is what makes it credible.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Separating equilibrium / pooling equilibrium</div>
+    <p>A separating equilibrium is one where different types make different, distinguishable choices because a signal's cost bites them differently. A pooling equilibrium is one where all types make the same choice, and the signal carries no information.</p>
+  </div>
+
+  <h2>Negotiation, business &amp; capstone (Lessons 15-17)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">BATNA</div>
+    <p>Best Alternative To a Negotiated Agreement — your real fallback if the current deal falls through. The basis for your reservation value.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Reservation value</div>
+    <p>The worst deal you'd still accept — your walk-away line, derived from your BATNA and adjusted for the real costs and benefits of switching.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">ZOPA</div>
+    <p>Zone of Possible Agreement — the range between both sides' reservation values where a deal could satisfy both. Exists only if the buyer's ceiling exceeds the seller's floor.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Anchoring</div>
+    <p>The first number stated in a negotiation exerts disproportionate pull on the final outcome, even when somewhat arbitrary. Moving first with a justified anchor is a real source of leverage.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Winner's curse</div>
+    <p>In a common-value auction, the winner is systematically the bidder whose estimate was most optimistic, not necessarily most accurate — winning is itself bad news about your own estimate. Corrected by shading bids down, more aggressively as the number of bidders grows.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Incentive compatibility</div>
+    <p>A property of a mechanism (a set of rules): honest or desired behavior is each participant's own self-interested best response, so it doesn't need to be requested or trusted — it falls out of the rules themselves. A second-price auction is incentive-compatible by design.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Principal-agent problem</div>
+    <p>The formal name for a moral-hazard relationship where a principal (employer, client) wants an agent (employee, contractor) to act in the principal's interest, can't fully observe the agent's effort, and must design a contract that makes good behavior the agent's own best move.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Evolutionarily stable strategy (ESS)</div>
+    <p>A population-level strategy (or mix of strategies) that a rare alternative can't successfully invade, arrived at through differential success over time rather than conscious reasoning. Often mathematically equivalent to a mixed-strategy Nash equilibrium, despite the very different motivation behind each idea.</p>
+  </div>
+
+  <h2>Beliefs under uncertainty (Lesson 18)</h2>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Bayes' rule</div>
+    <p><code>P(H|E) = P(E|H) × P(H) / P(E)</code> — updates a prior belief (P(H)) into a posterior belief (P(H|E)) given new evidence (E), weighted by how much more likely that evidence is under the hypothesis than overall. The formal version of what a credible signal (Lesson 14) does to a rational observer's beliefs.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Prior / posterior</div>
+    <p>The prior is your belief before new evidence; the posterior is your updated belief afterward, calculated via Bayes' rule.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Base rate fallacy</div>
+    <p>Over-weighting a signal's stated accuracy while ignoring how rare the thing it detects actually was to begin with (the prior) — the reason a "95% accurate" test can still mean a positive result is more likely wrong than right, when the underlying condition is rare.</p>
+  </div>
+
+  <div class="gloss-term">
+    <div class="gloss-name">Risk vs. uncertainty (Knightian)</div>
+    <p>Risk describes situations where probabilities are knowable (a fair coin, actuarial tables); uncertainty describes situations where the probabilities themselves genuinely aren't knowable in advance (a truly novel market). Bayesian updating is the practical bridge — starting from an honest subjective prior and updating it as real evidence arrives.</p>
+  </div>
+
+  <p style="font-family:var(--sans);font-size:0.85rem;color:var(--ink-faint);">This glossary now covers Lessons 1-18 — the full built curriculum. New terms get added as future lessons introduce them and you demonstrate use of them.</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Q&amp;A — Spring Core + Boot + REST</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Interview Q&amp;A</h1>
+<p class="subtitle">Read each question, answer out loud, then check. Concepts explained fully in <a href="spring-boot-notes.html">Spring Core + Boot + REST Notes</a>.</p>
+
+<nav class="toc">
+  <a href="#ioc">IoC &amp; DI</a> ·
+  <a href="#beans">Beans</a> ·
+  <a href="#boot">Spring Boot</a> ·
+  <a href="#config">Config</a> ·
+  <a href="#http">HTTP</a> ·
+  <a href="#rest">REST</a>
+</nav>
+
+<h2 id="ioc">IoC &amp; DI</h2>
+
+<div class="qa">
+  <p class="qa-q">What problem does Dependency Injection solve?</p>
+  <p class="qa-a">Without it, a class constructs its own dependencies directly (<code>new UserRepository()</code>), tightly coupling it to a specific implementation and making it hard to test or swap implementations. DI has the container supply pre-built dependencies to the class instead, so the class only depends on an abstraction, is trivially testable with mocks, and implementations can be swapped via configuration.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Why is constructor injection preferred over field injection?</p>
+  <p class="qa-a">Constructor injection makes dependencies explicit and lets fields be <code>final</code> (immutable, guaranteed non-null after construction), fails fast at startup if a dependency is missing, and allows plain <code>new</code> instantiation in unit tests with no Spring context or reflection needed. Field injection hides dependencies, requires reflection to set (harder to test), and can't be final.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between @Autowired on a constructor vs required=false behavior?</p>
+  <p class="qa-a">By default, @Autowired requires a matching bean to exist or the context fails to start. With a single constructor, @Autowired is optional — Spring infers it automatically. <code>@Autowired(required = false)</code> allows the dependency to be null if no bean is found, though this is rarely the right call — better to make the dependency truly optional via <code>Optional&lt;T&gt;</code> or a no-op default bean.</p>
+</div>
+
+<h2 id="beans">Beans</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the actual difference between @Component, @Service, and @Repository?</p>
+  <p class="qa-a">Functionally, @Service and @Repository are both meta-annotated with @Component, so Spring treats them identically for scanning/DI purposes. The difference is semantic (documents the layer) plus one real behavior: @Repository triggers Spring's exception translation, converting database-specific exceptions into its unchecked DataAccessException hierarchy.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Default bean scope, and why does it matter for thread safety?</p>
+  <p class="qa-a">Singleton — one shared instance per container, reused by every thread handling every request. Because many request threads can call the same bean instance concurrently, storing per-request mutable state in an instance field is a race condition. Beans should generally be stateless; state belongs in method parameters/local variables or an explicitly-scoped bean (request/session/prototype).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">When would you use @Bean inside a @Configuration class instead of @Component?</p>
+  <p class="qa-a">When you need to register a class you don't own/can't annotate — e.g. a third-party class like RestTemplate or an ObjectMapper — or when bean creation needs custom logic (conditional setup, builder pattern) that can't be expressed via a class-level stereotype annotation.</p>
+</div>
+
+<h2 id="boot">Spring Boot</h2>
+
+<div class="qa">
+  <p class="qa-q">What does @SpringBootApplication actually do?</p>
+  <p class="qa-a">It's a composite of three annotations: @Configuration (this class can define beans), @EnableAutoConfiguration (turn on classpath-based auto-configuration), and @ComponentScan (scan this package and sub-packages for stereotype-annotated beans).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">Explain auto-configuration with a concrete example.</p>
+  <p class="qa-a">Spring Boot inspects what's on the classpath and configures sensible-default beans accordingly — e.g. if it sees a JDBC driver and spring-boot-starter-data-jpa on the classpath, plus datasource properties in application.yml, it auto-configures a DataSource, EntityManagerFactory, and TransactionManager for you. If you define your own bean of a given type, Boot's auto-configuration backs off and uses yours instead (conditional-on-missing-bean).</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the point of the embedded server?</p>
+  <p class="qa-a">Traditional Java web apps were packaged as a WAR and deployed into a separately-installed app server (Tomcat/JBoss). Spring Boot bundles Tomcat (or Jetty/Undertow) directly inside the executable jar — <code>java -jar app.jar</code> starts a fully running web server with no external installation, which is what makes Spring Boot apps trivial to containerize.</p>
+</div>
+
+<h2 id="config">Config</h2>
+
+<div class="qa">
+  <p class="qa-q">What are Spring profiles for?</p>
+  <p class="qa-a">Swapping configuration per environment (dev/test/prod) without changing code — e.g. a different DB URL or logging level per profile, defined in profile-specific YAML sections or files, activated via <code>spring.profiles.active</code>.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What's the property resolution precedence when the same key is set in multiple places?</p>
+  <p class="qa-a">Roughly: command-line arguments override environment variables, which override profile-specific application.yml, which overrides the base application.yml. This lets ops override any setting at deploy time without rebuilding the jar.</p>
+</div>
+
+<h2 id="http">HTTP</h2>
+
+<div class="qa">
+  <p class="qa-q">What does idempotent mean, and which HTTP methods are idempotent?</p>
+  <p class="qa-a">Calling the operation once has the same effect as calling it many times with the same input. GET, PUT, and DELETE are idempotent by spec — PUT with the same body always ends in the same resource state, DELETE-ing an already-deleted resource is still "deleted." POST is not idempotent — resubmitting creates a duplicate. This matters for safe retry behavior on flaky networks.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">401 vs 403 — what's the difference?</p>
+  <p class="qa-a">401 Unauthorized means the request isn't authenticated at all (missing/invalid credentials) — the client should log in. 403 Forbidden means the client IS authenticated but doesn't have permission for this specific action — logging in again won't help.</p>
+</div>
+
+<h2 id="rest">REST</h2>
+
+<div class="qa">
+  <p class="qa-q">What's the difference between @PathVariable and @RequestParam?</p>
+  <p class="qa-a">@PathVariable binds a segment of the URL path itself, e.g. the 10 in <code>/users/10</code> — used for identifying a specific resource. @RequestParam binds a query string parameter, e.g. <code>?role=admin</code> in <code>/users?role=admin</code> — used for filtering, pagination, or optional modifiers.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">How does Spring convert a Java object returned from a @RestController method into a JSON HTTP response?</p>
+  <p class="qa-a">@RestController implies @ResponseBody on every handler method, which tells Spring MVC to run the return value through an HttpMessageConverter instead of resolving it as a view name. With spring-boot-starter-web on the classpath, Jackson is auto-configured as that converter, serializing the POJO to JSON automatically.</p>
+</div>
+
+<div class="qa">
+  <p class="qa-q">What status code should a successful POST that creates a resource return, and what should accompany it?</p>
+  <p class="qa-a">201 Created, ideally with a <code>Location</code> header pointing at the URL of the newly created resource (e.g. <code>/users/42</code>), and typically the created resource in the response body.</p>
+</div>
+
+<p class="footer-note"><a href="spring-boot-notes.html">Spring Core + Boot + REST Notes</a> · <a href="quick-revision.html">Quick Revision</a></p>
+
+</body>
+</html>

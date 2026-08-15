@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kubernetes + System Design Notes</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<p class="kicker"><a href="../../index.html">Index</a></p>
+<h1>Kubernetes + System Design Notes</h1>
+<p class="subtitle">Topic 10 (final) of the Java + Spring Boot track. Pair with <a href="quick-revision.html">Quick Revision</a> and <a href="interview-qa.html">Interview Q&amp;A</a>. Assumes <a href="../../docker-cloud/reference/docker-cloud-notes.html">Docker</a> and <a href="../../microservices-kafka/reference/microservices-kafka-notes.html">Microservices + Kafka</a>.</p>
+
+<nav class="toc">
+  <strong>Contents</strong><br>
+  <a href="#study-guide">Study Guide</a> ·
+  <a href="#k8s-core">1. Kubernetes Core Objects ⭐</a> · <a href="#k8s-config">2. ConfigMap, Secret &amp; Namespace</a> ·
+  <a href="#k8s-scaling">3. Scaling in Kubernetes</a> · <a href="#scalability">4. Scalability &amp; Load Balancing ⭐</a> ·
+  <a href="#caching">5. Caching</a> · <a href="#db-scaling">6. Database Scaling &amp; Indexing</a> ·
+  <a href="#cap">7. CAP Theorem ⭐</a> · <a href="#rate-limiting">8. Rate Limiting</a> ·
+  <a href="#interview-approach">9. Approaching a System Design Question</a>
+</nav>
+
+<h2 id="study-guide">Study Guide — Priority for Backend Interviews</h2>
+<h3>Tier 1 — Must Master</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>Pod, Deployment, Service — the k8s core trio</td><td><a href="#k8s-core">§1</a></td></tr>
+  <tr><td>Horizontal scaling + load balancing</td><td><a href="#scalability">§4</a></td></tr>
+  <tr><td>Caching layers &amp; invalidation</td><td><a href="#caching">§5</a></td></tr>
+  <tr><td>Read replicas vs sharding</td><td><a href="#db-scaling">§6</a></td></tr>
+  <tr><td>CAP theorem</td><td><a href="#cap">§7</a></td></tr>
+</table>
+<h3>Tier 2 — Advanced</h3>
+<table class="ref">
+  <tr><th>Topic</th><th>Section</th></tr>
+  <tr><td>ConfigMap/Secret, HPA autoscaling</td><td><a href="#k8s-config">§2</a>, <a href="#k8s-scaling">§3</a></td></tr>
+  <tr><td>Rate limiting algorithms</td><td><a href="#rate-limiting">§8</a></td></tr>
+  <tr><td>Structured approach to an open-ended design question</td><td><a href="#interview-approach">§9</a></td></tr>
+</table>
+
+<h3>Recommended learning order</h3>
+<pre class="code"><code>Pod → Deployment → Service ⭐ → ConfigMap/Secret → Namespace
+  → Horizontal Pod Autoscaler
+  → Scalability + Load balancing ⭐ → Caching → DB scaling + indexing
+  → CAP theorem ⭐ → Rate limiting
+  → Practice: structured approach to an open design question</code></pre>
+
+<h3>Primary sources</h3>
+<ul>
+  <li><a href="https://kubernetes.io/docs/concepts/">Kubernetes official concepts docs</a> — the authoritative source on Pods, Deployments, and Services</li>
+  <li><a href="https://github.com/donnemartin/system-design-primer">The System Design Primer (GitHub)</a> — the most widely used free resource for interview-style system design, covering caching, scaling, and CAP in depth</li>
+  <li><a href="https://www.the-paper-trail.org/post/2012-08-26-cap-theorem/">A plain-English explanation of the CAP theorem</a> — worth reading once slowly, it's frequently misquoted in interviews</li>
+</ul>
+
+<!-- ==================== 1. K8S CORE ==================== -->
+<h2 id="k8s-core">1. Kubernetes Core Objects ⭐</h2>
+<p>Kubernetes (k8s) orchestrates containers across a cluster of machines — deciding where they run, restarting them on failure, and routing traffic to them.</p>
+<table class="ref">
+  <tr><th>Object</th><th>What it is</th></tr>
+  <tr><td>Pod</td><td>The smallest deployable unit — one or more tightly-coupled containers that share network/storage. Usually one container per Pod for a Spring Boot app.</td></tr>
+  <tr><td>Deployment</td><td>Declares the desired state for a set of identical Pods (how many replicas, which image) — k8s continuously reconciles reality to match, restarting crashed Pods automatically</td></tr>
+  <tr><td>Service</td><td>A stable network endpoint in front of a changing set of Pods — Pods come and go (new IPs each time), but the Service's DNS name/IP stays constant, and it load-balances across whichever Pods currently match its label selector</td></tr>
+</table>
+<pre class="code"><code># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 3                       # k8s keeps exactly 3 Pods running
+  selector:
+    matchLabels: { app: order-service }
+  template:
+    metadata:
+      labels: { app: order-service }
+    spec:
+      containers:
+        - name: order-service
+          image: myregistry/order-service:1.0
+          ports: [{ containerPort: 8080 }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector: { app: order-service }   # routes to any Pod with this label
+  ports: [{ port: 80, targetPort: 8080 }]</code></pre>
+<p><strong>Why a Pod's IP can't be relied on directly:</strong> if a Pod crashes, k8s replaces it with a brand new Pod that gets a brand new IP. A Service abstracts this away — other services/clients always talk to the stable Service name, and k8s handles routing to whichever Pods are currently healthy.</p>
+
+<!-- ==================== 2. CONFIG ==================== -->
+<h2 id="k8s-config">2. ConfigMap, Secret &amp; Namespace</h2>
+<table class="ref">
+  <tr><th>Object</th><th>Purpose</th></tr>
+  <tr><td>ConfigMap</td><td>Non-sensitive configuration (e.g. a feature flag, a log level) injected into Pods as env vars or mounted files — decouples config from the container image</td></tr>
+  <tr><td>Secret</td><td>Same idea, for sensitive data (DB passwords, API keys) — base64-encoded at rest (not encryption by itself; real security needs an encryption-at-rest provider or an external secret manager)</td></tr>
+  <tr><td>Namespace</td><td>A virtual cluster within a cluster — isolates resources (e.g. separate <code>dev</code>/<code>staging</code>/<code>prod</code> namespaces) so names don't collide and access can be scoped per team/environment</td></tr>
+</table>
+
+<!-- ==================== 3. SCALING ==================== -->
+<h2 id="k8s-scaling">3. Scaling in Kubernetes</h2>
+<pre class="code"><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: order-service-hpa }
+spec:
+  scaleTargetRef: { kind: Deployment, name: order-service }
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }</code></pre>
+<p>The <strong>Horizontal Pod Autoscaler</strong> automatically adjusts the replica count based on observed metrics (CPU, memory, or custom metrics) — this is Kubernetes-native horizontal scaling, the cluster equivalent of adding/removing EC2 instances behind a load balancer.</p>
+
+<!-- ==================== 4. SCALABILITY ==================== -->
+<h2 id="scalability">4. Scalability &amp; Load Balancing ⭐</h2>
+<table class="ref">
+  <tr><th></th><th>Vertical scaling</th><th>Horizontal scaling</th></tr>
+  <tr><td>Approach</td><td>Bigger machine — more CPU/RAM on one instance</td><td>More machines — add instances, distribute load</td></tr>
+  <tr><td>Ceiling</td><td>Hard hardware limit eventually</td><td>Effectively unlimited (in theory)</td></tr>
+  <tr><td>Downtime</td><td>Usually requires a restart to resize</td><td>Add/remove instances with no downtime</td></tr>
+  <tr><td>State requirement</td><td>None — one instance is fine with local state</td><td>Requires stateless instances (or externalized state) so any instance can serve any request</td></tr>
+</table>
+<p>Horizontal scaling is the default target for modern web backends — it's why "Spring beans should be stateless" (from the Spring Core topic) matters at the architecture level too: any request-handling instance must be interchangeable, with shared state (sessions, cache) externalized to something like Redis, not held in instance memory.</p>
+<p><strong>Load balancer algorithms:</strong> round robin (rotate evenly), least connections (send to the instance with fewest active requests), and IP hash (same client always → same instance, useful for sticky sessions, though stateless design avoids needing this).</p>
+
+<!-- ==================== 5. CACHING ==================== -->
+<h2 id="caching">5. Caching</h2>
+<table class="ref">
+  <tr><th>Layer</th><th>Example</th></tr>
+  <tr><td>Client-side / CDN</td><td>Browser cache, CloudFront — caches static assets close to the user</td></tr>
+  <tr><td>Application-level</td><td>Redis/Memcached — cache expensive DB query results or computed data, shared across all app instances</td></tr>
+  <tr><td>Database-level</td><td>Query cache, buffer pool — largely automatic, less in your control</td></tr>
+</table>
+<p><strong>Cache invalidation</strong> (famously "one of the two hard things in computer science") — common strategies:</p>
+<table class="ref">
+  <tr><th>Strategy</th><th>How it works</th></tr>
+  <tr><td>TTL (time-to-live)</td><td>Entry auto-expires after N seconds — simple, but can serve slightly stale data</td></tr>
+  <tr><td>Write-through</td><td>Update the cache at the same time as the database — cache always current, adds write latency</td></tr>
+  <tr><td>Cache-aside (lazy loading)</td><td>App checks cache first; on a miss, reads the DB and populates the cache — most common pattern, cache can go stale until next miss/TTL</td></tr>
+  <tr><td>Explicit invalidation</td><td>Delete/update the cache entry directly when the underlying data changes — most accurate, most code to get right</td></tr>
+</table>
+
+<!-- ==================== 6. DB SCALING ==================== -->
+<h2 id="db-scaling">6. Database Scaling &amp; Indexing</h2>
+<table class="ref">
+  <tr><th>Technique</th><th>How it helps</th></tr>
+  <tr><td>Read replicas</td><td>Copies of the DB that serve read traffic, offloading the primary — writes still go to one primary. Good when reads vastly outnumber writes.</td></tr>
+  <tr><td>Sharding (horizontal partitioning)</td><td>Split data across multiple DBs by some key (e.g. userId range) — each shard handles a subset of data, scaling both reads and writes. Adds real complexity: cross-shard queries/joins become hard.</td></tr>
+  <tr><td>Indexing</td><td>See <a href="../../sql-jdbc/reference/sql-jdbc-notes.html#indexes">SQL Notes §6</a> — the first, cheapest lever before reaching for replicas/sharding</td></tr>
+  <tr><td>Connection pooling</td><td>See <a href="../../sql-jdbc/reference/sql-jdbc-notes.html#pooling">SQL Notes §10</a> — reuse connections instead of the DB running out under load</td></tr>
+</table>
+<p><strong>Order of operations in an interview:</strong> index properly → add read replicas for read-heavy load → cache aggressively → only reach for sharding once a single primary genuinely can't handle write volume. Jumping straight to sharding is a common interview red flag — it's the most complex, expensive-to-reverse option.</p>
+
+<!-- ==================== 7. CAP ==================== -->
+<h2 id="cap">7. CAP Theorem ⭐</h2>
+<p>In a distributed system, when a <strong>network partition</strong> occurs (nodes can't talk to each other), you must choose between:</p>
+<table class="ref">
+  <tr><th>Property</th><th>Means</th></tr>
+  <tr><td>Consistency (C)</td><td>Every read gets the most recent write, or an error — never stale data</td></tr>
+  <tr><td>Availability (A)</td><td>Every request gets a (non-error) response — even if it might be stale</td></tr>
+  <tr><td>Partition tolerance (P)</td><td>The system keeps working despite network failures between nodes</td></tr>
+</table>
+<p><strong>The actual claim:</strong> partition tolerance is not optional for any real distributed system (networks fail — you don't get to choose P away). So CAP really forces a choice between <strong>C and A specifically during a partition</strong>: CP systems refuse to serve a request they can't guarantee is consistent (may return an error/timeout); AP systems serve a response anyway, possibly stale, favoring uptime. Outside of an actual partition, most systems provide both C and A just fine — this is the detail interviewers listen for; a naive "CAP means pick 2 of 3 always" answer is a common miss.</p>
+<table class="ref">
+  <tr><th>System</th><th>Typically favors</th></tr>
+  <tr><td>Traditional RDBMS with synchronous replication (e.g. banking)</td><td>CP — correctness over uptime</td></tr>
+  <tr><td>DNS, many NoSQL stores (Cassandra, DynamoDB default mode)</td><td>AP — uptime over strict consistency, often offering "eventual consistency" instead</td></tr>
+</table>
+
+<!-- ==================== 8. RATE LIMITING ==================== -->
+<h2 id="rate-limiting">8. Rate Limiting</h2>
+<table class="ref">
+  <tr><th>Algorithm</th><th>How it works</th></tr>
+  <tr><td>Fixed window</td><td>Count requests in fixed time buckets (e.g. per minute) — simple, but allows a burst right at a window boundary (2x the limit across the boundary)</td></tr>
+  <tr><td>Sliding window</td><td>Considers a rolling time window instead of fixed buckets — smooths out the boundary-burst problem, more accurate</td></tr>
+  <tr><td>Token bucket</td><td>A bucket refills with tokens at a steady rate; each request consumes a token, request rejected if the bucket is empty — allows controlled bursts up to the bucket size while enforcing an average rate</td></tr>
+</table>
+<p>Rate limiting protects backend services from being overwhelmed (accidental retry storms or deliberate abuse) — typically enforced at the API Gateway (previous topic) so individual services don't each need to implement it.</p>
+
+<!-- ==================== 9. APPROACH ==================== -->
+<h2 id="interview-approach">9. Approaching a System Design Question</h2>
+<pre class="code"><code>1. Clarify requirements — functional (what must it do) and
+   non-functional (scale: how many users/requests, read vs write ratio, latency needs)
+2. Estimate scale — back-of-envelope: requests/sec, storage growth, peak vs average load
+3. High-level design — draw the major components and how data flows between them
+4. Deep dive — pick 1-2 components the interviewer cares about and go deep
+   (e.g. "how does the database handle this write volume specifically")
+5. Discuss trade-offs explicitly — every choice (SQL vs NoSQL, cache vs no cache,
+   sync vs async) has a cost; naming it shows judgment, not just knowledge
+6. Address bottlenecks &amp; failure modes — what breaks first under load,
+   what happens if a component goes down</code></pre>
+<p>At 5 years experience, interviewers are listening for <strong>trade-off reasoning</strong>, not a "correct" architecture — there usually isn't one. Naming the trade-off you're making and why (e.g. "I'd cache this at the cost of possible staleness, because read volume is 100x write volume here") demonstrates the judgment a senior-ish role actually requires.</p>
+
+<p class="footer-note">This completes the 10-topic Java + Spring Boot roadmap. See <a href="interview-qa.html">Interview Q&amp;A</a> and <a href="quick-revision.html">Quick Revision</a>. Ask follow-up questions anytime — I'm your teacher for this workspace.</p>
+
+</body>
+</html>
